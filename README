@@ -1,0 +1,11 @@
+#### funModeling R Package
+<img src="http://datascienceheroes.com/img/blog/09_cross_plot_5.PNG" width="600px" alt="Importance variable analysis with cross_plot">
+
+###### Installing the package:
+`install.packages("funModeling")`
+
+###### Description: 
+Learn data cleaning, visual data analysis and model performance assessment (KS, AUC and ROC), package core is in the vignette documentation explaining last topics as a tutorial.
+
+###### Using the package (Vignette)
+https://cran.r-project.org/web/packages/funModeling/vignettes/funModeling.html
