@@ -1,3 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
+vignettes/figure/
+IGNORE_ME/
+vignettes/funModeling.md
+vignettes/funModeling.R

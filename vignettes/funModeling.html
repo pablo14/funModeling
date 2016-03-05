@@ -438,20 +438,14 @@ Just set the parameter <code>path_out</code> with the folder you want -It create
 
 <h3>Example 4: <code>cross_plot</code> on multiple variables</h3>
 
-<p>Imagine you want to run cross_plot for several variables at the same time. To achieve this goal you define a list of strings containing all the variables to use as input in the <code>cross_plot</code>, and then, call the function <code>massive_cross_plot</code>.</p>
+<p>Imagine you want to run cross_plot for several variables at the same time. To achieve this goal just define a vector containing the variable names.</p>
 
 <p>If you want to analyze these 3 variables: </p>
 
 <pre><code class="r">vars_to_analyze=c(&quot;age&quot;, &quot;oldpeak&quot;, &quot;max_heart_rate&quot;)
 </code></pre>
 
-<pre><code class="r">massive_cross_plot(data=heart_disease, str_target=&quot;has_heart_disease&quot;, str_vars=vars_to_analyze)
-</code></pre>
-
-<p><strong>Automatically saving all the results into a folder</strong>
-Same as <code>cross_plot</code>, this function has the <code>path_out</code> parameter.</p>
-
-<pre><code class="r">massive_cross_plot(data=heart_disease, str_target=&quot;has_heart_disease&quot;, str_vars=vars_to_analyze, path_out=&quot;my_plots&quot;)
+<pre><code class="r">cross_plot(data=heart_disease, str_target=&quot;has_heart_disease&quot;, str_input=vars_to_analyze)
 </code></pre>
 
 <h3>Final notes:</h3>

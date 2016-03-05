@@ -155,30 +155,23 @@ cross_plot(heart_disease, str_input="max_heart_rate_3", str_target="has_heart_di
 
 **How about saving the cross_plot result into a folder?**
 Just set the parameter `path_out` with the folder you want -It creates a new one if it doesn't exists-.
-```{r massive_cross_plot1, eval=FALSE}
+```{r several_cross_plot1, eval=FALSE}
 cross_plot(heart_disease, str_input="max_heart_rate_3", str_target="has_heart_disease", path_out="my_plots")
 ```
 It creates the folder `my_plots` into the working directory. 
 
 ### Example 4: `cross_plot` on multiple variables
-Imagine you want to run cross_plot for several variables at the same time. To achieve this goal you define a list of strings containing all the variables to use as input in the `cross_plot`, and then, call the function `massive_cross_plot`.
+Imagine you want to run cross_plot for several variables at the same time. To achieve this goal just define a vector containing the variable names.
 
 If you want to analyze these 3 variables: 
-```{r massive_cross_plot2, eval=FALSE}
+```{r several_cross_plot2, eval=FALSE}
 vars_to_analyze=c("age", "oldpeak", "max_heart_rate")
 ```
 
-```{r massive_cross_plot3, eval=FALSE}
-massive_cross_plot(data=heart_disease, str_target="has_heart_disease", str_vars=vars_to_analyze)
+```{r several_cross_plot3, eval=FALSE}
+cross_plot(data=heart_disease, str_target="has_heart_disease", str_input=vars_to_analyze)
 ```
 
-
-**Automatically saving all the results into a folder**
-Same as `cross_plot`, this function has the `path_out` parameter.
-
-```{r massive_cross_plot4, eval=FALSE}
-massive_cross_plot(data=heart_disease, str_target="has_heart_disease", str_vars=vars_to_analyze, path_out="my_plots")
-```
 
 ### Final notes:
 * https://en.wikipedia.org/wiki/Correlation_does_not_imply_causation
