@@ -24,8 +24,17 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' ## Example 1:
 #' cross_plot(data=heart_disease, str_input="chest_pain", str_target="has_heart_disease")
 #'
-#' ## Example 2:
-#' cross_plot(data=heart_disease, str_input="age", str_target="has_heart_disease")
+#' ## Example 2: Disabling auto_binning:
+#' cross_plot(data=heart_disease, str_input="oldpeak",
+#' 		str_target="has_heart_disease", auto_binning=FALSE)
+#'
+#' ## Example 3: Saving the plot into a folder:
+#' cross_plot(data=heart_disease, str_input="oldpeak",
+#' 		str_target="has_heart_disease", path_out = "my_folder")
+#'
+#' ## Example 4: Running with multiple input variables at the same time:
+#' cross_plot(data=heart_disease, str_input=c("age", "oldpeak", "max_heart_rate"),
+#' 		str_target="has_heart_disease")
 #'
 #' @return cross plot
 #' @export
@@ -187,37 +196,12 @@ equal_freq <- function(var, n_bins)
 }
 
 
-#' @title Generate cross_plot for all variables
-#' @description Internal function used in massive_cross_plot to generate as many cross_plot as elements are in str_vars.
-#' @param str_vars string vector containing variable names of 'data' param.
-#' @param data data frame source
-#' @param str_target string of the variable to predict
-#' @param path_out path directory, if it has a value the plot is saved
-#' @param auto_binning indicates the automatic binning of str_input variable based on equal frequency (function 'equal_freq'), default value=TRUE
-cross_iterator <- function (str_vars, data, str_target, path_out, auto_binning) {
-  for(i in 1:length(str_vars))
-  {
-    cross_plot(data = data, str_input=str_vars[i], str_target=str_target, path_out = path_out, auto_binning)
-  }
-}
-
 #' @title Generate several cross_plot at the same time.
 #' @description It creates as many cross_plots as variable names are present in 'str_vars'. Additionally, they can be saved as jpeg in a folder (setting 'path_out' parameter).
 #' @param data data frame source
 #' @param str_target string of the variable to predict
 #' @param str_vars vector of strings containing the variables names to be used as input in each cross_plot.
 #' @param path_out path directory, if it has a value the plot is saved in 'path_out'
-#' @examples
-#' ## Example 1
-#' massive_cross_plot(data=heart_disease,
-#' str_target="has_heart_disease",
-#' str_vars=c("age", "oldpeak", "max_heart_rate"))
-#'
-#' ## Example 2: Save all the plots to a new folder "plots_example" inside the working directory.
-#' massive_cross_plot(data=heart_disease, str_target="has_heart_disease",
-#' str_vars=c("age", "oldpeak", "max_heart_rate"),
-#' path_out="plots_example")
-#'
 #' @param auto_binning indicates the automatic binning of str_input variable based on equal frequency (function 'equal_freq'), default value=TRUE
 #' @export
 massive_cross_plot <- function (data, str_target, str_vars, path_out, auto_binning)

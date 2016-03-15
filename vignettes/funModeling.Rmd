@@ -72,7 +72,7 @@ my_data_status[order(-my_data_status$p_zeros),]
 
 *Note: Please note there are many ways for selecting best variables to build a model, here is presented one more based on visual analysis.*
 
-### Example 1: Is gender correlated with heart disease?
+### Example 2.1: Is gender correlated with heart disease?
 ```{r variable_importance1, results="hide", fig.height=4, fig.width=8}
 cross_gender=cross_plot(heart_disease, str_input="gender", str_target="has_heart_disease")
 ```
@@ -102,7 +102,7 @@ Last two plots have the same data source, showing the distribution of `has_heart
 
 *Note: What would it happened if instead of having the rates of 25.8% vs. 55.3% (female vs male), they had been more similar like 30.2% vs. 30.6%). In this case variable `gender` it would have been much less relevant, since it doesn't separate the `has_heart_disease` event.*
 
-### Example 2: Crossing with numerical variables
+### Example 2.2: Crossing with numerical variables
 Numerical variables should be **binned** in order to plot them with an histogram, otherwise the plot is not showing information, as it can be seen here:
 
 
@@ -115,7 +115,7 @@ For numerical variables, `cross_plot` has by default the `auto_binning=T`, which
 cross_plot(heart_disease, str_input="max_heart_rate", str_target="has_heart_disease")
 ```
 
-### Example 3: Manual binning
+### Example 2.3: Manual binning
 If you don't want the automatic binning, then set the `auto_binning=F` in `cross_plot` function.
 
 For example, creating `oldpeak_2` based on equal frequency, with 3 buckets.
@@ -133,7 +133,7 @@ cross_oldpeak_2=cross_plot(heart_disease, str_input="oldpeak_2", str_target="has
 #### **Conclusion**
 This new plot based on `oldpeak_2` shows clearly how: the likelihood of **having heart disease increases** as **oldpeak_2 increases** as well. *Again, it gives an order to the data.*
 
-### Example 3: Noise reducing
+### Example 2.4: Noise reducing
 Converting variable `max_heart_rate` into a one of 10 bins:
 
 ```{r variable_importance5, results="hide", fig.height=4, fig.width=12}

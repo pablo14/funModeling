@@ -20,15 +20,4 @@ massive_cross_plot(data, str_target, str_vars, path_out, auto_binning)
 \description{
 It creates as many cross_plots as variable names are present in 'str_vars'. Additionally, they can be saved as jpeg in a folder (setting 'path_out' parameter).
 }
-\examples{
-## Example 1
-massive_cross_plot(data=heart_disease,
-str_target="has_heart_disease",
-str_vars=c("age", "oldpeak", "max_heart_rate"))
-
-## Example 2: Save all the plots to a new folder "plots_example" inside the working directory.
-massive_cross_plot(data=heart_disease, str_target="has_heart_disease",
-str_vars=c("age", "oldpeak", "max_heart_rate"),
-path_out="plots_example")
-}
 

@@ -1,0 +1,15 @@
+funModeling v1.1 (Release date: 2016-03-14)
+==============
+
+Changes:
+
+* Bug fix when automatically creating the folder in cross_plot
+
+* massive_cross_plot will be deprecated since now cross_plot covers the same functionality
+
+* Vignette improvements
+
+funModeling v1.0 (Release date: 2016-01-25)
+==============
+
+Initial version.
