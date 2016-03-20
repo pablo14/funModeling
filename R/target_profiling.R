@@ -17,8 +17,8 @@ run_graphics <- function(data, str_target, path_out)
     str_input=colnam_num[i]
     print(str_input)
 
-    hist_targ=get_histdens(data, str_input, str_target)
-  	boxp_targ=get_boxplot(data, str_input, str_target)
+    hist_targ=histdens_target(data, str_input, str_target)
+  	boxp_targ=boxplot_target(data, str_input, str_target)
 
   	## Save plot
 	  if(!is.na(path_out))
@@ -44,7 +44,15 @@ run_graphics <- function(data, str_target, path_out)
 
 }
 
-get_histdens <- function(data, str_input, str_target)
+#' @title Get a summary for the given data frame.
+#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
+#' This function print and return the results.
+#' @param data data frame
+#' @examples
+#' df_status(heart_disease)
+#' @return Metrics data frame
+#' @export
+histdens_target <- function(data, str_input, str_target)
 {
   cdf=ddply(data, str_target, .fun = function(d)
     c(
@@ -55,7 +63,15 @@ get_histdens <- function(data, str_input, str_target)
 
 }
 
-get_boxplot <- function(data, str_input, str_target)
+#' @title Plot
+#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
+#' This function print and return the results.
+#' @param data data frame
+#' @examples
+#' df_status(heart_disease)
+#' @return Metrics data frame
+#' @export
+boxplot_target <- function(data, str_input, str_target)
 {
 
   return(ggplot(data, aes_string(x=str_target, y=str_input, fill=str_target)) + geom_boxplot() +
