@@ -4,10 +4,12 @@
 \alias{df_status}
 \title{Get a summary for the given data frame.}
 \usage{
-df_status(data)
+df_status(data, print_results)
 }
 \arguments{
 \item{data}{data frame}
+
+\item{print_results}{if FALSE then there is not a print in the console, TRUE by default.}
 }
 \value{
 Metrics data frame

@@ -2,11 +2,16 @@
 #' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
 #' This function print and return the results.
 #' @param data data frame
+#' @param print_results if FALSE then there is not a print in the console, TRUE by default.
 #' @examples
 #' df_status(heart_disease)
 #' @return Metrics data frame
 #' @export
-df_status <- function(data) {
+df_status <- function(data, print_results)
+{
+	if(missing(print_results))
+		print_results=T
+
   df_status=data.frame(
     q_zeros=sapply(data, function(x) sum(x==0,na.rm=T)),
     p_zeros=round(100*sapply(data, function(x) sum(x==0,na.rm=T))/nrow(data),2),
@@ -23,7 +28,8 @@ df_status <- function(data) {
   ## Reordering columns
   df_status=df_status[,c(7,1,2,3,4,5,6)]
 
-  print(df_status)
+  ## Print or return results
+  ifelse(print_results, print(df_status), return(df_status))
 }
 
 

@@ -6,14 +6,22 @@
 #' df_status(heart_disease)
 #' @return Metrics data frame
 #' @export
-gen_target_plots <- function(data, str_target, str_input, plot_type, path_out)
+plotar <- function(data, str_target, str_input, plot_type, path_out)
 {
+	if(missing(plot_type))
+		stop("Parameter 'plot_type' cannot be missing, available values: 'histdens' or 'boxplot'.")
+
+	if(!(plot_type %in% c('histdens','boxplot')))
+		stop("Value for 'plot_type' is not valid: available values: 'histdens' or 'boxplot'.")
+
+
+
 	if(missing(path_out)) path_out=NA
 
 	if(missing(str_input))
 	{
 		## If missing=> Runs automatically for all numeric variables (valid only for numeric)
-		status=df_status(data)
+		status=df_status(data, print_results = F)
 		str_input=status[!(status$type %in% "factor" | status$type %in% "factor"), 'variable']
 		## Excluding target variable (if it's detected as numeric)
 		str_input=str_input[str_input!=str_target]

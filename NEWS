@@ -1,3 +1,8 @@
+funModeling v2.0 (Release date: 2016-xxxxx)
+==============
+Minor improvements:
+- New parameter in df_status: print_results, if FALSE then there isn't a print console. 
+
 funModeling v1.1 (Release date: 2016-03-14)
 ==============
 
