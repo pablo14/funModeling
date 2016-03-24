@@ -8,22 +8,31 @@
 #' @export
 plotar <- function(data, str_target, str_input, plot_type, path_out)
 {
+	## Parameters & Error handlers
 	if(missing(plot_type))
 		stop("Parameter 'plot_type' cannot be missing, available values: 'histdens' or 'boxplot'.")
 
 	if(!(plot_type %in% c('histdens','boxplot')))
 		stop("Value for 'plot_type' is not valid: available values: 'histdens' or 'boxplot'.")
 
+  check_target_existance(data, str_target=str_target)
 
+	data=remove_na_target(data, str_target=str_target)
+
+	check_target_2_values(data, str_target=str_target)
+
+	## Convert to factor target variable
+	data[,str_target]=as.factor(data[,str_target])
 
 	if(missing(path_out)) path_out=NA
 
+	## If missing=> Runs automatically for all numeric variables (valid only for numeric)
 	if(missing(str_input))
 	{
-		## If missing=> Runs automatically for all numeric variables (valid only for numeric)
 		status=df_status(data, print_results = F)
-		str_input=status[!(status$type %in% "factor" | status$type %in% "factor"), 'variable']
-		## Excluding target variable (if it's detected as numeric)
+		## select all columns that not are factor nor character
+		str_input=status[!(status$type %in% "factor" | status$type %in% "character"), 'variable']
+		## Excluding target variable (in the case that it's detected as numeric)
 		str_input=str_input[str_input!=str_target]
 
 	}
@@ -38,7 +47,7 @@ plotar <- function(data, str_target, str_input, plot_type, path_out)
 
 		plot(target_plot)
 
-		## Save plot
+		## Save plot into a jpeg file
 	  if(!is.na(path_out))
 	  {
 	  	dir.create(path_out, showWarnings = F)

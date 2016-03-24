@@ -55,33 +55,17 @@ cross_plot <- function(data, str_input, str_target, path_out, auto_binning)
 
 
 
-cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning) {
+cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
+{
+	  check_target_existance(data, str_target=str_target)
 
-	    ## Checking for variable existance.
-	  if(!(str_target %in% colnames(data))) stop(sprintf("Target variable '%s' does not exists", str_target))
-	  if(!(str_input %in% colnames(data))) stop(sprintf("Input variable '%s' does not exists", str_input))
+		data=remove_na_target(data, str_target=str_target)
 
-	  ## Removing NA from target variable #########
-	  data_tmp=subset(data, !is.na(data[, str_target]))
-	  if(nrow(data) > nrow(data_tmp))
-	  {
-	    warning(sprintf("There were removed %d rows with NA values in target variable '%s'.", nrow(data)-nrow(data_tmp), str_target))
-
-	    ## Keeping with cleaned data
-	    data=data_tmp
-	  }
-	  #############################################
+		check_target_2_values(data, str_target=str_target)
 
 	  ## Initial assignments
 	  target=data[, as.character(str_target)]
 	  varInput=data[, as.character(str_input)]
-
-	  ## Stop if target is not binary #############
-	  if(length(unique(target))>2)
-	  {
-	    stop(sprintf("Target variable '%s' does not have 2 unique values.", str_target))
-	  }
-	  #############################################
 
 	  ## Auto binning #############################
 	  if(auto_binning & is.numeric(varInput) & length(unique(varInput))>20)
