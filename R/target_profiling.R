@@ -26,18 +26,9 @@ plotar <- function(data, str_target, str_input, plot_type, path_out)
 
 	if(missing(path_out)) path_out=NA
 
-	## If missing=> Runs automatically for all numeric variables (valid only for numeric)
-	if(missing(str_input))
-	{
-		status=df_status(data, print_results = F)
-		## select all columns that not are factor nor character
-		str_input=status[!(status$type %in% "factor" | status$type %in% "character"), 'variable']
-		## Excluding target variable (in the case that it's detected as numeric)
-		str_input=str_input[str_input!=str_target]
+	if(missing(str_input)) give_me_num_vars(data, str_target)
 
-	}
-
-
+	## Begin iterator logic
   for(i in 1:length(str_input))
   {
     sprintf("Plotting '%s' ()", str_input[i], plot_type)
@@ -116,15 +107,3 @@ boxplot_target <- function(data, str_input, str_target)
 	return(plot_box)
 }
 
-# get_cor_matrix <- function(data, target)
-# {
-#   data[,target]=as.numeric(data[,target])
-#   df_cor=as.data.frame(round(cor(data),2))
-#   df_cor$Variable = rownames(df_cor)
-#   df_cor=df_cor[,names(df_cor) %in% c(target,"Variable")]
-#   df_cor=subset(df_cor, df_cor$Variable!= target)
-#   row.names(df_cor) <- NULL
-#   df_cor=df_cor[,c(2,1)]
-#
-#   pander(df_cor)
-# }

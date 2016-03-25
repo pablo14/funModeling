@@ -8,6 +8,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom  Hmisc cut2
 #' @importFrom  ggplot2 ggplot
 #' @import  plyr
+#' @importFrom dplyr select
 #' @importFrom reshape2 dcast melt
 #' @importFrom scales percent
 #' @importFrom gridExtra grid.arrange
@@ -44,7 +45,15 @@ cross_plot <- function(data, str_input, str_target, path_out, auto_binning)
   if(missing(auto_binning)) auto_binning=T
   if(missing(path_out)) path_out=NA
 
+  ## If str_input then runs for all variables
+  if(missing(str_input))
+	{
+		## Excluding target variable
+  	str_input=colnames(data)
+		str_input=str_input[str_input!=str_target]
+	}
 
+	## Iterator
   for(i in 1:length(str_input))
   {
     cross_plot_logic(data = data, str_input=str_input[i], str_target=str_target, path_out = path_out, auto_binning)
