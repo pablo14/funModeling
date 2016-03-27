@@ -12,7 +12,7 @@ df_status <- function(data, print_results)
 	if(missing(print_results))
 		print_results=T
 
-  df_status=data.frame(
+  df_status_res=data.frame(
     q_zeros=sapply(data, function(x) sum(x==0,na.rm=T)),
     p_zeros=round(100*sapply(data, function(x) sum(x==0,na.rm=T))/nrow(data),2),
     q_na=sapply(data, function(x) sum(is.na(x))),
@@ -22,14 +22,14 @@ df_status <- function(data, print_results)
   )
 
   ## Create new variable for column name
-  df_status$variable=rownames(df_status)
-  rownames(df_status)=NULL
+  df_status_res$variable=rownames(df_status_res)
+  rownames(df_status_res)=NULL
 
   ## Reordering columns
-  df_status=df_status[,c(7,1,2,3,4,5,6)]
+  df_status_res=df_status_res[, c(7,1,2,3,4,5,6)]
 
   ## Print or return results
-  ifelse(print_results, print(df_status), return(df_status))
+  if(print_results) print(df_status_res) else return(df_status_res)
 }
 
 
