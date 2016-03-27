@@ -1,20 +1,16 @@
-#' @title Plot
-#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
-#' This function print and return the results.
+#' @title Correlation index against target variable
+#' @description Obtain correlation table of all variables that belongs to data against target variable
 #' @param data data frame
+#' @param str_target string variable to predict
 #' @examples
-#' df_status(heart_disease)
-#' @return Metrics data frame
+#' correlation_table(data=heart_disease, str_target="has_heart_disease")
+#' @return Correlation index for all data input variable
 #' @export
-get_cor_matrix <- function(data, str_target)
+correlation_table <- function(data, str_target)
 {
-	str_target="has_heart_disease"
-	data=heart_disease
-
 	data[, str_target]=as.numeric(data[, str_target])
 
 	data=data[, c(give_me_num_vars(data, str_target), str_target)]
-
 
   df_cor=as.data.frame(round(cor(data, use="complete.obs"	),2))
   df_cor$Variable = rownames(df_cor)
