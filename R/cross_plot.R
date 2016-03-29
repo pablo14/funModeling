@@ -17,7 +17,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @title Cross-plotting input variable vs. target variable
 #' @description The cross_plot shows how the input variable is correlated with the target variable, getting the likelihood rates for each input's bin/bucket .
 #' @param data data frame source
-#' @param str_input string input variable
+#' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param str_target string of the variable to predict
 #' @param path_out path directory, if it has a value the plot is saved
 #' @param auto_binning indicates the automatic binning of str_input variable based on equal frequency (function 'equal_freq'), default value=TRUE

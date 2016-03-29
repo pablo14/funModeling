@@ -1,13 +1,19 @@
-#' @title Get a summary for the given data frame.
-#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
-#' This function print and return the results.
-#' @param data data frame
+#' @title Correlation plots
+#' @description Visual correlation analysis. Plot different graphs in order to expose the inner information of any numeric variable against the target variable
+#' @param data data frame source
+#' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param str_target string of the variable to predict
+#' @param plot_type Indicates the type of plot to retrieve, available values: "boxplot" or "histdens".
+#' @param path_out path directory, if it has a value the plot is saved
 #' @examples
-#' df_status(heart_disease)
-#' @return Metrics data frame
+#' ## Run for all numeric variables
+#' plotar(data=heart_disease, str_target="has_heart_disease",
+#' 	plot_type="histdens")
+#' @return Single or multiple plots specified by 'plot_type' parameter
 #' @export
-plotar <- function(data, str_target, str_input, plot_type, path_out)
+plotar <- function(data, str_input, str_target, plot_type, path_out)
 {
+
 	## Parameters & Error handlers
 	if(missing(plot_type))
 		stop("Parameter 'plot_type' cannot be missing, available values: 'histdens' or 'boxplot'.")
@@ -26,12 +32,13 @@ plotar <- function(data, str_target, str_input, plot_type, path_out)
 
 	if(missing(path_out)) path_out=NA
 
-	if(missing(str_input)) give_me_num_vars(data, str_target)
+	if(missing(str_input))
+		str_input=give_me_num_vars(data, str_target)
 
 	## Begin iterator logic
   for(i in 1:length(str_input))
   {
-    sprintf("Plotting '%s' ()", str_input[i], plot_type)
+    sprintf("Plotting '%s' (%s)", str_input[i], plot_type)
 
     ## Get the desiered plot
 		target_plot=get_target_plot(data, str_input[i], str_target, plot_type)

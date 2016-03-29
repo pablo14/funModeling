@@ -2,21 +2,30 @@
 % Please edit documentation in R/target_profiling.R
 \name{plotar}
 \alias{plotar}
-\title{Get a summary for the given data frame.}
+\title{Correlation plots}
 \usage{
-plotar(data, str_target, str_input, plot_type, path_out)
+plotar(data, str_input, str_target, plot_type, path_out)
 }
 \arguments{
-\item{data}{data frame}
+\item{data}{data frame source}
+
+\item{str_input}{string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
+
+\item{str_target}{string of the variable to predict}
+
+\item{plot_type}{Indicates the type of plot to retrieve, available values: "boxplot" or "histdens".}
+
+\item{path_out}{path directory, if it has a value the plot is saved}
 }
 \value{
-Metrics data frame
+Single or multiple plots specified by 'plot_type' parameter
 }
 \description{
-For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
-This function print and return the results.
+Visual correlation analysis. Plot different graphs in order to expose the inner information of any numeric variable against the target variable
 }
 \examples{
-df_status(heart_disease)
+## Run for all numeric variables
+plotar(data=heart_disease, str_target="has_heart_disease",
+	plot_type="histdens")
 }
 
