@@ -77,14 +77,6 @@ get_target_plot <- function(data, str_input, str_target, plot_type)
 }
 
 
-#' @title Get a summary for the given data frame.
-#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
-#' This function print and return the results.
-#' @param data data frame
-#' @examples
-#' df_status(heart_disease)
-#' @return Metrics data frame
-#' @export
 histdens_target <- function(data, str_input, str_target)
 {
   cdf=ddply(data, str_target, .fun = function(d)
@@ -98,14 +90,6 @@ histdens_target <- function(data, str_input, str_target)
 
 }
 
-#' @title Plot
-#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
-#' This function print and return the results.
-#' @param data data frame
-#' @examples
-#' df_status(heart_disease)
-#' @return Metrics data frame
-#' @export
 boxplot_target <- function(data, str_input, str_target)
 {
 	plot_box=ggplot(data, aes_string(x=str_target, y=str_input, fill=str_target)) + geom_boxplot() +
