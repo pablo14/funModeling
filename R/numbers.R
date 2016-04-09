@@ -22,3 +22,27 @@ correlation_table <- function(data, str_target)
   df_cor
   return(df_cor)
 }
+
+
+#' @title Remove or treat outliers
+#' @description
+#' Treat outliers by removing them or to stopping values at a certain percentile
+#' @param data data frame
+#' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param prob value from 0 to 1, represents the prob to
+#' @examples
+#' prep_outliers()
+#' @return
+#' ddd
+#' @export
+prep_outliers <- function(data, str_input, prob)
+{
+  for(i in 1:length(str_input))
+  {
+   	top_value=round(quantile(data[,str_input[i]], probs=prob, names=F))
+   	data[, str_input[i]][data[, str_input[i]]>top_value]=top_value
+  }
+
+
+ return(data)
+}
