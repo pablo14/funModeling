@@ -100,30 +100,29 @@ compare_df <- function(dfcomp_x, dfcomp_y, keys_x, keys_y=NA)
         merge_all_nona$flag_equal = ifelse(as.character(merge_all_nona[[varx]]) != as.character(merge_all_nona[[vary]]), FALSE, merge_all_nona$flag_equal)
       }
     }
-    print(sprintf("Coincident rows: %s", nrow(merge_all_nona[merge_all_nona$flag_equal == TRUE,])))
-    print(sprintf("Coincident rows with different values: %s", nrow(merge_all_nona[merge_all_nona$flag_equal == FALSE,])))
+    print(sprintf("Coincident keys: %s", nrow(merge_all_nona)))
+    print(sprintf("Coincident entire rows: %s", nrow(merge_all_nona[merge_all_nona$flag_equal == TRUE,])))
+    print(sprintf("Coincident keys with different values: %s", nrow(merge_all_nona[merge_all_nona$flag_equal == FALSE,])))
     
-    list_diff=list()
-    
-    list_diff[[1]]=list(
+    list_diff=list(
       coincident=subset(merge_all_nona[,all_keys], merge_all_nona$flag_equal == TRUE),
       different_values=subset(merge_all_nona[,], merge_all_nona$flag_equal == FALSE),
       rows_not_in_X=not_in_x[,keys_y],
       rows_not_in_Y=not_in_y[,keys_x]
     )
+    
   }else{
     print("No coincident rows")
     
-    list_diff=list()
-    
-    list_diff[[1]]=list(
+    list_diff=list(
       rows_not_in_X=not_in_x[,keys_y],
       rows_not_in_Y=not_in_y[,keys_x]
     )
+    
   }
   
-  print(sprintf("Rows not present in X: %s", nrow(not_in_x)))
-  print(sprintf("Rows not present in Y: %s", nrow(not_in_y)))
+  print(sprintf("Keys not present in X: %s", nrow(not_in_x)))
+  print(sprintf("Keys not present in Y: %s", nrow(not_in_y)))
   
   return(list_diff)
 }
