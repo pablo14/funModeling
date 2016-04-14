@@ -23,5 +23,7 @@ It retrieves the cumulative positive rate when score is divided in (i.e.) 10 seg
 }
 \examples{
 fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
+heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
+lift_table(data=heart_disease,str_score='score',str_target='has_heart_disease')
 }
 
