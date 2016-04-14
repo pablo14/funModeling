@@ -198,23 +198,6 @@ equal_freq <- function(var, n_bins)
 }
 
 
-#' @title Generate several cross_plot at the same time.
-#' @description It creates as many cross_plots as variable names are present in 'str_vars'. Additionally, they can be saved as jpeg in a folder (setting 'path_out' parameter).
-#' @param data data frame source
-#' @param str_target string of the variable to predict
-#' @param str_vars vector of strings containing the variables names to be used as input in each cross_plot.
-#' @param path_out path directory, if it has a value the plot is saved in 'path_out'
-#' @param auto_binning indicates the automatic binning of str_input variable based on equal frequency (function 'equal_freq'), default value=TRUE
-#' @export
-massive_cross_plot <- function (data, str_target, str_vars, path_out, auto_binning)
-{
-  .Deprecated("cross_plot")
-
-	cross_plot(data=data, str_target=str_target, str_input = str_vars, path_out = path_out, auto_binning = auto_binning)
-
-	message("Now 'cross_plot' does the same as 'massive_cross_plot'. Just set 'str_input' to a character vector containing the desired variables names. 'massive_cross_plot' will not be available in next release")
-
-}
 
 
 
