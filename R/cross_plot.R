@@ -42,7 +42,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 cross_plot <- function(data, str_input, str_target, path_out, auto_binning)
 {
 	## Handling missing parameters
-  if(missing(auto_binning)) auto_binning=T
+  if(missing(auto_binning)) auto_binning=NA
   if(missing(path_out)) path_out=NA
 
   ## If str_input then runs for all variables
@@ -77,10 +77,19 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
 	  varInput=data[, as.character(str_input)]
 
 	  ## Auto binning #############################
-	  if(auto_binning & is.numeric(varInput) & length(unique(varInput))>20)
+	  if(is.numeric(varInput))
 	  {
-	    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", str_input))
-	    varInput=suppressWarnings(equal_freq(varInput, 10))
+		  if(!is.na(auto_binning) & auto_binning )
+		  {
+		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", str_input))
+		    varInput=suppressWarnings(equal_freq(varInput, 10))
+		  }
+
+	  	if(is.na(auto_binning) & length(unique(varInput))>20)
+		  {
+		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", str_input))
+		    varInput=suppressWarnings(equal_freq(varInput, 10))
+		  }
 	  }
 	  #############################################
 

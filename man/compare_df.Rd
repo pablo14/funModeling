@@ -2,27 +2,43 @@
 % Please edit documentation in R/numbers.R
 \name{compare_df}
 \alias{compare_df}
-\title{Compare two vectors of keys}
+\title{Compare two data frames by keys}
 \usage{
-compare_df(key_x, key_y)
+compare_df(dfcomp_x, dfcomp_y, keys_x, keys_y = NA)
 }
 \arguments{
-\item{data}{data frame}
+\item{dfcomp_x}{first data frame to compare}
 
-\item{str_target}{string variable to predict}
+\item{dfcomp_y}{second data frame to compare}
+
+\item{keys_x}{keys of the first dataframe}
+
+\item{keys_y}{keys of the second dataframe}
 }
 \value{
-Correlation index for all data input variable
+Differences and coincident values
 }
 \description{
-Obtain correlation table of all variables that belongs to data against target variable
+Obtain differences between two data frames
 }
 \examples{
-v1=c(1,2,4)
-v2=c(1,2,5,6)
-res=compare_df(key_x=v1, key_y=v2)
+data(heart_disease)
+a=heart_disease
+b=heart_disease
+a=subset(a, age >45)
+b=subset(b, age <50)
+b$gender='male'
+b$chest_pain=ifelse(b$chest_pain ==3, 4, b$chest_pain)
+res=compare_df(a, b, c('age', 'gender'))
 # Print the keys that didn't match
 res
-# Accessing the keys not present in
+# Accessing the keys not present in the first data frame
+res[[1]]$rows_not_in_X
+# Accessing the keys not present in the second data frame
+res[[1]]$rows_not_in_Y
+# Accessing the keys which coincide completely
+res[[1]]$coincident
+# Accessing the rows whose values did not coincide
+res[[1]]$different_values
 }
 
