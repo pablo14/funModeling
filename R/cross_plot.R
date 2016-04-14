@@ -7,8 +7,8 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom pander pandoc.table
 #' @importFrom  Hmisc cut2
 #' @importFrom  ggplot2 ggplot
+#' @import dplyr
 #' @import  plyr
-#' @importFrom dplyr select
 #' @importFrom reshape2 dcast melt
 #' @importFrom scales percent
 #' @importFrom gridExtra grid.arrange
