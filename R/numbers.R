@@ -47,50 +47,83 @@ prep_outliers <- function(data, str_input, prob)
  return(data)
 }
 
-#' @title Compare two vectors of keys
-#' @description Obtain correlation table of all variables that belongs to data against target variable
-#' @param data data frame
-#' @param str_target string variable to predict
+#' @title Compare two data frames by keys
+#' @description Obtain differences between two data frames
+#' @param dfcomp_x first data frame to compare
+#' @param dfcomp_y second data frame to compare
+#' @param keys_x keys of the first dataframe
+#' @param keys_y keys of the second dataframe
 #' @examples
-#' v1=c(1,2,4)
-#' v2=c(1,2,5,6)
-#' res=compare_df(key_x=v1, key_y=v2)
+#' data(heart_disease)
+#' a=heart_disease
+#' b=heart_disease
+#' a=subset(a, age >45)
+#' b=subset(b, age <50)
+#' b$gender='male'
+#' b$chest_pain=ifelse(b$chest_pain ==3, 4, b$chest_pain)
+#' res=compare_df(a, b, c('age', 'gender'))
 #' # Print the keys that didn't match
 #' res
-#' # Accessing the keys not present in
-#' @return Correlation index for all data input variable
+#' # Accessing the keys not present in the first data frame
+#' res[[1]]$rows_not_in_X
+#' # Accessing the keys not present in the second data frame
+#' res[[1]]$rows_not_in_Y
+#' # Accessing the keys which coincide completely
+#' res[[1]]$coincident
+#' # Accessing the rows whose values did not coincide
+#' res[[1]]$different_values
+#' @return Differences and coincident values
 #' @export
-compare_df <- function(key_x, key_y)
+compare_df <- function(dfcomp_x, dfcomp_y, keys_x, keys_y=NA)
 {
-	# key_x=v1;key_y=v2
-  df_x=data.frame(key_x=key_x, flag_x=1)
-  df_y=data.frame(key_y=key_y, flag_y=1)
-
-  df_x$key_x=as.character(df_x$key_x)
-	df_y$key_y=as.character(df_y$key_y)
-
-  merge_all=merge(df_x, df_y, by.x='key_x', by.y='key_y', all=T)
-
-  names(merge_all)[1]="key"
-
-  merge_all_nona=merge_all[!is.na(merge_all$flag_x) & !is.na(merge_all$flag_y),]
-
-  not_in_x=merge_all[is.na(merge_all$flag_x),]
-  not_in_y=merge_all[is.na(merge_all$flag_y),]
-
-  print(sprintf("Coincident in both: %s", nrow(merge_all_nona)))
-  print(sprintf("Rows not present in X: %s", nrow(not_in_x)))
-  print(sprintf("Rows not present in Y: %s", nrow(not_in_y)))
-
-
-  list_diff=list()
-
-  list_diff[[1]]=list(
-    present_in_both=merge_all_nona$key,
-    rows_not_in_X=not_in_x$key,
-    rows_not_in_Y=not_in_y$key
-  	)
-
+  dfcomp_x$flag_x=1
+  dfcomp_y$flag_y=1
+  if (any(is.na(keys_y))){
+    keys_y = keys_x
+    all_keys = keys_x
+  }else{
+    all_keys = unique(c(keys_x, keys_y))
+  }
+  
+  merge_all=merge(dfcomp_x, dfcomp_y, by.x=keys_x, by.y=keys_y, all=T)
+  
+  merge_all_nona=subset(merge_all, !is.na(merge_all$flag_x) & !is.na(merge_all$flag_y))
+  
+  not_in_x=merge_all[is.na(merge_all$flag_x), keys_y]
+  not_in_y=merge_all[is.na(merge_all$flag_y), keys_x]
+  
+  if(nrow(merge_all_nona) > 0){
+    merge_all_nona$flag_equal = TRUE
+    for(varx in names(merge_all_nona)){
+      if(grepl(".*\\.x", varx)){
+        vary = gsub("\\.x", ".y", varx)
+        merge_all_nona$flag_equal = ifelse(as.character(merge_all_nona[[varx]]) != as.character(merge_all_nona[[vary]]), FALSE, merge_all_nona$flag_equal)
+      }
+    }
+    print(sprintf("Coincident keys: %s", nrow(merge_all_nona)))
+    print(sprintf("Coincident entire rows: %s", nrow(merge_all_nona[merge_all_nona$flag_equal == TRUE,])))
+    print(sprintf("Coincident keys with different values: %s", nrow(merge_all_nona[merge_all_nona$flag_equal == FALSE,])))
+    
+    list_diff=list(
+      coincident=subset(merge_all_nona[,all_keys], merge_all_nona$flag_equal == TRUE),
+      different_values=subset(merge_all_nona[,], merge_all_nona$flag_equal == FALSE),
+      rows_not_in_X=not_in_x[,keys_y],
+      rows_not_in_Y=not_in_y[,keys_x]
+    )
+    
+  }else{
+    print("No coincident rows")
+    
+    list_diff=list(
+      rows_not_in_X=not_in_x[,keys_y],
+      rows_not_in_Y=not_in_y[,keys_x]
+    )
+    
+  }
+  
+  print(sprintf("Keys not present in X: %s", nrow(not_in_x)))
+  print(sprintf("Keys not present in Y: %s", nrow(not_in_y)))
+  
   return(list_diff)
 }
 
