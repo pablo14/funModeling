@@ -33,7 +33,7 @@ plotar <- function(data, str_input, str_target, plot_type, path_out)
 	if(missing(path_out)) path_out=NA
 
 	if(missing(str_input))
-		str_input=give_me_num_vars(data, str_target)
+		str_input=give_me_num_vars(data, str_target, plot_type)
 
 	## Begin iterator logic
   for(i in 1:length(str_input))
@@ -84,7 +84,16 @@ histdens_target <- function(data, str_input, str_target)
       "var.mean" = round(mean(d[,str_input], na.rm=TRUE),2)
     ))
 
-  plot_histdens=ggplot(data, aes_string(x=str_input, colour=str_target)) + geom_density() + geom_vline(data=cdf, aes_string(xintercept="var.mean",  colour=str_target), linetype="dashed", size=0.5)
+  plot_histdens=ggplot(data, aes_string(x=str_input, colour=str_target)) + geom_density() + geom_vline(data=cdf, aes_string(xintercept="var.mean",  colour=str_target), linetype="dashed", size=0.5) +
+
+	theme_bw() +
+
+  theme(
+    plot.background = element_blank()
+   ,panel.grid.minor = element_blank()
+   ,panel.border = element_blank()
+  )
+
 
   return(plot_histdens)
 
@@ -93,7 +102,15 @@ histdens_target <- function(data, str_input, str_target)
 boxplot_target <- function(data, str_input, str_target)
 {
 	plot_box=ggplot(data, aes_string(x=str_target, y=str_input, fill=str_target)) + geom_boxplot() +
-         guides(fill=FALSE)+stat_summary(fun.y=mean, geom="point", shape=5, size=4)
+         guides(fill=FALSE)+stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
+
+	theme_bw() +
+
+  theme(
+    plot.background = element_blank()
+   ,panel.grid.minor = element_blank()
+   ,panel.border = element_blank()
+  )
 
 	return(plot_box)
 }

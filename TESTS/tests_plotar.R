@@ -12,7 +12,7 @@ plotar(data=sub, str_input="num_vessels_flour", str_target="has_heart_disease", 
 plotar(data=heart_disease, str_input="num_vessels_flour", str_target="has_heart_disease", plot_type = "boxplot")
 
 ## Filtering zeros ####################################
-sub=filter(heart_disease, num_vessels_flour!=0)
+sub=subset(heart_disease, num_vessels_flour!=0)
 plotar(data=sub, str_input="num_vessels_flour", str_target="has_heart_disease", plot_type = "boxplot")
 
 

@@ -2,24 +2,39 @@
 % Please edit documentation in R/numbers.R
 \name{prep_outliers}
 \alias{prep_outliers}
-\title{Remove or treat outliers}
+\title{Outliers Data Preparation}
 \usage{
-prep_outliers(data, str_input, prob)
+prep_outliers(data, str_input, top_percent, button_percent, type = c("stop",
+  "remove"))
 }
 \arguments{
 \item{data}{data frame}
 
-\item{str_input}{string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
+\item{str_input}{string input variable (if empty, it runs for all numeric variable).}
 
-\item{prob}{value from 0 to 1, represents the prob to}
+\item{top_percent}{value from 0 to 1, represents the highest X% of values to treat}
+
+\item{button_percent}{value from 0 to 1, represents the lowest X% of values to treat}
+
+\item{type}{can be 'stop' or 'remove', in the first case the original variable is stopped at the desiered percentile, 'remove'  sets NA to the same values.}
 }
 \value{
-ddd
+A vector if str_input contains only one variable, or the input data frame with the transformed variables if str_input has 2 or more
 }
 \description{
-Treat outliers by removing them or to stopping values at a certain percentile
+Deal with outliers by removing or stopping them. Removes put an NA in the highest/lowers values at a certain percentile (top_percent/button_percent respectively).
+Removing is recommended when describing the general population metrics, parameter: type='remove'.
+Stopping is recommended when creating a predictive model without bias the result due to outliers, parameter: type='stop'.
 }
 \examples{
-prep_outliers()
+set.seed(10)
+
+df=data.frame(var=rchisq(1000,df = 1))
+df=rbind(df, 1135, 2432) # forcing outliers
+summary(df$var) ## mean is 4.64, and max 2432
+res=prep_outliers(data = df, str_input = 'var', top_percent  = 0.01,  type='remove')
+summary(res) ## now the mean and the other metrics represent better the population
+res=prep_outliers(data = df, str_input = 'var', top_percent  = 0.01,  type='stop')
+summary(res) ## metrics represents better the population, this escenario is good when creating a predictive model, since not every alghorimg handles well the outliers
 }
 
