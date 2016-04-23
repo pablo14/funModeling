@@ -93,7 +93,8 @@ prep_outliers <- function(data, str_input, top_percent, button_percent, type=c('
 #' @param dfcomp_x first data frame to compare
 #' @param dfcomp_y second data frame to compare
 #' @param keys_x keys of the first dataframe
-#' @param keys_y keys of the second dataframe
+#' @param keys_y (optional) keys of the second dataframe, if missing both data frames will be compared with the keys_x
+#' @param compare_values (optional) if TRUE it will not only compare keys, but also will check if the values of non-key matching columns have the same values
 #' @examples
 #' data(heart_disease)
 #' a=heart_disease
@@ -115,53 +116,81 @@ prep_outliers <- function(data, str_input, top_percent, button_percent, type=c('
 #' res[[1]]$different_values
 #' @return Differences and coincident values
 #' @export
-compare_df <- function(dfcomp_x, dfcomp_y, keys_x, keys_y=NA)
+compare_df <- function(dfcomp_x, dfcomp_y, keys_x, keys_y=NA, compare_values=FALSE)
 {
-  dfcomp_x$flag_x=1
-  dfcomp_y$flag_y=1
-  if (any(is.na(keys_y))){
+	#Setup internal flags for merging data
+	internal_flags = c('comparedf_flag_x', 'comparedf_flag_y', 'comparedf_flag_equal')
+  dfcomp_x$comparedf_flag_x=1
+  dfcomp_y$comparedf_flag_y=1
+
+  #If keys_y is missing, it is equal to keys_x
+  if (missing(keys_y)){
     keys_y = keys_x
     all_keys = keys_x
   }else{
     all_keys = unique(c(keys_x, keys_y))
   }
 
+  #Merge the input data frames
   merge_all=merge(dfcomp_x, dfcomp_y, by.x=keys_x, by.y=keys_y, all=T)
 
-  merge_all_nona=subset(merge_all, !is.na(merge_all$flag_x) & !is.na(merge_all$flag_y))
+  #These are only the coincident keys
+  merge_all_nona=subset(merge_all, !is.na(merge_all$comparedf_flag_x) & !is.na(merge_all$comparedf_flag_y))
 
-  not_in_x=merge_all[is.na(merge_all$flag_x), keys_y]
-  not_in_y=merge_all[is.na(merge_all$flag_y), keys_x]
+  #Get non intersecting keys
+  not_in_x=merge_all[is.na(merge_all$comparedf_flag_x), keys_y]
+  not_in_y=merge_all[is.na(merge_all$comparedf_flag_y), keys_x]
 
+  #If there are coincident keys
   if(nrow(merge_all_nona) > 0){
-    merge_all_nona$flag_equal = TRUE
-    for(varx in names(merge_all_nona)){
-      if(grepl(".*\\.x", varx)){
-        vary = gsub("\\.x", ".y", varx)
-        merge_all_nona$flag_equal = ifelse(as.character(merge_all_nona[[varx]]) != as.character(merge_all_nona[[vary]]), FALSE, merge_all_nona$flag_equal)
-      }
+
+  	#Search for different values in non-key columns
+    merge_all_nona$comparedf_flag_equal = TRUE
+    if(compare_values){
+	    for(varx in names(merge_all_nona)){
+	      if(grepl(".*\\.x", varx)){
+	        vary = gsub("\\.x", ".y", varx)
+	        merge_all_nona$comparedf_flag_equal = ifelse(as.character(merge_all_nona[[varx]]) != as.character(merge_all_nona[[vary]]), FALSE, merge_all_nona$comparedf_flag_equal)
+	      }
+	    }
     }
+
+    #Print results
     print(sprintf("Coincident keys: %s", nrow(merge_all_nona)))
-    print(sprintf("Coincident entire rows: %s", nrow(merge_all_nona[merge_all_nona$flag_equal == TRUE,])))
-    print(sprintf("Coincident keys with different values: %s", nrow(merge_all_nona[merge_all_nona$flag_equal == FALSE,])))
+    if(compare_values){
+    	print(sprintf("Coincident entire rows: %s", nrow(merge_all_nona[merge_all_nona$comparedf_flag_equal == TRUE,])))
+   		print(sprintf("Coincident keys with different values: %s", nrow(merge_all_nona[merge_all_nona$comparedf_flag_equal == FALSE,])))
+    }
 
-    list_diff=list(
-      coincident=subset(merge_all_nona[,all_keys], merge_all_nona$flag_equal == TRUE),
-      different_values=subset(merge_all_nona[,], merge_all_nona$flag_equal == FALSE),
-      rows_not_in_X=not_in_x[,keys_y],
-      rows_not_in_Y=not_in_y[,keys_x]
-    )
+    #Save results into output list
+    if(compare_values){
+    	list_diff=list(
+	      coincident=subset(merge_all_nona[,all_keys], merge_all_nona$comparedf_flag_equal == TRUE),
+	      different_values=subset(merge_all_nona[,!names(merge_all_nona) %in% internal_flags], merge_all_nona$comparedf_flag_equal == FALSE),
+	      rows_not_in_X=not_in_x,
+	      rows_not_in_Y=not_in_y
+	    )
+    }else{
+    	list_diff=list(
+	      coincident=merge_all_nona[,all_keys],
+	      rows_not_in_X=not_in_x,
+	      rows_not_in_Y=not_in_y
+	    )
+    }
 
+
+  #If no key coincides
   }else{
-    print("No coincident rows")
+    print("No coincident keys")
 
     list_diff=list(
-      rows_not_in_X=not_in_x[,keys_y],
-      rows_not_in_Y=not_in_y[,keys_x]
+      rows_not_in_X=not_in_x,
+      rows_not_in_Y=not_in_y
     )
 
   }
 
+  #Print non-coincident keys
   print(sprintf("Keys not present in X: %s", nrow(not_in_x)))
   print(sprintf("Keys not present in Y: %s", nrow(not_in_y)))
 
