@@ -8,7 +8,6 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom  Hmisc cut2
 #' @importFrom  ggplot2 ggplot
 #' @import dplyr
-#' @import  plyr
 #' @importFrom reshape2 dcast melt
 #' @importFrom scales percent
 #' @importFrom gridExtra grid.arrange
@@ -66,6 +65,7 @@ cross_plot <- function(data, str_input, str_target, path_out, auto_binning)
 
 cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
 {
+	# data=heart_disease; str_input="max_heart_rate"; str_target="has_heart_disease"; auto_binning=T
 	  check_target_existance(data, str_target=str_target)
 
 		data=remove_na_target(data, str_target=str_target)
@@ -95,9 +95,13 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
 
 
 	  ## Infer the less representative class (commonly the one to predict)
-	  dcount=data.frame(count(target))
-	  posClass=as.character(dcount[order(dcount$freq),][1,1])
-	  negClass=as.character(dcount[order(dcount$freq),][2,1])
+	  #dcount=data.frame(count(target))
+	  df_target=data.frame(target=target)
+	  dcount=group_by(df_target, target) %>% summarise(freq=n()) %>% arrange(freq)
+	  ## Converting factors to character
+	  dcount=data.frame(lapply(dcount, as.character), stringsAsFactors=FALSE)
+	  posClass=dcount[1,1]
+	  negClass=dcount[2,1]
 
 	  dataCast = dcast(data,varInput~target,fun.aggregate=length, value.var = str_target)
 
@@ -108,7 +112,8 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
 	  dataMelt$variable=factor(dataMelt$variable, c(posClass,negClass))
 
 	  ## Getting percentage numbers
-	  m1 = ddply(dataMelt, "varInput", plyr::summarize, ratio=value/sum(value))
+	  m1=group_by(dataMelt, varInput) %>% mutate(ratio = value/sum(value)) %>% select(varInput, ratio) %>% arrange(varInput)
+
 
 	  ## Order by var input
 	  m2 = dataMelt[order(dataMelt$varInput ),]
@@ -121,7 +126,8 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
 	  dataGrafPrep$fum=as.numeric(as.numeric(rownames(dataGrafPrep)) %% 2 == 0)
 
 	  ## Computing middle position in each sub bar
-	  dataGrafPrep=ddply(dataGrafPrep, .(varInput), transform, position = 0.5*ratio+fum*(sum(value)-value)/sum(value))
+		dataGrafPrep=group_by(dataGrafPrep, varInput) %>% mutate(position = 0.5*ratio+fum*(sum(value)-value)/sum(value))
+
 
 	  lGraf=list()
 
