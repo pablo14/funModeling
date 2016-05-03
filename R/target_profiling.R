@@ -79,10 +79,12 @@ get_target_plot <- function(data, str_input, str_target, plot_type)
 
 histdens_target <- function(data, str_input, str_target)
 {
-  cdf=ddply(data, str_target, .fun = function(d)
-    c(
-      "var.mean" = round(mean(d[,str_input], na.rm=TRUE),2)
-    ))
+  # cdf=ddply(data, str_target, .fun = function(d)
+  #   c(
+  #     "var.mean" = round(mean(d[,str_input], na.rm=TRUE),2)
+  #   ))
+
+  cdf=group_by(data, .(str_target)) %>% summarize(round(mean(.(str_input), na.rm=T),2))
 
   plot_histdens=ggplot(data, aes_string(x=str_input, colour=str_target)) + geom_density() + geom_vline(data=cdf, aes_string(xintercept="var.mean",  colour=str_target), linetype="dashed", size=0.5) +
 

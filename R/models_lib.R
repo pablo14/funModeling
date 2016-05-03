@@ -1,5 +1,5 @@
 #' @title Get a summary for the given data frame.
-#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA and p_na). Last two columns indicates data type and quantity of unique values.
+#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA/p_na), and infinite values (q_inf/p_inf). Last two columns indicates data type and quantity of unique values.
 #' This function print and return the results.
 #' @param data data frame
 #' @param print_results if FALSE then there is not a print in the console, TRUE by default.
@@ -16,8 +16,10 @@ df_status <- function(data, print_results)
     q_zeros=sapply(data, function(x) sum(x==0,na.rm=T)),
     p_zeros=round(100*sapply(data, function(x) sum(x==0,na.rm=T))/nrow(data),2),
     q_na=sapply(data, function(x) sum(is.na(x))),
-    p_na=round(100*sapply(data, function(x) sum(is.na(x)))/nrow(data),2),
-    type=sapply(data, class),
+  	p_na=round(100*sapply(data, function(x) sum(is.na(x)))/nrow(data),2),
+    q_inf=sapply(data, function(x) sum(is.infinite(x))),
+  	p_inf=round(100*sapply(data, function(x) sum(is.infinite(x)))/nrow(data),2),
+  	type=sapply(data, class),
     unique=sapply(data, function(x) sum(!is.na(unique(x))))
   )
 
@@ -26,7 +28,7 @@ df_status <- function(data, print_results)
   rownames(df_status_res)=NULL
 
   ## Reordering columns
-  df_status_res=df_status_res[, c(7,1,2,3,4,5,6)]
+  df_status_res=df_status_res[, c(9,1,2,3,4,5,6,7,8)]
 
   ## Print or return results
   if(print_results) print(df_status_res) else return(df_status_res)

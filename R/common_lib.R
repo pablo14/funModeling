@@ -46,7 +46,6 @@ give_me_num_vars <-function(data, str_target, plot_type)
 	if(length(binary_variables)>0)
 		sprintf('Binary variables removed: %s', paste(binary_variables,collapse = ', '))
 
-			paste(a, collapse = ', ')
 
 	## Excluding variables with a one unique value
 	one_value_variables=status[status$unique==1, 'variable']
