@@ -4,37 +4,56 @@
 \alias{prep_outliers}
 \title{Outliers Data Preparation}
 \usage{
-prep_outliers(data, str_input, top_percent, button_percent, type = c("stop",
-  "remove"))
+prep_outliers(data, str_input, top_percent, bottom_percent, type = c("stop",
+  "set_na"))
 }
 \arguments{
 \item{data}{data frame}
 
 \item{str_input}{string input variable (if empty, it runs for all numeric variable).}
 
-\item{top_percent}{value from 0 to 1, represents the highest X% of values to treat}
+\item{top_percent}{value from 0 to 1, represents the highest X percentage of values to treat}
 
-\item{button_percent}{value from 0 to 1, represents the lowest X% of values to treat}
+\item{bottom_percent}{value from 0 to 1, represents the lowest X percentage of values to treat}
 
-\item{type}{can be 'stop' or 'remove', in the first case the original variable is stopped at the desiered percentile, 'remove'  sets NA to the same values.}
+\item{type}{can be 'stop' or 'set_na', in the first case the original variable is stopped at the desiered percentile, 'set_na'  sets NA to the same values.}
 }
 \value{
 A vector if str_input contains only one variable, or the input data frame with the transformed variables if str_input has 2 or more
 }
 \description{
-Deal with outliers by removing or stopping them. Removes put an NA in the highest/lowers values at a certain percentile (top_percent/button_percent respectively).
-Removing is recommended when describing the general population metrics, parameter: type='remove'.
+Deal with outliers by setting an NA value or by 'stopping'. The first method puts an NA in the highest/lowest values at a certain percentile (parameters: 'top_percent'/'bottom_percent', respectively).
+Setting NA is recommended when describing the general population metrics, parameter: type='set_na'.
 Stopping is recommended when creating a predictive model without bias the result due to outliers, parameter: type='stop'.
 }
 \examples{
 set.seed(10)
 
-df=data.frame(var=rchisq(1000,df = 1))
+# Creating variable with outliers
+df=data.frame(var1=rchisq(1000,df = 1), var2=rnorm(1000))
 df=rbind(df, 1135, 2432) # forcing outliers
-summary(df$var) ## mean is 4.64, and max 2432
-res=prep_outliers(data = df, str_input = 'var', top_percent  = 0.01,  type='remove')
-summary(res) ## now the mean and the other metrics represent better the population
-res=prep_outliers(data = df, str_input = 'var', top_percent  = 0.01,  type='stop')
-summary(res) ## metrics represents better the population, this escenario is good when creating a predictive model, since not every alghorimg handles well the outliers
+df$id=as.character(seq(1:1002))
+
+# for var1: mean is ~ 4.56, and max 2432
+summary(df)
+
+# checking the value for the top 1\% of highest values (percentile 0.99), which is: 7.05
+quantile(df$var1, 0.99)
+
+#### EXAMPLE 1: Removing top 1\% for a single variable
+# Setting type='set_na' sets NA to the highest value)
+var1_treated=prep_outliers(data = df,  str_input = 'var1', top_percent  = 0.01,  type='set_na')
+
+# now the mean (~ 0.94) is more adecuate, and note the 1st, median and 3rd quartiles remaing very similar to the original variable
+summary(var1_treated)
+
+#### EXAMPLE 2: if 'str_input' is missing, then it runs for all numeric variables.
+df_treated2=prep_outliers(data = df, top_percent  = 0.01, type='set_na')
+summary(df_treated2)
+
+#### EXAMPLE 3: Removing top 1\% and bottom 1\% for 'N' specific variables.
+vars_to_process=c('var1', 'var2')
+df_treated3=prep_outliers(data = df, str_input = vars_to_process, button_percent = 0.01, top_percent  = 0.01, type='set_na')
+summary(df_treated3)
 }
 
