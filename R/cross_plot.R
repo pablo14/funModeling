@@ -12,7 +12,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom scales percent
 #' @importFrom gridExtra grid.arrange
 #' @importFrom ROCR prediction performance plot
-#'
+#' @importFrom lazyeval interp
 #' @title Cross-plotting input variable vs. target variable
 #' @description The cross_plot shows how the input variable is correlated with the target variable, getting the likelihood rates for each input's bin/bucket .
 #' @param data data frame source

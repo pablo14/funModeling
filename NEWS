@@ -1,6 +1,7 @@
-funModeling v2.0 (Release date: 2016-xxxxx)
+funModeling v1.2 (Release date: 2016-xxxxx)
 ==============
-
+- New function prep_outliers to deal almost automatically with them
+- New function plotar, which 
 
 Minor improvements:
 - New parameter in df_status: print_results, if FALSE then there isn't a print console. 

@@ -33,7 +33,10 @@ plotar <- function(data, str_input, str_target, plot_type, path_out)
 	if(missing(path_out)) path_out=NA
 
 	if(missing(str_input))
-		str_input=give_me_num_vars(data, str_target, plot_type)
+	{
+		data_2=data[, !(names(data) %in% str_target)]
+		str_input=give_me_num_vars(data_2)
+	}
 
 	## Begin iterator logic
   for(i in 1:length(str_input))
@@ -79,12 +82,11 @@ get_target_plot <- function(data, str_input, str_target, plot_type)
 
 histdens_target <- function(data, str_input, str_target)
 {
-  # cdf=ddply(data, str_target, .fun = function(d)
-  #   c(
-  #     "var.mean" = round(mean(d[,str_input], na.rm=TRUE),2)
-  #   ))
+	n_uniq=interp(~n_distinct(v), v=as.name(uniq.var))
 
-  cdf=group_by(data, .(str_target)) %>% summarize(round(mean(.(str_input), na.rm=T),2))
+	cdf=group_by_(data, str_target) %>% summarise_(var.mean=interp(~mean(v, na.rm=T), v=as.name(str_input)))
+
+	cdf$var.mean=round(cdf$var.mean, 2)
 
   plot_histdens=ggplot(data, aes_string(x=str_input, colour=str_target)) + geom_density() + geom_vline(data=cdf, aes_string(xintercept="var.mean",  colour=str_target), linetype="dashed", size=0.5) +
 
