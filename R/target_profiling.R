@@ -13,6 +13,7 @@
 #' @export
 plotar <- function(data, str_input, str_target, plot_type, path_out)
 {
+	#source("common_lib.R")
 
 	## Parameters & Error handlers
 	if(missing(plot_type))
@@ -67,6 +68,7 @@ plotar <- function(data, str_input, str_target, plot_type, path_out)
 
 }
 
+
 get_target_plot <- function(data, str_input, str_target, plot_type)
 {
 	## Retrieve the desiered plot
@@ -82,8 +84,6 @@ get_target_plot <- function(data, str_input, str_target, plot_type)
 
 histdens_target <- function(data, str_input, str_target)
 {
-	n_uniq=interp(~n_distinct(v), v=as.name(uniq.var))
-
 	cdf=group_by_(data, str_target) %>% summarise_(var.mean=interp(~mean(v, na.rm=T), v=as.name(str_input)))
 
 	cdf$var.mean=round(cdf$var.mean, 2)

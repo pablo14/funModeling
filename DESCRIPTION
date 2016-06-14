@@ -8,7 +8,7 @@ Author: Pablo Casas
 Maintainer: Pablo Casas <pabloc@datascienceheroes.com>
 License: GPL-2
 LazyData: true
-Imports: ROCR, ggplot2, gridExtra, pander, plyr, reshape2, scales, dplyr
+Imports: ROCR, ggplot2, gridExtra, pander, plyr, reshape2, scales, dplyr, lazyeval
 Depends: R (>= 3.2.1), Hmisc (>= 3.17.1)
 VignetteBuilder: knitr
 Suggests: knitr
