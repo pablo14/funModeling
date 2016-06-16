@@ -137,8 +137,8 @@ compare_df <- function(key_x, key_y)
   return(res)
 }
 
-#' @title Correlation index against target variable
-#' @description Obtain correlation table of all variables that belongs to data against target variable
+#' @title Correlation analyisis against target variable
+#' @description Obtain correlation table of all variables that belongs to data against target variable. Only numeric variables are analyzed.
 #' @param data data frame
 #' @param str_target string variable to predict
 #' @examples
@@ -155,9 +155,12 @@ correlation_table <- function(data, str_target)
   df_cor$Variable = rownames(df_cor)
   df_cor=df_cor[, names(df_cor) %in% c(str_target, "Variable")]
 
+  df_cor=df_cor[interp(~order(df_cor, -v) , v=as.name(str_target)),  ]
+
   row.names(df_cor) = NULL
   df_cor=df_cor[, c(2,1)]
 
-  df_cor
+  df_cor[order(-df_cor[,2]) , ]
+
   return(df_cor)
 }
