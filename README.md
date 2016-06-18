@@ -1,7 +1,7 @@
 ## funModeling R Package
 
 ![](http://cranlogs.r-pkg.org/badges/funModeling)
-![](http://cranlogs.r-pkg.org/badges/grand-total/funModeling?color=green)
+![](http://cranlogs.r-pkg.org/badges/grand-total/funModeling?color=orange)
 
 
 ![cross_plot: importance variable anlysis](http://datascienceheroes.com/img/blog/09_cross_plot_5.PNG "cross_plot: importance variable anlysis")
