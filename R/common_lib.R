@@ -53,3 +53,32 @@ give_me_num_vars <- function(data, str_target=NULL)
 
 	return(str_input)
 }
+
+#' @title Filtering variables by name
+#' @description Based on the variables name present in 'str_input', it returns the original data frame (keep=T), or it deletes all except the desiered ones.
+#' @param data data frame
+#' @param str_input string vector containing variables to delete or to keep
+#' @param keep boolean indicating if the variables names in 'str_input' must be keept or
+#' @examples
+#' # Selecting variables
+#' my_data_1=filter_vars(mtcars, str_input=c('mpg', 'cyl'))
+#' colnames(my_data_1)
+#'
+#' # Deleting all except desiered variables
+#' my_data_2=filter_vars(mtcars, str_input=c('mpg', 'cyl', 'qsec', 'vs'), keep=F)
+#' colnames(my_data_2)
+#' @return Filtered data frame
+#' @export
+filter_vars <- function(data, str_input, keep=T)
+{
+	#str_input=as.vector(str_input)
+	if(keep)
+	{
+		# keeping variables
+		return(data[, names(data) %in% str_input])
+	} else {
+		# delete variables all except...
+		return(data[, !(names(data) %in% str_input)])
+	}
+}
+

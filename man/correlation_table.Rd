@@ -2,7 +2,7 @@
 % Please edit documentation in R/numbers.R
 \name{correlation_table}
 \alias{correlation_table}
-\title{Correlation analyisis against target}
+\title{Correlation analyisis against target variable}
 \usage{
 correlation_table(data, str_target)
 }
@@ -15,7 +15,7 @@ correlation_table(data, str_target)
 Correlation index for all data input variable
 }
 \description{
-Obtain correlation table of all variables that belongs to data against target variable
+Obtain correlation table of all variables that belongs to data against target variable. Only numeric variables are analyzed.
 }
 \examples{
 correlation_table(data=heart_disease, str_target="has_heart_disease")

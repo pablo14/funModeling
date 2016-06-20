@@ -27,18 +27,18 @@
 #' quantile(df$var1, 0.99)
 #'
 #' # Setting type='set_na' sets NA to the highest value)
-#' var1_treated=prep_outliers(data = df,  str_input = 'var1', top_percent  = 0.01,  type='set_na')
+#' var1_treated=prep_outliers(data = df,  str_input = 'var1', type='set_na', top_percent  = 0.01)
 #'
 #' # now the mean (~ 0.94) is more accurate, and note that: 1st, median and 3rd quartiles remaining very similar to the original variable.
 #' summary(var1_treated)
 #'
 #' #### EXAMPLE 2: if 'str_input' is missing, then it runs for all numeric variables (which have 3 or more distinct values).
-#' df_treated2=prep_outliers(data = df, top_percent  = 0.01, type='set_na')
+#' df_treated2=prep_outliers(data = df, type='set_na', top_percent  = 0.01)
 #' summary(df_treated2)
 #'
 #' #### EXAMPLE 3: Removing top 1% (and bottom 1%) for 'N' specific variables.
 #' vars_to_process=c('var1', 'var2')
-#' df_treated3=prep_outliers(data = df, str_input = vars_to_process, bottom_percent = 0.01, top_percent  = 0.01, type='set_na')
+#' df_treated3=prep_outliers(data = df, str_input = vars_to_process, type='set_na', bottom_percent = 0.01, top_percent  = 0.01)
 #' summary(df_treated3)
 #'
 #' ########################################################
@@ -50,16 +50,34 @@
 
 #' @return A vector or data frame with the desired outlier transformation
 #' @export
-prep_outliers <- function(data, str_input, top_percent, bottom_percent, type=c('stop', 'set_na'))
+prep_outliers <- function(data, str_input, type=c('stop', 'set_na'), top_percent, bottom_percent)
 {
-	if(!(type %in% c('stop', 'set_na')))
+	if(!(type %in% c('stop', 'set_na', 'sigmoid')))
 		stop("Parameter 'type' must be one 'stop' or 'set_na'")
 
-	if(missing(top_percent) & missing(bottom_percent))
-		stop("Parameters 'top_percent' and 'bottom_percent' cannot be missing at the same time")
 
 	if(missing(str_input))
 		str_input=give_me_num_vars(data)
+
+
+	# #########################################################
+	# ### Sigmoid procesing
+	# #########################################################
+	# if(type == 'sigmoid')
+	# {
+	# 	for(i in 1:length(str_input))
+	#   {
+	#    	data[, str_input[i]]=sigmoid(as.numeric(scale(data[, str_input[i]])))
+	# 	}
+	# 	return(data)
+	# }
+
+	#########################################################
+	### Stopping and Setting NA processing
+	#########################################################
+	## If not sigmoid, then it's stop or set_na, thus it has to have top or bottom param.
+	if(missing(top_percent) & missing(bottom_percent))
+		stop("Parameters 'top_percent' and 'bottom_percent' cannot be missing at the same time")
 
 	## Logic for top value
 	if(!missing(top_percent))
@@ -163,4 +181,34 @@ correlation_table <- function(data, str_target)
   df_cor[order(-df_cor[,2]) , ]
 
   return(df_cor)
+}
+
+#' @title Sigmoid function
+#' @description Sigmoid function, also known as logistic or s-shaped
+#' @param x numeric input vector
+#' @param a constant to multiply 'x', default=1
+#' @examples
+#' sigmoid()
+#' @return vector transformed with sigmoid
+#' @export
+sigmoid<-function(x, a=1)
+{
+	if(missing(a))
+		a=1
+
+	y = 1/(1 + exp(-a*x))
+
+	return(y)
+}
+
+#' @title Transform a variable into the 0 to 1 range
+#' @description Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable.
+#' @param x numeric input vector
+#' @examples
+#' range01(mtcars$cyl)
+#' @return vector ranged into 0-1
+#' @export
+range01 <- function(x)
+{
+	return((x-min(x, na.rm=T))/(max(x, na.rm=T)-min(x, na.rm=T)))
 }
