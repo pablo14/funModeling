@@ -293,51 +293,35 @@ heart_disease_2=heart_disease[, !(names(heart_disease) %in% vars_to_remove[,&quo
 
 <p><strong>Ordering data by percentage of zeros</strong></p>
 
-<pre><code class="r">my_data_status[order(-my_data_status$p_zeros),]
+<pre><code class="r">my_data_status[order(-my_data_status$p_zeros), c(&#39;variable&#39;, &#39;p_zeros&#39;)] 
 </code></pre>
 
-<pre><code>##                  variable q_zeros p_zeros q_na p_na q_inf p_inf    type
-## 6     fasting_blood_sugar     258   85.15    0 0.00     0     0  factor
-## 9             exer_angina     204   67.33    0 0.00     0     0 integer
-## 15           exter_angina     204   67.33    0 0.00     0     0  factor
-## 12      num_vessels_flour     176   58.09    4 1.32     0     0 integer
-## 14 heart_disease_severity     164   54.13    0 0.00     0     0 integer
-## 7         resting_electro     151   49.83    0 0.00     0     0  factor
-## 10                oldpeak      99   32.67    0 0.00     0     0 numeric
-## 1                     age       0    0.00    0 0.00     0     0 integer
-## 2                  gender       0    0.00    0 0.00     0     0  factor
-## 3              chest_pain       0    0.00    0 0.00     0     0  factor
-## 4  resting_blood_pressure       0    0.00    0 0.00     0     0 integer
-## 5       serum_cholestoral       0    0.00    0 0.00     0     0 integer
-## 8          max_heart_rate       0    0.00    0 0.00     0     0 integer
-## 11                  slope       0    0.00    0 0.00     0     0 integer
-## 13                   thal       0    0.00    2 0.66     0     0  factor
-## 16      has_heart_disease       0    0.00    0 0.00     0     0  factor
-##    unique
-## 6       2
-## 9       2
-## 15      2
-## 12      4
-## 14      5
-## 7       3
-## 10     40
-## 1      41
-## 2       2
-## 3       4
-## 4      50
-## 5     152
-## 8      91
-## 11      3
-## 13      3
-## 16      2
+<pre><code>##                  variable p_zeros
+## 6     fasting_blood_sugar   85.15
+## 9             exer_angina   67.33
+## 15           exter_angina   67.33
+## 12      num_vessels_flour   58.09
+## 14 heart_disease_severity   54.13
+## 7         resting_electro   49.83
+## 10                oldpeak   32.67
+## 1                     age    0.00
+## 2                  gender    0.00
+## 3              chest_pain    0.00
+## 4  resting_blood_pressure    0.00
+## 5       serum_cholestoral    0.00
+## 8          max_heart_rate    0.00
+## 11                  slope    0.00
+## 13                   thal    0.00
+## 16      has_heart_disease    0.00
 </code></pre>
 
 <h2>Part 2: Treatment of Outliers</h2>
 
 <p><strong>Overview</strong>: <code>prep_outliers</code> function tries to automatize as much as it can be outliers preparation. It focus on the values that influence heavly the mean.</p>
 
-<p><strong>Outlier threshold</strong>: The method to detect them is based on percentile, flagging as outlier if the value is on the top X % (commonly 0.5%, 1%, 2%). Setting parameter <code>top_percent</code> in <code>0.01</code> will flag all values in the top 1% of values of highest values.
-Same logic goes for the lowest values, setting parameter <code>bottom_percent</code> in 0.01 will flag as an outlier the lowest 1% of all values.</p>
+<p><strong>Outlier threshold</strong>: The method to detect them is based on percentile, flagging as outlier if the value is on the top X % (commonly 0.5%, 1%, 2%). Setting parameter <code>top_percent</code> in <code>0.01</code> will flag all values on the top 1%.</p>
+
+<p>Same logic goes for the lowest values, setting parameter <code>bottom_percent</code> in 0.01 will flag as an outlier the lowest 1% of all values.</p>
 
 <p><strong>Models highly affected by a biased mean</strong>: linear regression, logistic regression, kmeans, decision trees. Random forest deals better with outliers. </p>
 
@@ -350,9 +334,18 @@ Same logic goes for the lowest values, setting parameter <code>bottom_percent</c
 
 <h3>Case A: <code>type=&#39;set_na&#39;</code></h3>
 
-<p>In this case all outliers are converted into <code>NA</code>, thus appling most of the descriptive functions (max, min, mean) will return a less-biased value - with the proper <code>na.rm=TRUE</code> parameter.</p>
+<p>In this case all outliers are converted into <code>NA</code>, thus appling most of the descriptive functions (max, min, mean) will return a <strong>less-biased mean</strong> value - with the proper <code>na.rm=TRUE</code> parameter.</p>
 
 <h3>Case B: <code>type=&#39;stop&#39;</code></h3>
+
+<p>Last case will cause that all rows with <code>NA</code> values will lost when a machine learning model is created. To avoid this, but keep controled the outliers, all values flagged as outlier will be converted to the threshold value.</p>
+
+<p><strong>Key notes</strong>: </p>
+
+<ul>
+<li>Try to think variables treatment (and creation) as if you&#39;re explaining to the model. Stopping variables at a certaing value, 1% for example, you are telling to the model: <em>consider all extremes values as if they are on the 99% percentile, this value is already high enough</em></li>
+<li>Models try to be noise tolereant, but you can help them by treat some common issues.</li>
+</ul>
 
 <h2>Examples</h2>
 
@@ -376,6 +369,8 @@ summary(df)
 ##  3rd Qu.:   1.3853   3rd Qu.:   0.6242                     
 ##  Max.   :2432.0000   Max.   :2432.0000
 </code></pre>
+
+<h3>Case A: <code>type=&#39;set_na&#39;</code></h3>
 
 <pre><code class="r">########################################################
 ### CASE A: Treatment outliers for data profiling
@@ -433,6 +428,8 @@ summary(df_treated3)
 ##  NA&#39;s   :11         NA&#39;s   :45
 </code></pre>
 
+<h3>Case B: <code>type=&#39;stop&#39;</code></h3>
+
 <pre><code class="r">########################################################
 ### CASE B: Treatment outliers for predictive modeling
 ########################################################
@@ -447,13 +444,25 @@ summary(df$var1)
 ##    0.0000    0.0989    0.4455    4.5670    1.3850 2432.0000
 </code></pre>
 
-<pre><code class="r"># after, note the max value is 7
+<pre><code class="r"># after, the max value is 7
 summary(df_treated4$var1)
 </code></pre>
 
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ## 0.000003 0.098870 0.445500 1.007000 1.385000 7.000000
 </code></pre>
+
+<pre><code class="r">g1=ggplot(df, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle(&quot;Original (var1)&quot;)
+g2=ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle(&quot;Setting type=&#39;set_na&#39; (var1)&quot;)
+g3=ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle(&quot;Setting type=&#39;stop&#39; (var1)&quot;)
+
+plot(gridExtra::grid.arrange(g1, g2, g3, ncol=3))
+</code></pre>
+
+<pre><code>## Warning: Removed 11 rows containing non-finite values (stat_bin).
+</code></pre>
+
+<p><img src="data:image/png;base64,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vVMHC/PP3s8m3nqZrTwlv4UbP4L3TfI+f8F++bXmc4sJgBj82IL42+JD+5nh5fLG90++WF7+rLBWOPlmdarw253Za59eLq9N7fuovHZwH5s49ER29NQ++T3u+BG88/Z2x69q9fCk3IHvXgVlUFf82IL4BysHC+76G3ziyefLC1zQQpkJ+vYu94/bFz6fPLXnFSZoD5s4eF95/bU98pcA8WMhvAMbfq3XJ077k/NFN1FKYvATZVDBf/Cbn0HLXBCb8fvNJw8srokMeopNsFk8lSAZxO/z50WV37DNm/xuESSoK36iPugoMyy+3H/U74MK1SPFX+9wv3ngmXtYr8P6oOduvcdbfATUB4n7/PkRHGz++wKcPig+P+ko5n25v3MUu47fl+96Pnhd40/sBo1i863DGtoBvFEsPp/OgwxBggxBggxBggxBggxBggyBJkj7QIstzscS1Biz+ei2s8jvUlBlRPxVHGfQre/c2//1O1+hHuH08LsUVB9eas6U2CvLTO+BQ7hNID38bpvYiVL9MlZOxukrec8bQu4jUsPvVlBtcDbv1vrnGuN2diA1/G4FNR5+eI6V4tYsHeHU8LsexWYHxdOGto3lrexAavh0omgIEmQIEmQIEmQIEmQIEmQIEmSI/wC+Rralqz5K8QAAAABJRU5ErkJggg==" alt="plot of chunk outliers_treatment3"/> <img src="data:image/png;base64,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vVMHC/PP3s8m3nqZrTwlv4UbP4L3TfI+f8F++bXmc4sJgBj82IL42+JD+5nh5fLG90++WF7+rLBWOPlmdarw253Za59eLq9N7fuovHZwH5s49ER29NQ++T3u+BG88/Z2x69q9fCk3IHvXgVlUFf82IL4BysHC+76G3ziyefLC1zQQpkJ+vYu94/bFz6fPLXnFSZoD5s4eF95/bU98pcA8WMhvAMbfq3XJ077k/NFN1FKYvATZVDBf/Cbn0HLXBCb8fvNJw8srokMeopNsFk8lSAZxO/z50WV37DNm/xuESSoK36iPugoMyy+3H/U74MK1SPFX+9wv3ngmXtYr8P6oOduvcdbfATUB4n7/PkRHGz++wKcPig+P+ko5n25v3MUu47fl+96Pnhd40/sBo1i863DGtoBvFEsPp/OgwxBggxBggxBggxBggxBggyBJkj7QIstzscS1Biz+ei2s8jvUlBlRPxVHGfQre/c2//1O1+hHuH08LsUVB9eas6U2CvLTO+BQ7hNID38bpvYiVL9MlZOxukrec8bQu4jUsPvVlBtcDbv1vrnGuN2diA1/G4FNR5+eI6V4tYsHeHU8LsexWYHxdOGto3lrexAavh0omgIEmQIEmQIEmQIEmQIEmQIEmSI/wC+Rralqz5K8QAAAABJRU5ErkJggg==" alt="plot of chunk outliers_treatment3"/> </p>
 
 </body>
 

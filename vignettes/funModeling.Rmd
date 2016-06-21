@@ -33,6 +33,7 @@ Main purpose of this package is to **teach** some predictive modeling using a pr
 
 ### Example 2.1: Is gender correlated with heart disease?
 ```{r variable_importance1, results="hide", fig.height=4, fig.width=8}
+library(funModeling)
 cross_gender=cross_plot(heart_disease, str_input="gender", str_target="has_heart_disease")
 ```
 

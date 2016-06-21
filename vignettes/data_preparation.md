@@ -101,51 +101,35 @@ heart_disease_2=heart_disease[, !(names(heart_disease) %in% vars_to_remove[,"var
 **Ordering data by percentage of zeros**
 
 ```r
-my_data_status[order(-my_data_status$p_zeros),]
+my_data_status[order(-my_data_status$p_zeros), c('variable', 'p_zeros')] 
 ```
 
 ```
-##                  variable q_zeros p_zeros q_na p_na q_inf p_inf    type
-## 6     fasting_blood_sugar     258   85.15    0 0.00     0     0  factor
-## 9             exer_angina     204   67.33    0 0.00     0     0 integer
-## 15           exter_angina     204   67.33    0 0.00     0     0  factor
-## 12      num_vessels_flour     176   58.09    4 1.32     0     0 integer
-## 14 heart_disease_severity     164   54.13    0 0.00     0     0 integer
-## 7         resting_electro     151   49.83    0 0.00     0     0  factor
-## 10                oldpeak      99   32.67    0 0.00     0     0 numeric
-## 1                     age       0    0.00    0 0.00     0     0 integer
-## 2                  gender       0    0.00    0 0.00     0     0  factor
-## 3              chest_pain       0    0.00    0 0.00     0     0  factor
-## 4  resting_blood_pressure       0    0.00    0 0.00     0     0 integer
-## 5       serum_cholestoral       0    0.00    0 0.00     0     0 integer
-## 8          max_heart_rate       0    0.00    0 0.00     0     0 integer
-## 11                  slope       0    0.00    0 0.00     0     0 integer
-## 13                   thal       0    0.00    2 0.66     0     0  factor
-## 16      has_heart_disease       0    0.00    0 0.00     0     0  factor
-##    unique
-## 6       2
-## 9       2
-## 15      2
-## 12      4
-## 14      5
-## 7       3
-## 10     40
-## 1      41
-## 2       2
-## 3       4
-## 4      50
-## 5     152
-## 8      91
-## 11      3
-## 13      3
-## 16      2
+##                  variable p_zeros
+## 6     fasting_blood_sugar   85.15
+## 9             exer_angina   67.33
+## 15           exter_angina   67.33
+## 12      num_vessels_flour   58.09
+## 14 heart_disease_severity   54.13
+## 7         resting_electro   49.83
+## 10                oldpeak   32.67
+## 1                     age    0.00
+## 2                  gender    0.00
+## 3              chest_pain    0.00
+## 4  resting_blood_pressure    0.00
+## 5       serum_cholestoral    0.00
+## 8          max_heart_rate    0.00
+## 11                  slope    0.00
+## 13                   thal    0.00
+## 16      has_heart_disease    0.00
 ```
 
 ## Part 2: Treatment of Outliers
 
 **Overview**: `prep_outliers` function tries to automatize as much as it can be outliers preparation. It focus on the values that influence heavly the mean.
 
-**Outlier threshold**: The method to detect them is based on percentile, flagging as outlier if the value is on the top X % (commonly 0.5%, 1%, 2%). Setting parameter `top_percent` in `0.01` will flag all values in the top 1% of values of highest values.
+**Outlier threshold**: The method to detect them is based on percentile, flagging as outlier if the value is on the top X % (commonly 0.5%, 1%, 2%). Setting parameter `top_percent` in `0.01` will flag all values on the top 1%.
+
 Same logic goes for the lowest values, setting parameter `bottom_percent` in 0.01 will flag as an outlier the lowest 1% of all values.
 
 **Models highly affected by a biased mean**: linear regression, logistic regression, kmeans, decision trees. Random forest deals better with outliers. 
@@ -158,10 +142,17 @@ This function covers two typical escenarios (paramater `type`):
 
 ### Case A: `type='set_na'`
 
-In this case all outliers are converted into `NA`, thus appling most of the descriptive functions (max, min, mean) will return a less-biased value - with the proper `na.rm=TRUE` parameter.
+In this case all outliers are converted into `NA`, thus appling most of the descriptive functions (max, min, mean) will return a **less-biased mean** value - with the proper `na.rm=TRUE` parameter.
 
 
 ### Case B: `type='stop'`
+
+Last case will cause that all rows with `NA` values will lost when a machine learning model is created. To avoid this, but keep controled the outliers, all values flagged as outlier will be converted to the threshold value.
+
+**Key notes**: 
+
+* Try to think variables treatment (and creation) as if you're explaining to the model. Stopping variables at a certaing value, 1% for example, you are telling to the model: _consider all extremes values as if they are on the 99% percentile, this value is already high enough_
+* Models try to be noise tolereant, but you can help them by treat some common issues.
 
 
 ## Examples
@@ -189,6 +180,9 @@ summary(df)
 ##  3rd Qu.:   1.3853   3rd Qu.:   0.6242                     
 ##  Max.   :2432.0000   Max.   :2432.0000
 ```
+
+### Case A: `type='set_na'`
+
 
 ```r
 ########################################################
@@ -254,6 +248,9 @@ summary(df_treated3)
 ##  NA's   :11         NA's   :45
 ```
 
+### Case B: `type='stop'`
+
+
 ```r
 ########################################################
 ### CASE B: Treatment outliers for predictive modeling
@@ -271,7 +268,7 @@ summary(df$var1)
 ```
 
 ```r
-# after, note the max value is 7
+# after, the max value is 7
 summary(df_treated4$var1)
 ```
 
@@ -279,3 +276,17 @@ summary(df_treated4$var1)
 ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ## 0.000003 0.098870 0.445500 1.007000 1.385000 7.000000
 ```
+
+```r
+g1=ggplot(df, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Original (var1)")
+g2=ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='set_na' (var1)")
+g3=ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='stop' (var1)")
+	
+plot(gridExtra::grid.arrange(g1, g2, g3, ncol=3))
+```
+
+```
+## Warning: Removed 11 rows containing non-finite values (stat_bin).
+```
+
+![plot of chunk outliers_treatment3](figure/outliers_treatment3-1.png) ![plot of chunk outliers_treatment3](figure/outliers_treatment3-2.png) 

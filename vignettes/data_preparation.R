@@ -16,9 +16,9 @@ heart_disease_2=heart_disease[, !(names(heart_disease) %in% vars_to_remove[,"var
 
 
 ## ----df_status4----------------------------------------------------------
-my_data_status[order(-my_data_status$p_zeros),]
+my_data_status[order(-my_data_status$p_zeros), c('variable', 'p_zeros')] 
 
-## ----model_perfomance2,  fig.height=3, fig.width=4-----------------------
+## ----outliers_treatment1,  fig.height=3, fig.width=4---------------------
 ########################################
 # Creating data frame with outliers
 ########################################
@@ -30,6 +30,9 @@ df$id=as.character(seq(1:1002))
 # for var1: mean is ~ 4.56, and max 2432
 summary(df)
 
+
+
+## ----outliers_treatment2,  fig.height=3, fig.width=4---------------------
 ########################################################
 ### CASE A: Treatment outliers for data profiling
 ########################################################
@@ -54,6 +57,8 @@ vars_to_process=c('var1', 'var2')
 df_treated3=prep_outliers(data = df, str_input = vars_to_process, type='set_na', bottom_percent = 0.01, top_percent  = 0.01)
 summary(df_treated3)
 
+
+## ----outliers_treatment3,  fig.height=3, fig.width=4---------------------
 ########################################################
 ### CASE B: Treatment outliers for predictive modeling
 ########################################################
@@ -63,7 +68,13 @@ df_treated4=prep_outliers(data = df, type='stop', top_percent = 0.01)
 # before
 summary(df$var1)
 
-# after, note the max value is 7
+# after, the max value is 7
 summary(df_treated4$var1)
+
+g1=ggplot(df, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Original (var1)")
+g2=ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='set_na' (var1)")
+g3=ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='stop' (var1)")
 	
+plot(gridExtra::grid.arrange(g1, g2, g3, ncol=3))
+ 
 
