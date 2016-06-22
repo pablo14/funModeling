@@ -71,10 +71,9 @@ summary(df$var1)
 # after, the max value is 7
 summary(df_treated4$var1)
 
-g1=ggplot(df, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Original (var1)")
-g2=ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='set_na' (var1)")
-g3=ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='stop' (var1)")
-	
-plot(gridExtra::grid.arrange(g1, g2, g3, ncol=3))
- 
+ 	
+
+## ----outliers_treatment4,  fig.height=3, fig.width=4---------------------
+ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='set_na' (var1)")
+ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='stop' (var1)")
 

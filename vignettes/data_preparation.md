@@ -127,6 +127,8 @@ my_data_status[order(-my_data_status$p_zeros), c('variable', 'p_zeros')]
 ## Part 2: Treatment of Outliers
 
 **Overview**: `prep_outliers` function tries to automatize as much as it can be outliers preparation. It focus on the values that influence heavly the mean.
+It sets an `NA` or stop at a certaing value all outliers for the desiered variables.
+
 
 **Outlier threshold**: The method to detect them is based on percentile, flagging as outlier if the value is on the top X % (commonly 0.5%, 1%, 2%). Setting parameter `top_percent` in `0.01` will flag all values on the top 1%.
 
@@ -277,16 +279,21 @@ summary(df_treated4$var1)
 ## 0.000003 0.098870 0.445500 1.007000 1.385000 7.000000
 ```
 
+### Plots
+Note when `type='set_na'` 
+
 ```r
-g1=ggplot(df, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Original (var1)")
-g2=ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='set_na' (var1)")
-g3=ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='stop' (var1)")
-	
-plot(gridExtra::grid.arrange(g1, g2, g3, ncol=3))
+ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='set_na' (var1)")
 ```
 
 ```
 ## Warning: Removed 11 rows containing non-finite values (stat_bin).
 ```
 
-![plot of chunk outliers_treatment3](figure/outliers_treatment3-1.png) ![plot of chunk outliers_treatment3](figure/outliers_treatment3-2.png) 
+![plot of chunk outliers_treatment4](figure/outliers_treatment4-1.png) 
+
+```r
+ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='stop' (var1)")
+```
+
+![plot of chunk outliers_treatment4](figure/outliers_treatment4-2.png) 
