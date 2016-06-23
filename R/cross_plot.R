@@ -20,6 +20,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @param str_target string of the variable to predict
 #' @param path_out path directory, if it has a value the plot is saved
 #' @param auto_binning indicates the automatic binning of str_input variable based on equal frequency (function 'equal_freq'), default value=TRUE
+#' @param plot_type indicates if the output is the percentual plot, the quantity or both, default value='both'.
 #' @examples
 #' ## Example 1:
 #' cross_plot(data=heart_disease, str_input="chest_pain", str_target="has_heart_disease")
@@ -38,7 +39,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #'
 #' @return cross plot
 #' @export
-cross_plot <- function(data, str_input, str_target, path_out, auto_binning)
+cross_plot <- function(data, str_input, str_target, path_out, auto_binning, plot_type='both')
 {
 	## Handling missing parameters
   if(missing(auto_binning)) auto_binning=NA
@@ -55,7 +56,7 @@ cross_plot <- function(data, str_input, str_target, path_out, auto_binning)
 	## Iterator
   for(i in 1:length(str_input))
   {
-    cross_plot_logic(data = data, str_input=str_input[i], str_target=str_target, path_out = path_out, auto_binning)
+    cross_plot_logic(data = data, str_input=str_input[i], str_target=str_target, path_out = path_out, auto_binning, plot_type)
   }
 
 
@@ -63,7 +64,7 @@ cross_plot <- function(data, str_input, str_target, path_out, auto_binning)
 
 
 
-cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
+cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, plot_type)
 {
 	# data=heart_disease; str_input="max_heart_rate"; str_target="has_heart_disease"; auto_binning=T
 	  check_target_existance(data, str_target=str_target)
@@ -71,6 +72,9 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
 		data=remove_na_target(data, str_target=str_target)
 
 		check_target_2_values(data, str_target=str_target)
+
+		if(!(plot_type %in% c('both','percentual', 'quantity')))
+			stop("Value for 'plot_type' is not valid: available values: 'both', 'percentual' or 'quantity'")
 
 	  ## Initial assignments
 	  target=data[, as.character(str_target)]
@@ -151,8 +155,23 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning)
 	    scale_fill_discrete(name=str_target)
 
 
-	  ## Printing both plots
-	  final_plot=grid.arrange(lGraf$percentual, lGraf$quantity, ncol=2)
+	  if(plot_type=='both')
+	  {
+	  	## Printing both plots
+	  	final_plot=grid.arrange(lGraf$percentual, lGraf$quantity, ncol=2)
+	  }
+
+	  if(plot_type=='percentual')
+	  {
+	  	final_plot=lGraf$percentual
+	  	plot(final_plot)
+	  }
+
+	  if(plot_type=='quantity')
+	  {
+	  	final_plot=lGraf$quantity
+	  	plot(final_plot)
+	  }
 
 	  ## Save plot
 	  if(!is.na(path_out))
