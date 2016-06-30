@@ -9,14 +9,14 @@ vignette: >
 Data Preparation
 ====
 
-## Part 1: Profiling Data
+## Part A) Profiling Data
 
 **Overview**: Quantity of zeros, NA, Inf, unique values; as well as the data type may lead to a good or bad model. Here an approach to cover the very first step in data modeling. 
 
 
 ```r
-## Loading needed libraries
-library(funModeling)
+## Loading fubModeling !
+suppressMessages(library(funModeling))
 data(heart_disease)
 ```
 
@@ -63,6 +63,7 @@ my_data_status=df_status(heart_disease)
 ## 16      2
 ```
 * `q_zeros`: quantity of zeros (`p_zeros`: in percentage)
+* `q_inf`:  quantity of infinite values (`p_na`: in percentage)
 * `q_na`:  quantity of NA (`p_na`: in percentage)
 * `type`: factor or numeric
 * `unique`: quantity of unique values
@@ -124,7 +125,7 @@ my_data_status[order(-my_data_status$p_zeros), c('variable', 'p_zeros')]
 ## 16      has_heart_disease    0.00
 ```
 
-## Part 2: Treatment of Outliers
+## Part B) Treatment of Outliers
 
 **Overview**: `prep_outliers` function tries to automatize as much as it can be outliers preparation. It focus on the values that influence heavly the mean.
 It sets an `NA` or stop at a certaing value all outliers for the desiered variables.
@@ -138,16 +139,16 @@ Same logic goes for the lowest values, setting parameter `bottom_percent` in 0.0
  
 This function covers two typical escenarios (paramater `type`):
 
-* Case A: Descriptive statistics / data profiling
-* Case B: Data for predictive model
+* Case 1: Descriptive statistics / data profiling
+* Case 2: Data for predictive model
 
 
-### Case A: `type='set_na'`
+### Case 1: `type='set_na'`
 
 In this case all outliers are converted into `NA`, thus appling most of the descriptive functions (max, min, mean) will return a **less-biased mean** value - with the proper `na.rm=TRUE` parameter.
 
 
-### Case B: `type='stop'`
+### Case 2: `type='stop'`
 
 Last case will cause that all rows with `NA` values will lost when a machine learning model is created. To avoid this, but keep controled the outliers, all values flagged as outlier will be converted to the threshold value.
 
@@ -183,12 +184,12 @@ summary(df)
 ##  Max.   :2432.0000   Max.   :2432.0000
 ```
 
-### Case A: `type='set_na'`
+### Case 1: `type='set_na'`
 
 
 ```r
 ########################################################
-### CASE A: Treatment outliers for data profiling
+### CASE 1: Treatment outliers for data profiling
 ########################################################
 
 #### EXAMPLE 1: Removing top 1% for a single variable
@@ -250,12 +251,12 @@ summary(df_treated3)
 ##  NA's   :11         NA's   :45
 ```
 
-### Case B: `type='stop'`
+### Case 2: `type='stop'`
 
 
 ```r
 ########################################################
-### CASE B: Treatment outliers for predictive modeling
+### CASE 2: Treatment outliers for predictive modeling
 ########################################################
 #### EXAMPLE 4: Stopping outliers at the top 1% value for all variables. For example if the top 1% has a value of 7, then all values above will be set to 7. Useful when modeling because outlier cases can be used.
 df_treated4=prep_outliers(data = df, type='stop', top_percent = 0.01)

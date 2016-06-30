@@ -1,6 +1,6 @@
 ## ----lib, results="hide"-------------------------------------------------
-## Loading needed libraries
-library(funModeling)
+## Loading fubModeling !
+suppressMessages(library(funModeling))
 data(heart_disease)
 
 ## ----df_status-----------------------------------------------------------
@@ -34,7 +34,7 @@ summary(df)
 
 ## ----outliers_treatment2,  fig.height=3, fig.width=4---------------------
 ########################################################
-### CASE A: Treatment outliers for data profiling
+### CASE 1: Treatment outliers for data profiling
 ########################################################
 
 #### EXAMPLE 1: Removing top 1% for a single variable
@@ -60,7 +60,7 @@ summary(df_treated3)
 
 ## ----outliers_treatment3,  fig.height=3, fig.width=4---------------------
 ########################################################
-### CASE B: Treatment outliers for predictive modeling
+### CASE 2: Treatment outliers for predictive modeling
 ########################################################
 #### EXAMPLE 4: Stopping outliers at the top 1% value for all variables. For example if the top 1% has a value of 7, then all values above will be set to 7. Useful when modeling because outlier cases can be used.
 df_treated4=prep_outliers(data = df, type='stop', top_percent = 0.01)

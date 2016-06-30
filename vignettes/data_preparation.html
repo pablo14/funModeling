@@ -203,12 +203,12 @@ hr {
 <body>
 <h1>Data Preparation</h1>
 
-<h2>Part 1: Profiling Data</h2>
+<h2>Part A) Profiling Data</h2>
 
 <p><strong>Overview</strong>: Quantity of zeros, NA, Inf, unique values; as well as the data type may lead to a good or bad model. Here an approach to cover the very first step in data modeling. </p>
 
-<pre><code class="r">## Loading needed libraries
-library(funModeling)
+<pre><code class="r">## Loading fubModeling !
+suppressMessages(library(funModeling))
 data(heart_disease)
 </code></pre>
 
@@ -255,6 +255,7 @@ data(heart_disease)
 
 <ul>
 <li><code>q_zeros</code>: quantity of zeros (<code>p_zeros</code>: in percentage)</li>
+<li><code>q_inf</code>:  quantity of infinite values (<code>p_na</code>: in percentage)</li>
 <li><code>q_na</code>:  quantity of NA (<code>p_na</code>: in percentage)</li>
 <li><code>type</code>: factor or numeric</li>
 <li><code>unique</code>: quantity of unique values</li>
@@ -315,7 +316,7 @@ heart_disease_2=heart_disease[, !(names(heart_disease) %in% vars_to_remove[,&quo
 ## 16      has_heart_disease    0.00
 </code></pre>
 
-<h2>Part 2: Treatment of Outliers</h2>
+<h2>Part B) Treatment of Outliers</h2>
 
 <p><strong>Overview</strong>: <code>prep_outliers</code> function tries to automatize as much as it can be outliers preparation. It focus on the values that influence heavly the mean.
 It sets an <code>NA</code> or stop at a certaing value all outliers for the desiered variables.</p>
@@ -329,15 +330,15 @@ It sets an <code>NA</code> or stop at a certaing value all outliers for the desi
 <p>This function covers two typical escenarios (paramater <code>type</code>):</p>
 
 <ul>
-<li>Case A: Descriptive statistics / data profiling</li>
-<li>Case B: Data for predictive model</li>
+<li>Case 1: Descriptive statistics / data profiling</li>
+<li>Case 2: Data for predictive model</li>
 </ul>
 
-<h3>Case A: <code>type=&#39;set_na&#39;</code></h3>
+<h3>Case 1: <code>type=&#39;set_na&#39;</code></h3>
 
 <p>In this case all outliers are converted into <code>NA</code>, thus appling most of the descriptive functions (max, min, mean) will return a <strong>less-biased mean</strong> value - with the proper <code>na.rm=TRUE</code> parameter.</p>
 
-<h3>Case B: <code>type=&#39;stop&#39;</code></h3>
+<h3>Case 2: <code>type=&#39;stop&#39;</code></h3>
 
 <p>Last case will cause that all rows with <code>NA</code> values will lost when a machine learning model is created. To avoid this, but keep controled the outliers, all values flagged as outlier will be converted to the threshold value.</p>
 
@@ -371,10 +372,10 @@ summary(df)
 ##  Max.   :2432.0000   Max.   :2432.0000
 </code></pre>
 
-<h3>Case A: <code>type=&#39;set_na&#39;</code></h3>
+<h3>Case 1: <code>type=&#39;set_na&#39;</code></h3>
 
 <pre><code class="r">########################################################
-### CASE A: Treatment outliers for data profiling
+### CASE 1: Treatment outliers for data profiling
 ########################################################
 
 #### EXAMPLE 1: Removing top 1% for a single variable
@@ -429,10 +430,10 @@ summary(df_treated3)
 ##  NA&#39;s   :11         NA&#39;s   :45
 </code></pre>
 
-<h3>Case B: <code>type=&#39;stop&#39;</code></h3>
+<h3>Case 2: <code>type=&#39;stop&#39;</code></h3>
 
 <pre><code class="r">########################################################
-### CASE B: Treatment outliers for predictive modeling
+### CASE 2: Treatment outliers for predictive modeling
 ########################################################
 #### EXAMPLE 4: Stopping outliers at the top 1% value for all variables. For example if the top 1% has a value of 7, then all values above will be set to 7. Useful when modeling because outlier cases can be used.
 df_treated4=prep_outliers(data = df, type=&#39;stop&#39;, top_percent = 0.01)

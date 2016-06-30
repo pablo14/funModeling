@@ -20,7 +20,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @param str_target string of the variable to predict
 #' @param path_out path directory, if it has a value the plot is saved
 #' @param auto_binning indicates the automatic binning of str_input variable based on equal frequency (function 'equal_freq'), default value=TRUE
-#' @param plot_type indicates if the output is the percentual plot, the quantity or both, default value='both'.
+#' @param plot_type indicates if the output is the 'percentual' plot, the 'quantity' or 'both' (default).
 #' @examples
 #' ## Example 1:
 #' cross_plot(data=heart_disease, str_input="chest_pain", str_target="has_heart_disease")

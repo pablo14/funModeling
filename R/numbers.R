@@ -108,29 +108,29 @@ prep_outliers <- function(data, str_input, type=c('stop', 'set_na'), top_percent
 
 }
 
-#' @title Compare two vectors of keys
-#' @description Obtain correlation table of all variables that belongs to data against target variable
-#' @param data data frame
-#' @param str_target string variable to predict
+#' @title Compare two vectors
+#' @description Obtaing coincident and not coincident elements between two vectors.
+#' @param vector_x 1st vector to compare
+#' @param vector_y 2nd vector to compare
 #' @examples
-#' v1=c(1,2,4)
-#' v2=c(1,2,5,6)
-#' res=compare_df(key_x=v1, key_y=v2)
+#' v1=c("height","weight","age")
+#' v2=c("height","weight","location","q_visits")
+#' res=compare_v(key_x=v1, key_y=v2)
 #' # Print the keys that didn't match
 #' res
 #' # Accessing the keys not present in
 #' @return Correlation index for all data input variable
 #' @export
-compare_df <- function(key_x, key_y)
+compare_v <- function(vector_x, vector_y)
 {
-	# key_x=v1;key_y=v2
-  df_x=data.frame(key_x=key_x, flag_x=1)
-  df_y=data.frame(key_y=key_y, flag_y=1)
+	# vector_x=v1;vector_y=v2
+  df_x=data.frame(vector_x=vector_x, flag_x=1)
+  df_y=data.frame(vector_y=vector_y, flag_y=1)
 
-  df_x$key_x=as.character(df_x$key_x)
-	df_y$key_y=as.character(df_y$key_y)
+  df_x$vector_x=as.character(df_x$vector_x)
+	df_y$vector_y=as.character(df_y$vector_y)
 
-  merge_all=merge(df_x, df_y, by.x='key_x', by.y='key_y', all=T)
+  merge_all=merge(df_x, df_y, by.x='vector_x', by.y='vector_y', all=T)
 
   names(merge_all)[1]="key"
 
