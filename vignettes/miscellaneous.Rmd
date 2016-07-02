@@ -33,7 +33,7 @@ res=compare_v(vector_x=v1, vector_y=v2)
 res
 ```
 
-Part B) Sampling training and test data
+## Part B) Sampling training and test data
 
 **What it does?** Split input data into training and test set, retrieving always same sample by setting the seed.
 
@@ -52,5 +52,32 @@ data_ts=heart_disease[-index_sample,] # excluding all rows that belong to traini
 # percentage_tr_rows: range value from 0.1 to 0.99, default value=0.8 (80 percent of training data)
 
 ```
+
+## Part C) Correlation table against target variable
+
+**What it does?** It retrieves the well known `R statistic` -which measures **linear** correlation  for all numeric variables _(skipping the string ones)_.
+
+
+```{r}
+correlation_table(data=heart_disease, str_target="has_heart_disease")
+```
+
+`R statistic` goes from `1` _positive correlation_ to `-1` _negative correlation_. A value around `0` implies no correlation.
+Squaring this number returns the `R squared` statistic (aka `R2`), which goes from `0` _no correlation_ to `1` _high correlation_. 
+
+### C.1) R2 bias problem
+
+**R statistic is highly influenced by outliers and non-linear relationships.**
+
+Outliers can be treated with `prep_outliers` function, present in this package.
+
+Take a look at the **Anscombe's quartet**. These 4 relationships are quite different, but all of them have the same R2: 0.816.
+
+
+```{r, out.width = 400, fig.retina = NULL, echo=F}
+library(knitr)
+include_graphics("anscombe_quartet.png")
+```
+
 
 

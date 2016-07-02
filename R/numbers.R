@@ -52,7 +52,7 @@
 #' @export
 prep_outliers <- function(data, str_input, type=c('stop', 'set_na'), top_percent, bottom_percent)
 {
-	if(!(type %in% c('stop', 'set_na', 'sigmoid')))
+	if(!(type %in% c('stop', 'set_na')))
 		stop("Parameter 'type' must be one 'stop' or 'set_na'")
 
 
@@ -155,8 +155,8 @@ compare_v <- function(vector_x, vector_y)
   return(res)
 }
 
-#' @title Correlation analyisis against target variable
-#' @description Obtain correlation table of all variables that belongs to data against target variable. Only numeric variables are analyzed.
+#' @title Get correlation against target variable
+#' @description Obtain correlation table for all variables against target variable. Only numeric variables are analyzed (factor/character are skippted automatically).
 #' @param data data frame
 #' @param str_target string variable to predict
 #' @examples
@@ -173,33 +173,31 @@ correlation_table <- function(data, str_target)
   df_cor$Variable = rownames(df_cor)
   df_cor=df_cor[, names(df_cor) %in% c(str_target, "Variable")]
 
-  df_cor=df_cor[interp(~order(df_cor, -v) , v=as.name(str_target)),  ]
-
-  row.names(df_cor) = NULL
   df_cor=df_cor[, c(2,1)]
 
-  df_cor[order(-df_cor[,2]) , ]
+  df_cor_final=df_cor[order(-df_cor[,2]) , ]
+	row.names(df_cor_final) = NULL
 
-  return(df_cor)
+	return(df_cor_final)
 }
 
-#' @title Sigmoid function
-#' @description Sigmoid function, also known as logistic or s-shaped
-#' @param x numeric input vector
-#' @param a constant to multiply 'x', default=1
-#' @examples
-#' sigmoid()
-#' @return vector transformed with sigmoid
-#' @export
-sigmoid<-function(x, a=1)
-{
-	if(missing(a))
-		a=1
-
-	y = 1/(1 + exp(-a*x))
-
-	return(y)
-}
+# #' @title Sigmoid function
+# #' @description Sigmoid function, also known as logistic or s-shaped
+# #' @param x numeric input vector
+# #' @param a constant to multiply 'x', default=1
+# #' @examples
+# #' sigmoid()
+# #' @return vector transformed with sigmoid
+# #' @export
+# sigmoid<-function(x, a=1)
+# {
+# 	if(missing(a))
+# 		a=1
+#
+# 	y = 1/(1 + exp(-a*x))
+#
+# 	return(y)
+# }
 
 #' @title Transform a variable into the 0 to 1 range
 #' @description Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable.

@@ -2,20 +2,35 @@
 % Please edit documentation in R/numbers.R
 \name{range01}
 \alias{range01}
-\title{Transform a variable into the 0 to 1 range}
+\title{Sigmoid function
+#}
 \usage{
 range01(x)
 }
 \arguments{
+\item{x}{numeric input vector
+#}
+
+\item{a}{constant to multiply 'x', default=1
+#}
+
 \item{x}{numeric input vector}
 }
 \value{
+vector transformed with sigmoid
+#
+
 vector ranged into 0-1
 }
 \description{
-Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable.
+Sigmoid function, also known as logistic or s-shaped
+#
+}
+\details{
+#
 }
 \examples{
-range01(mtcars$cyl)
+#sigmoid()
+#
 }
 
