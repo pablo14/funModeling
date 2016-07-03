@@ -181,30 +181,14 @@ correlation_table <- function(data, str_target)
 	return(df_cor_final)
 }
 
-# #' @title Sigmoid function
-# #' @description Sigmoid function, also known as logistic or s-shaped
-# #' @param x numeric input vector
-# #' @param a constant to multiply 'x', default=1
-# #' @examples
-# #' sigmoid()
-# #' @return vector transformed with sigmoid
-# #' @export
-# sigmoid<-function(x, a=1)
-# {
-# 	if(missing(a))
-# 		a=1
-#
-# 	y = 1/(1 + exp(-a*x))
-#
-# 	return(y)
-# }
 
-#' @title Transform a variable into the 0 to 1 range
+
+#' @title Transform a variable into the [0-1] range
 #' @description Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable.
 #' @param x numeric input vector
 #' @examples
 #' range01(mtcars$cyl)
-#' @return vector ranged into 0-1
+#' @return vector with the values scaled into the 0 to 1 range
 #' @export
 range01 <- function(x)
 {

@@ -1,9 +1,6 @@
 ---
-title: "funModeling Index"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Using funModeling in predictive modeling}
-  %\VignetteEngine{knitr::knitr}
+title: "funModeling: Miscellaneous"
+output: html_document
 ---
 
 Miscellaneous
@@ -16,7 +13,7 @@ Here are some functions that don't fit in the data preparation, selecting best v
 suppressMessages(library(funModeling))
 data(heart_disease)
 ```
-
+<br>
 ## Part A) Comparing vectors
 
 **What it does?**: Get the elements present (and not) between 2 vectors.
@@ -32,7 +29,7 @@ res=compare_v(vector_x=v1, vector_y=v2)
 # Printint the keys that didn't match
 res
 ```
-
+<br>
 ## Part B) Sampling training and test data
 
 **What it does?** Split input data into training and test set, retrieving always same sample by setting the seed.
@@ -53,6 +50,7 @@ data_ts=heart_disease[-index_sample,] # excluding all rows that belong to traini
 
 ```
 
+<br>
 ## Part C) Correlation table against target variable
 
 **What it does?** It retrieves the well known `R statistic` -which measures **linear** correlation  for all numeric variables _(skipping the string ones)_.
@@ -81,3 +79,8 @@ include_graphics("anscombe_quartet.png")
 
 
 
+Last plot, and more info about correlation can be found at: [Correlation and dependence](https://en.wikipedia.org/wiki/Correlation_and_dependence)
+
+<br>
+
+## Part D) 

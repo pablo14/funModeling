@@ -1,9 +1,6 @@
 ---
-title: "funModeling Index"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Using funModeling in predictive modeling}
-  %\VignetteEngine{knitr::knitr}
+title: "funModeling: Selecting Best Variables Analysis"
+output: html_document
 ---
 
 Selecting Best Variables Analysis

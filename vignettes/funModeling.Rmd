@@ -1,9 +1,6 @@
 ---
-title: "funModeling Index"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Using funModeling in predictive modeling}
-  %\VignetteEngine{knitr::knitr}
+title: "funModeling: "
+output: html_document
 ---
 
 Package funModeling

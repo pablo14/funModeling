@@ -1,9 +1,6 @@
 ---
-title: "funModeling Index"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Using funModeling in predictive modeling}
-  %\VignetteEngine{knitr::knitr}
+title: "funModeling: Data Preparation"
+output: html_document
 ---
 
 Data Preparation
@@ -159,3 +156,16 @@ Note when `type='set_na'`
 ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='set_na' (var1)")
 ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='stop' (var1)")
 ```
+
+
+<br>
+## Part C) Transforming variable into [0-1] range
+
+Transforming a single numeric vector into 0 to 1 range. 
+
+```{r}
+age01=range01(heart_disease$age)
+summary(age)
+```
+
+<br>
