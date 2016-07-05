@@ -13,7 +13,7 @@
 #' @export
 plotar <- function(data, str_input, str_target, plot_type, path_out)
 {
-	#source("common_lib.R")
+	data=as.data.frame(data)
 
 	## Parameters & Error handlers
 	if(missing(plot_type))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/numbers.R
 \name{range01}
 \alias{range01}
-\title{Transform a variable into the 0 to 1 range}
+\title{Transform a variable into the [0-1] range}
 \usage{
 range01(x)
 }
@@ -10,7 +10,7 @@ range01(x)
 \item{x}{numeric input vector}
 }
 \value{
-vector ranged into 0-1
+vector with the values scaled into the 0 to 1 range
 }
 \description{
 Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable.

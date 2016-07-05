@@ -40,6 +40,8 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @export
 cross_plot <- function(data, str_input, str_target, path_out, auto_binning, plot_type='both')
 {
+	data=as.data.frame(data)
+
 	## Handling missing parameters
   if(missing(auto_binning)) auto_binning=NA
   if(missing(path_out)) path_out=NA

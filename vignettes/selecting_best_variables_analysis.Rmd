@@ -7,7 +7,7 @@ Selecting Best Variables Analysis
 ====
 
 ## Introduction
-This vignette will cover three type of plots which aim to understand what are the more numeric correlated variables against a target variable.
+This vignette will cover three types of plots which aim to understand what are the most correlated numeric variables against a target variable.
 
 
 * **Overview**:

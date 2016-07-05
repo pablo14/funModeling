@@ -52,6 +52,8 @@
 #' @export
 prep_outliers <- function(data, str_input, type=c('stop', 'set_na'), top_percent, bottom_percent)
 {
+	data=as.data.frame(data)
+
 	if(!(type %in% c('stop', 'set_na')))
 		stop("Parameter 'type' must be one 'stop' or 'set_na'")
 
@@ -165,6 +167,8 @@ compare_v <- function(vector_x, vector_y)
 #' @export
 correlation_table <- function(data, str_target)
 {
+	data=as.data.frame(data)
+
 	data[, str_target]=as.numeric(data[, str_target])
 
 	data=data[, c(give_me_num_vars(data, str_target), str_target)]
@@ -184,13 +188,13 @@ correlation_table <- function(data, str_target)
 
 
 #' @title Transform a variable into the [0-1] range
-#' @description Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable.
+#' @description Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable. All NA values will be removed.
 #' @param x numeric input vector
 #' @examples
 #' range01(mtcars$cyl)
 #' @return vector with the values scaled into the 0 to 1 range
 #' @export
-range01 <- function(x)
+range01 <- function(var)
 {
-	return((x-min(x, na.rm=T))/(max(x, na.rm=T)-min(x, na.rm=T)))
+	return((var-min(var, na.rm=T))/(max(var, na.rm=T)-min(var, na.rm=T)))
 }
