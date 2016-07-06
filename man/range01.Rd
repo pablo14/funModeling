@@ -4,7 +4,7 @@
 \alias{range01}
 \title{Transform a variable into the [0-1] range}
 \usage{
-range01(x)
+range01(var)
 }
 \arguments{
 \item{x}{numeric input vector}
@@ -13,7 +13,7 @@ range01(x)
 vector with the values scaled into the 0 to 1 range
 }
 \description{
-Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable.
+Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable. All NA values will be removed.
 }
 \examples{
 range01(mtcars$cyl)

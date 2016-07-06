@@ -10,6 +10,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @import dplyr
 #' @importFrom reshape2 dcast melt
 #' @importFrom scales percent
+#' @importFrom lazyeval interp
 #' @importFrom gridExtra grid.arrange
 #' @importFrom ROCR prediction performance plot
 #' @title Cross-plotting input variable vs. target variable
@@ -136,24 +137,33 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 
 	  lGraf=list()
 
-	  ## Percentual
+	   ## Percentual
 	  lGraf$percentual =  ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, fill=variable))+geom_bar(position="fill",stat="identity") +
 	    geom_text(aes(label = sprintf("%0.1f", 100*ratio), y = position)) +
 	    guides(fill=FALSE) + labs(x = str_input, y = paste(str_target, " (%)", sep=" ")) +
-	    theme(axis.text.x=element_text(angle = 45, hjust = 1),
+	    theme_bw() +
+	  	theme(axis.text.x=element_text(angle = 45, hjust = 1),
 	          panel.grid.major = element_blank(),
-	          panel.grid.minor = element_blank())+
+	          panel.grid.minor = element_blank(),
+	  				panel.border = element_blank(),
+	    			plot.background = element_blank()) +
 	    scale_y_continuous(labels=percent)
 
 
 	    ## Quantity plot
-	  lGraf$quantity =  ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, ymax=max(value)*1.05, fill=variable)) + geom_bar(position=position_dodge(),stat="identity") +
+	  lGraf$quantity = ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, ymax=max(value)*1.05, fill=variable)) +
+	  	geom_bar(position=position_dodge(),stat="identity") +
 	    geom_text(aes(label=value), position=position_dodge(width=0.9), vjust=-0.25, size=4) +
-	    labs(x = str_input, y = paste(str_target, " (count)", sep=" ")) +
+	  	labs(x = str_input, y = paste(str_target, " (count)", sep=" ")) +
 	    ylim(0, max(dataGrafPrep$value)+max(dataGrafPrep$value)*0.05) +
-	    theme(axis.text.x=element_text(angle = 45, hjust = 1),legend.title=element_blank()) +
+			theme_bw() +
+	    theme(plot.background = element_blank(),
+	    			panel.border = element_blank(),
+    				axis.text.x=element_text(angle = 45, hjust = 1),
+    				legend.title=element_blank()) +
 	    guides(col = guide_legend(ncol = 1, byrow = TRUE)) +
 	    scale_fill_discrete(name=str_target)
+
 
 
 	  if(plot_type=='both')

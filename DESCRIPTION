@@ -2,7 +2,7 @@ Package: funModeling
 Type: Package
 Title: Learning Data Cleaning, Visual Analysis and Model Performance
 Description: Learn data cleaning, visual data analysis and model performance assessment (KS, AUC and ROC), package core is in the vignette documentation explaining last topics as a tutorial.
-Version: 1.1
+Version: 1.2
 Date: 2016-03-14
 Author: Pablo Casas
 Maintainer: Pablo Casas <pabloc@datascienceheroes.com>

@@ -10,14 +10,11 @@ Package funModeling
 This package covers common aspects in predictive modeling:
 
 1. **Data Preparation**
-2. **Selecting best variables**
+2. **Selecting best variables (dataviz)**
 3. **Assessing model performance**
 4. **Miscellaneous**
 
 Main purpose of this package is to **teach** some predictive modeling using a practical toolbox of functions and concepts, to people who is starting in data science, small data and big data. With **special focus** on results and analysis understanding.
-
-
-
 
 
 
