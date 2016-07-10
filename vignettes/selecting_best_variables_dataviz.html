@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>Selecting Best Variables (DataViz)</title>
+
+<script src="selecting_best_variables_dataviz_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="selecting_best_variables_dataviz_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="selecting_best_variables_dataviz_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="selecting_best_variables_dataviz_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="selecting_best_variables_dataviz_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="selecting_best_variables_dataviz_files/highlight/default.css"
+      type="text/css" />
+<script src="selecting_best_variables_dataviz_files/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="selecting_best_variables_dataviz_files/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+<h1 class="title">Selecting Best Variables (DataViz)</h1>
+
+</div>
+
+
+<div id="selecting-best-variables-dataviz" class="section level1">
+<h1>Selecting Best Variables (DataViz)</h1>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette will cover three types of plots which aim to understand what are the most correlated numeric variables against a target variable.</p>
+<ul>
+<li><strong>Overview</strong>:
+<ul>
+<li><strong>Analysis purpose</strong>: To identify if the input variable is a good/bad predictor through visual analysis.</li>
+<li><strong>General purpose</strong>: To explain the decision of including -or not- a variable to a model to a <em>non-analyst</em> person.</li>
+</ul></li>
+</ul>
+<p><strong>Constraint:</strong> Target variable must contain only 2 values. If it has <code>NA</code> values, they will be removed.</p>
+<p><em>Note: Please note there are many ways for selecting best variables to build a model, here are some based on visual analysis.</em></p>
+<p><br></p>
+<ul>
+<li><strong>Key in mind this when using Histograms &amp; BoxPlots</strong> They are nice to see when the variable:
+<ul>
+<li>Has a good spread -not concentrated on a bunch of <em>3, 4..6..</em> different values, <strong>and</strong></li>
+<li>It has not really extreme outliers… <em>(this point can be treated with <code>prep_outliers</code> function present in this package)</em></li>
+</ul></li>
+</ul>
+<p><br> <br></p>
+<hr />
+</div>
+<div id="part-a-target-profiling-with-histograms" class="section level2">
+<h2>Part A) Target Profiling with Histograms</h2>
+<pre class="r"><code>## Loading funModeling !
+suppressMessages(library(funModeling))
+
+plotar(data=heart_disease, str_input=&quot;age&quot;, str_target=&quot;has_heart_disease&quot;, plot_type = &quot;histdens&quot;)</code></pre>
+<p><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance1-1.png" alt="" /><!-- --></p>
+<p><em>Dashed-line represents variable mean.</em></p>
+<p><strong>Density histograms</strong> are nice to visualize the general shape of a numeric distribution.</p>
+<p>This <em>general shape</em> is calculated based on a technique called <strong>Kernel Smoother</strong>, its general idea is to reduce high/low peaks (noise) present in near points/bars by estimating the function that describes the points. Here some pictures to illustrate the concept: <a href="https://en.wikipedia.org/wiki/Kernel_smoother" class="uri">https://en.wikipedia.org/wiki/Kernel_smoother</a></p>
+<p><br></p>
+<p><em>Something similar is what an <strong>statistical test</strong> sees: they measured <strong>how different</strong> the curves are reflecting it in some statistics (like the p-value), in order to give to the analyst, a reliable information to determine if the curves have -for example- the same mean.</em></p>
+<p><br> <br></p>
+<div id="a.1-hist.-dens.-good-vs.bad-variable" class="section level3">
+<h3>A.1) Hist. Dens.: Good vs. Bad variable</h3>
+<pre class="r"><code>plotar(data=heart_disease, str=c(&#39;resting_blood_pressure&#39;, &#39;max_heart_rate&#39;),  str_target=&quot;has_heart_disease&quot;, plot_type = &quot;histdens&quot;)</code></pre>
+<p><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance2-1.png" alt="" /><!-- --><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance2-2.png" alt="" /><!-- --> <br> And the model will see the same… if the curves are quite overlapped, like it is in <code>resting_blood_pressure</code>, then it’s <strong>not a good predictor</strong> as if they were <strong>more spaced</strong> -like <code>max_heart_rate</code>.</p>
+<p><br> <br></p>
+<hr />
+</div>
+</div>
+<div id="part-b-target-profiling-with-boxplots" class="section level2">
+<h2>Part B) Target Profiling with Boxplots</h2>
+<pre class="r"><code>plotar(data=heart_disease, str_input=&quot;age&quot;, str_target=&quot;has_heart_disease&quot;, plot_type = &quot;boxplot&quot;)</code></pre>
+<p><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance2b-1.png" alt="" /><!-- --></p>
+<p><em>Rhomboid near the mean line represents the <strong>median</strong>.</em></p>
+<p><br></p>
+<div class="figure">
+<img src="boxplot.png" alt="" />
+
+</div>
+<p><br></p>
+<p><em>When to use boxplots?</em> When you need to analyze different percentiles across the classes to predict. Note this is a powerful technique since the bias produced due to outliers doesn’t affect as much as it does to the mean.</p>
+<div id="b.1-boxplot-good-vs.bad-variable" class="section level3">
+<h3>B.1) Boxplot: Good vs. Bad variable</h3>
+<p>plotar(data=heart_disease, str=c(‘max_heart_rate’, ‘resting_blood_pressure’), str_target=“has_heart_disease”, plot_type = “boxplot”)</p>
+<p><code>max_heart_rate</code> is cleraly a better predictor than <code>resting_blood_pressure</code>.</p>
+<p>As a general rule, a variable will rank as <strong>more important</strong> if boxplots are <strong>not aligned</strong> horizontally.</p>
+<p><em>Statistical tests: percentiles are another used feature used by them in order to determine -for example- if means across groups are or not the same.</em></p>
+</div>
+<div id="exporting-plots" class="section level3">
+<h3>Exporting plots</h3>
+<p><code>plotar</code> and <code>cross_plot</code> can handle from 1 to N input variables, and plots generated by them can be easily exported in high quality with parameter <code>path_out</code>.</p>
+<pre class="r"><code>plotar(data=heart_disease, str=c(&#39;max_heart_rate&#39;, &#39;resting_blood_pressure&#39;),  str_target=&quot;has_heart_disease&quot;, plot_type = &quot;boxplot&quot;, path_out = &quot;my_awsome_folder&quot;)</code></pre>
+<p><br> <br></p>
+<hr />
+</div>
+</div>
+<div id="part-c-target-profiling-with-cross_plot" class="section level2">
+<h2>Part C) Target Profiling with <code>cross_plot</code></h2>
+<div id="example-c.1-is-gender-correlated-with-heart-disease" class="section level3">
+<h3>Example C.1: Is gender correlated with heart disease?</h3>
+<pre class="r"><code>cross_gender=cross_plot(heart_disease, str_input=&quot;gender&quot;, str_target=&quot;has_heart_disease&quot;)</code></pre>
+<p><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance_c1-1.png" alt="" /><!-- --></p>
+<p>Last two plots have the same data source, showing the distribution of <code>has_heart_disease</code> in terms of <code>gender</code>. The one on the left shows in percentage value, while the one on the right shows in absolute value.</p>
+<div id="how-to-extract-conclusions-from-the-plots-short-version" class="section level4">
+<h4>How to extract conclusions from the plots? (Short version)</h4>
+<p><code>Gender</code> variable seems to be a <strong>good predictor</strong>, since the likelihood of having heart disease is different given the female/male groups. <strong>it gives an order to the data</strong>.</p>
+</div>
+<div id="how-to-extract-conclusions-from-the-plots-long-version" class="section level4">
+<h4>How to extract conclusions from the plots? (Long version)</h4>
+<div id="from-1st-plot" class="section level5">
+<h5>From 1st plot (%):</h5>
+<ol style="list-style-type: decimal">
+<li>The <strong>likelihood</strong> of having heart disease for males is 55.3%, while for females is: 25.8%.</li>
+<li>The heart disease rate for males <strong>doubles</strong> the rate for females (55.3 vs 25.8, respectively).</li>
+</ol>
+</div>
+<div id="from-2nd-plot-count" class="section level5">
+<h5>From 2nd plot (count):</h5>
+<ol style="list-style-type: decimal">
+<li>There are a total of <strong>97 females</strong>:
+<ul>
+<li>25 of them have heart disease (25/97=25.8%, which is the ratio of 1st plot).</li>
+<li>the remaining 72 have not heart disease (74.2%)</li>
+</ul></li>
+<li>There are a total of <strong>206 males</strong>:
+<ul>
+<li>114 of them have heart disease (55.3%)</li>
+<li>the remaining 92 have not heart disease (44.7%)</li>
+</ul></li>
+<li>Total cases: Summing the values of four bars: 25+72+114+92=<strong>303</strong>.</li>
+</ol>
+<p><em>Note: What would it happened if instead of having the rates of 25.8% vs. 55.3% (female vs male), they had been more similar like 30.2% vs. 30.6%). In this case variable <code>gender</code> it would have been much less relevant, since it doesn’t separate the <code>has_heart_disease</code> event.</em></p>
+</div>
+</div>
+</div>
+<div id="example-c.2-crossing-with-numerical-variables" class="section level3">
+<h3>Example C.2: Crossing with numerical variables</h3>
+<p>Numerical variables should be <strong>binned</strong> in order to plot them with an histogram, otherwise the plot is not showing information, as it can be seen here:</p>
+<div id="equal-frequency-binning" class="section level4">
+<h4>Equal frequency binning</h4>
+<p>There is a function included in the package (inherited from Hmisc package) : <code>equal_freq</code>, which returns the bins/buckets based on the <strong>equal frequency criteria</strong>. Which is <em>-or tries to-</em> have the same quantity of rows per bin.</p>
+<p>For numerical variables, <code>cross_plot</code> has by default the <code>auto_binning=T</code>, which automatically calls the <code>equal_freq</code> function with <code>n_bins=10</code> (or the closest number).</p>
+<pre class="r"><code>cross_plot(heart_disease, str_input=&quot;max_heart_rate&quot;, str_target=&quot;has_heart_disease&quot;)</code></pre>
+<p><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance_c2-1.png" alt="" /><!-- --></p>
+</div>
+</div>
+<div id="example-c.3-manual-binning" class="section level3">
+<h3>Example C.3: Manual binning</h3>
+<p>If you don’t want the automatic binning, then set the <code>auto_binning=F</code> in <code>cross_plot</code> function.</p>
+<p>For example, creating <code>oldpeak_2</code> based on equal frequency, with 3 buckets.</p>
+<pre class="r"><code>heart_disease$oldpeak_2=equal_freq(var=heart_disease$oldpeak, n_bins = 3)
+summary(heart_disease$oldpeak_2)</code></pre>
+<pre><code>## [0.0,0.2) [0.2,1.5) [1.5,6.2] 
+##       106       107        90</code></pre>
+<p>Plotting the binned variable (<code>auto_binning = F</code>):</p>
+<pre class="r"><code>cross_oldpeak_2=cross_plot(heart_disease, str_input=&quot;oldpeak_2&quot;, str_target=&quot;has_heart_disease&quot;, auto_binning = F)</code></pre>
+<p><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance_c4-1.png" alt="" /><!-- --></p>
+<div id="conclusion" class="section level4">
+<h4><strong>Conclusion</strong></h4>
+<p>This new plot based on <code>oldpeak_2</code> shows clearly how: the likelihood of <strong>having heart disease increases</strong> as <strong>oldpeak_2 increases</strong> as well. <em>Again, it gives an order to the data.</em></p>
+</div>
+</div>
+<div id="example-c.4-noise-reducing" class="section level3">
+<h3>Example C.4: Noise reducing</h3>
+<p>Converting variable <code>max_heart_rate</code> into a one of 10 bins:</p>
+<pre class="r"><code>heart_disease$max_heart_rate_2=equal_freq(var=heart_disease$max_heart_rate, n_bins = 10)
+cross_plot(heart_disease, str_input=&quot;max_heart_rate_2&quot;, str_target=&quot;has_heart_disease&quot;)</code></pre>
+<p><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance_c5-1.png" alt="" /><!-- --></p>
+<p>At a first glance, <code>max_heart_rate_2</code> shows a negative and linear relationship, however there are some buckets which add noise to the relationship. For example, the bucket <code>(141, 146]</code> has a higher heart disease rate than the previous bucket, and it was expected to have a lower. <em>This could be noise in data.</em></p>
+<p><strong>Key note</strong>: One way to reduce the <strong>noise</strong> (at the cost of <strong>losing</strong> some information), is to split with less bins:</p>
+<pre class="r"><code>heart_disease$max_heart_rate_3=equal_freq(var=heart_disease$max_heart_rate, n_bins = 5)
+cross_plot(heart_disease, str_input=&quot;max_heart_rate_3&quot;, str_target=&quot;has_heart_disease&quot;)</code></pre>
+<p><img src="selecting_best_variables_dataviz_files/figure-html/variable_importance_c6-1.png" alt="" /><!-- --></p>
+<p><strong>Conclusion</strong>: As it can be seen, now the relationship is much clean and clear. Bucket <em>‘N’</em> has a higher rate than <em>‘N+1’</em>, which implies a negative correlation.</p>
+<p><strong>How about saving the cross_plot result into a folder?</strong> Just set the parameter <code>path_out</code> with the folder you want -It creates a new one if it doesn’t exists-.</p>
+<pre class="r"><code>cross_plot(heart_disease, str_input=&quot;max_heart_rate_3&quot;, str_target=&quot;has_heart_disease&quot;, path_out=&quot;my_plots&quot;)</code></pre>
+<p>It creates the folder <code>my_plots</code> into the working directory.</p>
+</div>
+<div id="example-c.4-cross_plot-on-multiple-variables" class="section level3">
+<h3>Example C.4: <code>cross_plot</code> on multiple variables</h3>
+<p>Imagine you want to run cross_plot for several variables at the same time. To achieve this goal just define a vector containing the variable names.</p>
+<p>If you want to analyze these 3 variables:</p>
+<pre class="r"><code>vars_to_analyze=c(&quot;age&quot;, &quot;oldpeak&quot;, &quot;max_heart_rate&quot;)</code></pre>
+<pre class="r"><code>cross_plot(data=heart_disease, str_target=&quot;has_heart_disease&quot;, str_input=vars_to_analyze)</code></pre>
+<p><br> <br></p>
+<hr />
+</div>
+</div>
+<div id="part-d-correlation-table-against-target-variable" class="section level2">
+<h2>Part D) Correlation table against target variable</h2>
+<p><strong>What it does?</strong> It retrieves the well known <code>R statistic</code> -which measures <strong>linear</strong> correlation for all numeric variables <em>(skipping the string ones)</em>.</p>
+<pre class="r"><code>correlation_table(data=heart_disease, str_target=&quot;has_heart_disease&quot;)</code></pre>
+<pre><code>##                 Variable has_heart_disease
+## 1      has_heart_disease              1.00
+## 2 heart_disease_severity              0.83
+## 3      num_vessels_flour              0.46
+## 4                oldpeak              0.42
+## 5                  slope              0.34
+## 6                    age              0.23
+## 7 resting_blood_pressure              0.15
+## 8      serum_cholestoral              0.08
+## 9         max_heart_rate             -0.42</code></pre>
+<p><code>R statistic</code> goes from <code>1</code> <em>positive correlation</em> to <code>-1</code> <em>negative correlation</em>. A value around <code>0</code> implies no correlation. Squaring this number returns the <code>R squared</code> statistic (aka <code>R2</code>), which goes from <code>0</code> <em>no correlation</em> to <code>1</code> <em>high correlation</em>.</p>
+<div id="c.1-r2-bias-problem" class="section level3">
+<h3>C.1) R2 bias problem</h3>
+<p><strong>R statistic is highly influenced by outliers and non-linear relationships.</strong></p>
+<p>Outliers can be treated with <code>prep_outliers</code> function, present in this package.</p>
+<p>Take a look at the <strong>Anscombe’s quartet</strong>. These 4 relationships are quite different, but all of them have the same R2: 0.816.</p>
+<p><img src="anscombe_quartet.png" width="400" /></p>
+<p>Last plot, and more info about correlation can be found at: <a href="https://en.wikipedia.org/wiki/Correlation_and_dependence">Correlation and dependence</a></p>
+<p><br></p>
+<p><br></p>
+<hr />
+</div>
+<div id="part-e-final-notes" class="section level3">
+<h3>Part E) Final notes:</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Correlation_does_not_imply_causation" class="uri">https://en.wikipedia.org/wiki/Correlation_does_not_imply_causation</a></li>
+<li><code>cross_plot</code> is good to visualize <strong>linear</strong> relationships, giving it a hint on <strong>non-linear</strong> relationships.</li>
+<li>Cleaning the variables help the model to better capture information’s data.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

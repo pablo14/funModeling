@@ -29,23 +29,28 @@
 #' # Setting type='set_na' sets NA to the highest value)
 #' var1_treated=prep_outliers(data = df,  str_input = 'var1', type='set_na', top_percent  = 0.01)
 #'
-#' # now the mean (~ 0.94) is more accurate, and note that: 1st, median and 3rd quartiles remaining very similar to the original variable.
+#' # now the mean (~ 0.94) is more accurate, and note that: 1st, median and 3rd
+#' #  quartiles remaining very similar to the original variable.
 #' summary(var1_treated)
 #'
-#' #### EXAMPLE 2: if 'str_input' is missing, then it runs for all numeric variables (which have 3 or more distinct values).
+#' #### EXAMPLE 2: if 'str_input' is missing, then it runs for all numeric variables
+#' #  (which have 3 or more distinct values).
 #' df_treated2=prep_outliers(data = df, type='set_na', top_percent  = 0.01)
 #' summary(df_treated2)
 #'
 #' #### EXAMPLE 3: Removing top 1% (and bottom 1%) for 'N' specific variables.
 #' vars_to_process=c('var1', 'var2')
-#' df_treated3=prep_outliers(data = df, str_input = vars_to_process, type='set_na', bottom_percent = 0.01, top_percent  = 0.01)
+#' df_treated3=prep_outliers(data = df, str_input = vars_to_process, type='set_na',
+#'  bottom_percent = 0.01, top_percent  = 0.01)
 #' summary(df_treated3)
 #'
 #' ########################################################
 #' ### PREPARING OUTLIERS FOR PREDICTIVE MODELING
 #' ########################################################
 #'
-#' #### EXAMPLE 4: Stopping outliers at the top 1% value for all variables. For example if the top 1% has a value of 7, then all values above will be set to 7. Useful when modeling because outlier cases can be used.
+#' #### EXAMPLE 4: Stopping outliers at the top 1% value for all variables. For example
+#' #   if the top 1% has a value of 7, then all values above will be set to 7. Useful
+#' #   when modeling because outlier cases can be used.
 #' df_treated4=prep_outliers(data = df, top_percent  = 0.01, type='stop')
 
 #' @return A vector or data frame with the desired outlier transformation
@@ -117,13 +122,13 @@ prep_outliers <- function(data, str_input, type=c('stop', 'set_na'), top_percent
 #' @examples
 #' v1=c("height","weight","age")
 #' v2=c("height","weight","location","q_visits")
-#' res=compare_v(key_x=v1, key_y=v2)
+#' res=v_compare(vector_x=v1, vector_y=v2)
 #' # Print the keys that didn't match
 #' res
 #' # Accessing the keys not present in
 #' @return Correlation index for all data input variable
 #' @export
-compare_v <- function(vector_x, vector_y)
+v_compare <- function(vector_x, vector_y)
 {
 	# vector_x=v1;vector_y=v2
   df_x=data.frame(vector_x=vector_x, flag_x=1)
@@ -189,7 +194,7 @@ correlation_table <- function(data, str_target)
 
 #' @title Transform a variable into the [0-1] range
 #' @description Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable. All NA values will be removed.
-#' @param x numeric input vector
+#' @param var numeric input vector
 #' @examples
 #' range01(mtcars$cyl)
 #' @return vector with the values scaled into the 0 to 1 range

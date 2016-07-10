@@ -7,7 +7,7 @@
 range01(var)
 }
 \arguments{
-\item{x}{numeric input vector}
+\item{var}{numeric input vector}
 }
 \value{
 vector with the values scaled into the 0 to 1 range

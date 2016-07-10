@@ -1,6 +1,10 @@
 ---
-title: "funModeling: "
-output: html_document
+title: "Assessing Model Performance"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Assessing Model Performance}
+  \usepackage[utf8]{inputenc}
 ---
 
 Assessing model performance

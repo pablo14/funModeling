@@ -1,14 +1,13 @@
 Package: funModeling
 Type: Package
-Title: Learning Data Cleaning, Visual Analysis and Model Performance
-Description: Learn data cleaning, visual data analysis and model performance assessment (KS, AUC and ROC), package core is in the vignette documentation explaining last topics as a tutorial.
+Title: A package to learn data science. While model creation consumes around 10% of almost any predictive modeling project; funModeling will try to cover remaining 90%: data preparation, profiling, selecting best variables (dataviz), assessing model performance and other functions; either with functions to common problems and the explanation of how to interpret their results.
 Version: 1.2
-Date: 2016-03-14
+Date: 2016-07-08
 Author: Pablo Casas
 Maintainer: Pablo Casas <pabloc@datascienceheroes.com>
 License: GPL-2
 LazyData: true
-Imports: ROCR, ggplot2, gridExtra, pander, plyr, reshape2, scales, dplyr
+Imports: ROCR, ggplot2, gridExtra, pander, reshape2, scales, dplyr, lazyeval, utils
 Depends: R (>= 3.2.1), Hmisc (>= 3.17.1)
 VignetteBuilder: knitr
 Suggests: knitr

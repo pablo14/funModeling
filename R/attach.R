@@ -1,5 +1,5 @@
 .onAttach <- function(...)
 {
-    packageStartupMessage(sprintf("funModeling v.%s :)\nNew tutorials and updates will be posted in: \nblog.datascienceheroes.com", packageVersion("funModeling")))
+    packageStartupMessage(sprintf("funModeling v.%s :)\nUpdates on tutorials, docs and code will be relased in: \nblog.datascienceheroes.com", packageVersion("funModeling")))
 
 }

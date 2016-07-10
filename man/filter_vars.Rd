@@ -2,9 +2,9 @@
 % Please edit documentation in R/common_lib.R
 \name{filter_vars}
 \alias{filter_vars}
-\title{Filtering variables by name}
+\title{Filtering variables by string name}
 \usage{
-filter_vars(data, str_input, keep = T)
+filter_vars(data, str_input, keep = TRUE)
 }
 \arguments{
 \item{data}{data frame}
@@ -25,7 +25,7 @@ my_data_1=filter_vars(mtcars, str_input=c('mpg', 'cyl'))
 colnames(my_data_1)
 
 # Deleting all except desiered variables
-my_data_2=filter_vars(mtcars, str_input=c('mpg', 'cyl', 'qsec', 'vs'), keep=F)
+my_data_2=filter_vars(mtcars, str_input=c('mpg', 'cyl', 'qsec', 'vs'), keep=FALSE)
 colnames(my_data_2)
 }
 

@@ -1,4 +1,4 @@
-utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","variable","geom_bar","geom_text","position","guides","labs","theme","element_text","scale_y_continuous","position_dodge","ylim","guide_legend","scale_fill_discrete"),package = "funModeling", add = F)
+utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","variable","geom_bar","geom_text","position","guides","labs","theme","element_text","scale_y_continuous","position_dodge","ylim","guide_legend","scale_fill_discrete", "aes_string", "geom_boxplot","stat_summary", "theme_bw", "freq", "geom_vline", "geom_density"),package = "funModeling", add = F)
 
 
 #' @importFrom grDevices dev.off jpeg rainbow
@@ -9,6 +9,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom  ggplot2 ggplot
 #' @import dplyr
 #' @importFrom reshape2 dcast melt
+#' @importFrom utils packageVersion
 #' @importFrom scales percent
 #' @importFrom lazyeval interp
 #' @importFrom gridExtra grid.arrange

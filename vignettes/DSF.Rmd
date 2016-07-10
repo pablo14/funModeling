@@ -1,0 +1,17 @@
+
+```{r}
+library(knitr)
+knit_hooks$set(htmlcap = function(before, options, envir) {
+  if(!before) {
+    paste('<p class="caption">',options$htmlcap,"</p>",sep="")
+    }
+    })
+```
+
+```{r, htmlcap="Hello Dolly"}
+library(ggplot2)
+ggplot(diamonds,aes(price,carat)) + geom_point()
+```
+
+
+

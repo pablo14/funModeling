@@ -1,60 +1,55 @@
 ---
-title: "funModeling: "
-output: html_document
+title: "INDEX funModeling"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{INDEX funModeling}
+  \usepackage[utf8]{inputenc}
 ---
+
 
 Package funModeling
 ====
 
 ## Introduction
+
 This package covers common aspects in predictive modeling:
 
-1. **Data Preparation**
-2. **Selecting best variables (dataviz)**
-3. **Assessing model performance**
-4. **Miscellaneous**
-
-Main purpose of this package is to **teach** some predictive modeling using a practical toolbox of functions and concepts, to people who is starting in data science, small data and big data. With **special focus** on results and analysis understanding.
++  A. **Data Preparation** / **Data Profiling**
++  B. **Selecting best variables (dataviz)**
++  C. **Assessing model performance**
++  D. **Miscellaneous**
 
 
+As you can see, model creation is not included, while _almost_ everything else does. 
 
-## Part 3: Assessing model performance
+Model creation consumes around **10%** of almost any predictive modeling project; `funModeling` will try to cover remaining 90%. 
 
-**Overview**: Once the predictive model is developed with `training` data, it should be compared with `test` data (which wasn't seen by the model before). Here is presented a wrapper for the **ROC Curve** and **AUC** (area under ROC) and  the **KS** (Kolmogorov-Smirnov).
-
-
-### Creating the model
-```{r model_perfomance1}
-## Training and test data. Percentage of training cases default value=80%.
-index_sample=get_sample(data=heart_disease, percentage_tr_rows=0.8)
-
-## Generating the samples
-data_tr=heart_disease[index_sample,] 
-data_ts=heart_disease[-index_sample,]
+It´s not only the function itself, but the explanation of how to interpret results. This brings a deeper understanding of **what is being done**, boosting the freedom to use that knowledge in other situations andor using languages.
 
 
-## Creating the model only with training data
-fit_glm=glm(has_heart_disease ~ age + oldpeak, data=data_tr, family = binomial)
+## `funModeling` quick start
+
+
+### Part A: Data Preparation
+
+Full info at: 
+
+### Part B: Selecting best variables (dataviz)
+
+```{r}
+
 
 ```
 
-### ROC, AUC and KS performance metrics
-```{r model_perfomance2,  fig.height=3, fig.width=4}
-## Performance metrics for Training Data
-model_performance(fit=fit_glm, data = data_tr, target_var = "has_heart_disease")
+Full info at: 
 
-## Performance metrics for Test Data
-model_performance(fit=fit_glm, data = data_ts, target_var = "has_heart_disease")
-```
+### Part C: Assessing model performance
 
-**Key notes**
+Full info at: 
 
-* The **higher** the KS and AUC, the **better** the performance is.
-    + KS range: from 0 to 1.
-    + AUC range: from 0.5 to 1.
-* Performance metrics should be **similar** between training and test set.
+### Part D: Miscellaneous
 
-**Final comments**
+Full info at: 
 
-* KS and AUC focus on similar aspects: How well the model distinguishes the class to predict.
-* ROC and AUC article: https://en.wikipedia.org/wiki/Receiver_operating_characteristic
+
