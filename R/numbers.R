@@ -52,7 +52,6 @@
 #' #   if the top 1% has a value of 7, then all values above will be set to 7. Useful
 #' #   when modeling because outlier cases can be used.
 #' df_treated4=prep_outliers(data = df, top_percent  = 0.01, type='stop')
-
 #' @return A vector or data frame with the desired outlier transformation
 #' @export
 prep_outliers <- function(data, str_input, type=c('stop', 'set_na'), top_percent, bottom_percent)
@@ -106,12 +105,7 @@ prep_outliers <- function(data, str_input, type=c('stop', 'set_na'), top_percent
 	  }
 	}
 
-	## Return the input vector if only 1 var was desired, otherwise it returns all the data frame transformed
-	if(length(str_input)==1) {
-		return(data[, str_input[i]])
-	} else {
- 		return(data)
-	}
+	return(data)
 
 }
 
