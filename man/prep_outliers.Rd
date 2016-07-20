@@ -19,12 +19,15 @@ prep_outliers(data, str_input, type = c("stop", "set_na"), top_percent,
 \item{bottom_percent}{value from 0 to 1, represents the lowest X percentage of values to treat}
 }
 \value{
-A vector or data frame with the desired outlier transformation
+A data frame with the desired outlier transformation
 }
 \description{
 Deal with outliers by setting an 'NA value' or by 'stopping' them at a certain. The parameters: 'top_percent'/'bottom_percent' are used to consider a value as outlier.
+
 Setting NA is recommended when doing statistical analysis, parameter: type='set_na'.
 Stopping is recommended when creating a predictive model without biasing the result due to outliers, parameter: type='stop'.
+
+Automatization: `prep_outliers` skip all factor/char columns, so it can receive a whole data frame, removing outliers by finally, returning a the cleaned data.
 }
 \examples{
 # Creating data frame with outliers

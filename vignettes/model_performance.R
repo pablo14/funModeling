@@ -1,3 +1,8 @@
+## ----lib, results="hide"-------------------------------------------------
+## Loading funModeling !
+suppressMessages(library(funModeling))
+data(heart_disease)
+
 ## ----model_perfomance1---------------------------------------------------
 ## Training and test data. Percentage of training cases default value=80%.
 index_sample=get_sample(data=heart_disease, percentage_tr_rows=0.8)

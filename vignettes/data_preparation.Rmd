@@ -15,11 +15,11 @@ Data Preparation
 **Overview**: Quantity of zeros, NA, Inf, unique values; as well as the data type may lead to a good or bad model. Here an approach to cover the very first step in data modeling. 
 
 ```{r lib, results="hide"}
-## Loading fubModeling !
-suppressMessages(library(funModeling))
-data(heart_disease)
+## Loading funModeling !
+#suppressMessages(library(funModeling))
+#data(heart_disease)
 ```
-
+KJLKJSH.KJASD
 ### Checking NA, zeros, data type and unique values
 ```{r df_status}
 my_data_status=df_status(heart_disease)
@@ -75,6 +75,8 @@ Same logic goes for the lowest values, setting parameter `bottom_percent` in 0.0
 
 **Models highly affected by a biased mean**: linear regression, logistic regression, kmeans, decision trees. Random forest deals better with outliers. 
  
+**Automatization**: `prep_outliers` skip all factor/char columns, so it can receive a whole data frame, removing outliers by finally, returning a the _cleaned_ data.
+
 <br>
  
 This function covers two typical scenarios (parameter `type`):
@@ -163,7 +165,7 @@ summary(df_treated4$var1)
 ```
 
 ### Plots
-Note when `type='set_na'` 
+Note when `type='set_na'` last points disappear
 ```{r outliers_treatment4,  fig.height=3, fig.width=4}
 ggplot(df_treated3, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='set_na' (var1)")
 ggplot(df_treated4, aes(x=var1)) + geom_histogram(binwidth=.5) + ggtitle("Setting type='stop' (var1)")

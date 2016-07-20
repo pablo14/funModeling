@@ -70,7 +70,7 @@ cross_plot <- function(data, str_input, str_target, path_out, auto_binning, plot
 cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, plot_type)
 {
 	# data=heart_disease; str_input="max_heart_rate"; str_target="has_heart_disease"; auto_binning=T
-	  check_target_existance(data, str_target=str_target)
+	  check_target_existence(data, str_target=str_target)
 
 		data=remove_na_target(data, str_target=str_target)
 
@@ -147,7 +147,9 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	          panel.grid.major = element_blank(),
 	          panel.grid.minor = element_blank(),
 	  				panel.border = element_blank(),
-	    			plot.background = element_blank()) +
+	    			plot.background = element_blank(),
+	  		  	axis.title=element_text(margin=margin(40,40,40,40))
+	  		) +
 	    scale_y_continuous(labels=percent)
 
 

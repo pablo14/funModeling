@@ -74,7 +74,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="miscellaneous" class="section level1">
 <h1>Miscellaneous</h1>
 <p>Here are some functions that don’t fit in the data preparation, selecting best variables nor model accuracy testing</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading fubModeling !
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading funModeling !
 <span class="kw">suppressMessages</span>(<span class="kw">library</span>(funModeling))
 <span class="kw">data</span>(heart_disease)</code></pre></div>
 <p><br></p>
@@ -90,7 +90,7 @@ res=<span class="kw">v_compare</span>(<span class="dt">vector_x=</span>v1, <span
 <pre><code>## [1] &quot;Coincident in both: 2&quot;
 ## [1] &quot;Rows not present in X: 2&quot;
 ## [1] &quot;Rows not present in Y: 1&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Printint the keys that didn't match</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Print the keys (or values) that didn't match</span>
 res</code></pre></div>
 <pre><code>## $present_in_both
 ## [1] &quot;height&quot; &quot;weight&quot;
@@ -119,8 +119,17 @@ data_ts=heart_disease[-index_sample,] <span class="co"># excluding all rows that
 <span class="co"># percentage_tr_rows: range value from 0.1 to 0.99, default value=0.8 (80 percent of training data)</span></code></pre></div>
 <hr />
 </div>
-<div id="part-c" class="section level2">
-<h2>Part C)</h2>
+<div id="part-c-filter-variables-from-data-frame-by--string--name" class="section level2">
+<h2>Part C) Filter variables from data frame by -string- name</h2>
+<p>Based on the variables name present in <code>str_input</code>, it returns the original data frame (<code>keep=T</code>), or it deletes all except the desired ones.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Selecting variables</span>
+my_data_1=<span class="kw">filter_vars</span>(mtcars, <span class="dt">str_input=</span><span class="kw">c</span>(<span class="st">'mpg'</span>, <span class="st">'cyl'</span>))
+<span class="kw">colnames</span>(my_data_1)</code></pre></div>
+<pre><code>## [1] &quot;mpg&quot; &quot;cyl&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Deleting all except desiered variables</span>
+my_data_2=<span class="kw">filter_vars</span>(mtcars, <span class="dt">str_input=</span><span class="kw">c</span>(<span class="st">'mpg'</span>, <span class="st">'cyl'</span>, <span class="st">'qsec'</span>, <span class="st">'vs'</span>), <span class="dt">keep=</span><span class="ot">FALSE</span>)
+<span class="kw">colnames</span>(my_data_2)</code></pre></div>
+<pre><code>## [1] &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;am&quot;   &quot;gear&quot; &quot;carb&quot;</code></pre>
 </div>
 </div>
 

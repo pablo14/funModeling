@@ -24,9 +24,9 @@ check_target_2_values <- function(data, str_target)
 }
 
 
-check_target_existance <- function(data, str_target)
+check_target_existence <- function(data, str_target)
 {
-	## Checking for variable existance.
+	## Checking for variable existence.
 	if(!(str_target %in% colnames(data))) stop(sprintf("Target variable '%s' does not exists in the data", str_target))
 }
 
@@ -55,16 +55,16 @@ give_me_num_vars <- function(data, str_target=NULL)
 }
 
 #' @title Filtering variables by string name
-#' @description Based on the variables name present in 'str_input', it returns the original data frame (keep=T), or it deletes all except the desiered ones.
+#' @description Based on the variables name present in 'str_input', it returns the original data frame (keep=T), or it deletes all except the desired ones.
 #' @param data data frame
 #' @param str_input string vector containing variables to delete or to keep
-#' @param keep boolean indicating if the variables names in 'str_input' must be keept or
+#' @param keep boolean indicating if the variables names in 'str_input' must be kept or
 #' @examples
 #' # Selecting variables
 #' my_data_1=filter_vars(mtcars, str_input=c('mpg', 'cyl'))
 #' colnames(my_data_1)
 #'
-#' # Deleting all except desiered variables
+#' # Deleting all except desired variables
 #' my_data_2=filter_vars(mtcars, str_input=c('mpg', 'cyl', 'qsec', 'vs'), keep=FALSE)
 #' colnames(my_data_2)
 #' @return Filtered data frame
@@ -81,4 +81,3 @@ filter_vars <- function(data, str_input, keep=TRUE)
 		return(data[, !(names(data) %in% str_input)])
 	}
 }
-

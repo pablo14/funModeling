@@ -74,6 +74,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="assessing-model-performance" class="section level1">
 <h1>Assessing model performance</h1>
 <p><strong>Overview</strong>: Once the predictive model is developed with <code>training</code> data, it should be compared with <code>test</code> data (which wasn’t seen by the model before). Here is presented a wrapper for the <strong>ROC Curve</strong> and <strong>AUC</strong> (area under ROC) and the <strong>KS</strong> (Kolmogorov-Smirnov).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading funModeling !
+<span class="kw">suppressMessages</span>(<span class="kw">library</span>(funModeling))
+<span class="kw">data</span>(heart_disease)</code></pre></div>
 <div id="creating-the-model" class="section level3">
 <h3>Creating the model</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Training and test data. Percentage of training cases default value=80%.

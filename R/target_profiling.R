@@ -22,7 +22,7 @@ plotar <- function(data, str_input, str_target, plot_type, path_out)
 	if(!(plot_type %in% c('histdens','boxplot')))
 		stop("Value for 'plot_type' is not valid: available values: 'histdens' or 'boxplot'.")
 
-  check_target_existance(data, str_target=str_target)
+  check_target_existence(data, str_target=str_target)
 
 	data=remove_na_target(data, str_target=str_target)
 

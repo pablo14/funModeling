@@ -1,5 +1,5 @@
 ## ----lib, results="hide"-------------------------------------------------
-## Loading fubModeling !
+## Loading funModeling !
 suppressMessages(library(funModeling))
 data(heart_disease)
 
@@ -9,7 +9,7 @@ v2=c("height","weight","location","q_visits")
 
 res=v_compare(vector_x=v1, vector_y=v2)
 
-# Printint the keys that didn't match
+# Print the keys (or values) that didn't match
 res
 
 ## ------------------------------------------------------------------------
@@ -24,4 +24,13 @@ data_ts=heart_disease[-index_sample,] # excluding all rows that belong to traini
 
 # percentage_tr_rows: range value from 0.1 to 0.99, default value=0.8 (80 percent of training data)
 
+
+## ------------------------------------------------------------------------
+# Selecting variables
+my_data_1=filter_vars(mtcars, str_input=c('mpg', 'cyl'))
+colnames(my_data_1)
+
+# Deleting all except desiered variables
+my_data_2=filter_vars(mtcars, str_input=c('mpg', 'cyl', 'qsec', 'vs'), keep=FALSE)
+colnames(my_data_2)
 

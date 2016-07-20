@@ -14,7 +14,7 @@ Miscellaneous
 Here are some functions that don't fit in the data preparation, selecting best variables nor model accuracy testing
 
 ```{r lib, results="hide"}
-## Loading fubModeling !
+## Loading funModeling !
 suppressMessages(library(funModeling))
 data(heart_disease)
 ```
@@ -36,7 +36,7 @@ v2=c("height","weight","location","q_visits")
 
 res=v_compare(vector_x=v1, vector_y=v2)
 
-# Printint the keys that didn't match
+# Print the keys (or values) that didn't match
 res
 ```
 
@@ -66,4 +66,16 @@ data_ts=heart_disease[-index_sample,] # excluding all rows that belong to traini
 
 -----------------------
 
-## Part C) 
+## Part C) Filter variables from data frame by -string- name
+
+Based on the variables name present in `str_input`, it returns the original data frame (`keep=T`), or it deletes all except the desired ones.
+
+```{r}
+# Selecting variables
+my_data_1=filter_vars(mtcars, str_input=c('mpg', 'cyl'))
+colnames(my_data_1)
+
+# Deleting all except desiered variables
+my_data_2=filter_vars(mtcars, str_input=c('mpg', 'cyl', 'qsec', 'vs'), keep=FALSE)
+colnames(my_data_2)
+```

@@ -11,20 +11,20 @@ filter_vars(data, str_input, keep = TRUE)
 
 \item{str_input}{string vector containing variables to delete or to keep}
 
-\item{keep}{boolean indicating if the variables names in 'str_input' must be keept or}
+\item{keep}{boolean indicating if the variables names in 'str_input' must be kept or}
 }
 \value{
 Filtered data frame
 }
 \description{
-Based on the variables name present in 'str_input', it returns the original data frame (keep=T), or it deletes all except the desiered ones.
+Based on the variables name present in 'str_input', it returns the original data frame (keep=T), or it deletes all except the desired ones.
 }
 \examples{
 # Selecting variables
 my_data_1=filter_vars(mtcars, str_input=c('mpg', 'cyl'))
 colnames(my_data_1)
 
-# Deleting all except desiered variables
+# Deleting all except desired variables
 my_data_2=filter_vars(mtcars, str_input=c('mpg', 'cyl', 'qsec', 'vs'), keep=FALSE)
 colnames(my_data_2)
 }

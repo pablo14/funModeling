@@ -1,7 +1,7 @@
 ## ----lib, results="hide"-------------------------------------------------
-## Loading fubModeling !
-suppressMessages(library(funModeling))
-data(heart_disease)
+## Loading funModeling !
+#suppressMessages(library(funModeling))
+#data(heart_disease)
 
 ## ----df_status-----------------------------------------------------------
 my_data_status=df_status(heart_disease)

@@ -93,7 +93,7 @@ When you need to analyze different percentiles across the classes to predict. No
 ### B.1) Boxplot: Good vs. Bad variable
 plotar(data=heart_disease, str=c('max_heart_rate', 'resting_blood_pressure'),  str_target="has_heart_disease", plot_type = "boxplot")
 
-`max_heart_rate` is cleraly a better predictor than `resting_blood_pressure`.
+`max_heart_rate` is clearly a better predictor than `resting_blood_pressure`.
 
 As a general rule, a variable will rank as **more important** if boxplots are **not aligned** horizontally.
 

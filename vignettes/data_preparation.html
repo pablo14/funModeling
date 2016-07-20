@@ -76,11 +76,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="part-a-profiling-data" class="section level2">
 <h2>Part A) Profiling Data</h2>
 <p><strong>Overview</strong>: Quantity of zeros, NA, Inf, unique values; as well as the data type may lead to a good or bad model. Here an approach to cover the very first step in data modeling.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading fubModeling !
-<span class="kw">suppressMessages</span>(<span class="kw">library</span>(funModeling))
-<span class="kw">data</span>(heart_disease)</code></pre></div>
-<div id="checking-na-zeros-data-type-and-unique-values" class="section level3">
-<h3>Checking NA, zeros, data type and unique values</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading funModeling !
+<span class="co">#suppressMessages(library(funModeling))</span>
+<span class="co">#data(heart_disease)</span></code></pre></div>
+<p>KJLKJSH.KJASD ### Checking NA, zeros, data type and unique values</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_data_status=<span class="kw">df_status</span>(heart_disease)</code></pre></div>
 <pre><code>##                  variable q_zeros p_zeros q_na p_na q_inf p_inf    type
 ## 1                     age       0    0.00    0 0.00     0     0 integer
@@ -169,7 +168,6 @@ heart_disease_2=heart_disease[, !(<span class="kw">names</span>(heart_disease) %
 <hr />
 </div>
 </div>
-</div>
 <div id="part-b-treatment-of-outliers" class="section level2">
 <h2>Part B) Treatment of Outliers</h2>
 <p><strong>Overview</strong>: <code>prep_outliers</code> function tries to automatize as much as it can be outliers preparation. It focus on the values that influence heavily the mean. It sets an <code>NA</code> or stop at a certain value all outliers for the desired variables. <br></p>
@@ -177,6 +175,7 @@ heart_disease_2=heart_disease[, !(<span class="kw">names</span>(heart_disease) %
 <p><br></p>
 <p>Same logic goes for the lowest values, setting parameter <code>bottom_percent</code> in 0.01 will flag as an outlier the lowest 1% of all values.</p>
 <p><strong>Models highly affected by a biased mean</strong>: linear regression, logistic regression, kmeans, decision trees. Random forest deals better with outliers.</p>
+<p><strong>Automatization</strong>: <code>prep_outliers</code> skip all factor/char columns, so it can receive a whole data frame, removing outliers by finally, returning a the <em>cleaned</em> data.</p>
 <p><br></p>
 <p>This function covers two typical scenarios (parameter <code>type</code>):</p>
 <ul>
@@ -233,8 +232,14 @@ var1_treated=<span class="kw">prep_outliers</span>(<span class="dt">data =</span
 
 <span class="co"># now the mean (~ 0.94) is less biased, and note that: 1st, median and 3rd quartiles remaining very similar to the original variable.</span>
 <span class="kw">summary</span>(var1_treated)</code></pre></div>
-<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-## 0.000003 0.095680 0.438800 0.940900 1.326000 6.795000       11</code></pre>
+<pre><code>##       var1               var2                id           
+##  Min.   :0.000003   Min.   :  -3.2282   Length:1002       
+##  1st Qu.:0.095676   1st Qu.:  -0.6304   Class :character  
+##  Median :0.438830   Median :  -0.0352   Mode  :character  
+##  Mean   :0.940909   Mean   :   3.5512                     
+##  3rd Qu.:1.326450   3rd Qu.:   0.6242                     
+##  Max.   :6.794558   Max.   :2432.0000                     
+##  NA's   :11</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#### EXAMPLE  2: if 'str_input' is missing, then it runs for all numeric variables (which have 3 or more distinct values).
 df_treated2=<span class="kw">prep_outliers</span>(<span class="dt">data =</span> df, <span class="dt">type=</span><span class="st">'set_na'</span>, <span class="dt">top_percent  =</span> <span class="fl">0.01</span>)
 <span class="kw">summary</span>(df_treated2)</code></pre></div>
@@ -278,7 +283,7 @@ df_treated4=<span class="kw">prep_outliers</span>(<span class="dt">data =</span>
 </div>
 <div id="plots" class="section level3">
 <h3>Plots</h3>
-<p>Note when <code>type='set_na'</code></p>
+<p>Note when <code>type='set_na'</code> last points disappear</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(df_treated3, <span class="kw">aes</span>(<span class="dt">x=</span>var1)) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth=</span>.<span class="dv">5</span>) +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Setting type='set_na' (var1)&quot;</span>)</code></pre></div>
 <pre><code>## Warning: Removed 11 rows containing non-finite values (stat_bin).</code></pre>
 <p><img src="data:image/png;base64,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" alt /></p>
