@@ -93,11 +93,12 @@ histdens_target <- function(data, str_input, str_target)
 	theme_bw() +
 
   theme(
-    plot.background = element_blank()
-   ,panel.grid.minor = element_blank()
-   ,panel.border = element_blank()
+		plot.background = element_blank(),
+		panel.grid.minor = element_blank(),
+		panel.border = element_blank(),
+		axis.title.x=element_text(margin=margin(15,0,0,0)),
+		axis.title.y=element_text(margin=margin(0,33,0,0))
   )
-
 
   return(plot_histdens)
 
@@ -111,9 +112,12 @@ boxplot_target <- function(data, str_input, str_target)
 	theme_bw() +
 
   theme(
-    plot.background = element_blank()
-   ,panel.grid.minor = element_blank()
-   ,panel.border = element_blank()
+    	plot.background = element_blank(),
+			panel.grid.minor = element_blank(),
+			panel.border = element_blank(),
+			axis.title.x=element_text(margin=margin(15,0,0,0)),
+			axis.title.y=element_text(margin=margin(0,15,0,0))
+
   )
 
 	return(plot_box)
