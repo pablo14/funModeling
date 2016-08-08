@@ -1,7 +1,7 @@
 Package: funModeling
 Type: Package
-Title: Title: A Package to Learn Data Science Through the "Data Science Live Book" (Livebook.datascienceheroes.com)
-Description: Around 10% of almost any predictive modeling project is spent in predictive modeling, funModeling and the book are intended to cover remaining 90%: data preparation, profiling, selecting best variables (dataviz), assessing model performance and other functions.
+Title: Title: Learn Data Science Through the "Data Science Live Book"
+Description: Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book <http://livebook.datascienceheroes.com/> are intended to cover remaining 90%: data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
 Version: 1.2
 Date: 2016-08-08
 Author: Pablo Casas
