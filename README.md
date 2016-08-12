@@ -13,8 +13,13 @@ install.packages("funModeling")
 ```
 
 ## Description: 
-Learn data cleaning, visual data analysis and model performance assessment (KS, AUC and ROC), package core is in the vignette documentation explaining last topics as a tutorial.
+Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book *Data Science Live Book* are intended to cover remaining 90%: data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
 
-## Using the package
-
- [Tutorial on CRAN](https://cran.r-project.org/web/packages/funModeling/vignettes/funModeling.html).
+## Data Science Live Book (open source)
+<div>
+<font size="5">
+<a href="http://livebook.datascienceheroes.com" target="blank">
+<img src="http://datascienceheroes.com/img/blog/book_gray.png" alt="Data Science Live Book" style="align:left; float:left; width:42px; margin:auto;" style="border-radius:5px;">Jump to the book...
+</a>
+</font>
+</div>
