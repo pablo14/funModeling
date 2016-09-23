@@ -111,50 +111,52 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
   return(tr)
 }
 
-#' #' @title Generates lift or gain performance table
-#' #' @description It retrieves the cumulative positive rate when score is divided in (i.e.) 10 segments.
-#' #' @param data input data source
-#' #' @param str_score the variable which contains the score number
-#' #' @param str_target target variable
-#' #' @param q_segments quantity of segments to split str_score_var, valid values: 5, 10 or 20
-#' #' @examples
-#' #' fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
-#' #' heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
-#' #' lift_table(data=heart_disease,str_score='score',str_target='has_heart_disease')
-#' 
-#' #' @return lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the positive class is set to the column "Score Point"
-#' #' @export
-#' lift_table <- function(data, str_score, str_target, q_segments)
-#' {
-#' 	# The negative score produces that the highest score are at the top
-#' 	data$neg_score=-data[, str_score]
-#' 
-#' 	# Valid values for q_segments
-#' 	if(missing(q_segments))
-#' 		q_segments=10
-#' 
-#' 	if(q_segments==20)
-#' 		seq_v=seq(from=0.05, to=0.95, by=0.05)
-#' 
-#' 	if(q_segments==10 | !(q_segments %in% c(5,10,20)))
-#' 		seq_v=seq(from=0.1, to=0.9, by=0.1)
-#' 
-#' 	if(q_segments==5)
-#' 		seq_v=seq(from=0.2, to=0.8, by=0.2)
-#' 
-#' 	quantile_cuts=quantile(data$neg_score, probs=seq_v)
-#' 
-#' 	data[,str_target]=as.character(data[,str_target])
-#' 
-#' 	grp=dplyr::group_by(data, data[,str_target]) %>% dplyr::summarise(q=n()) %>% dplyr::arrange(q)
-#' 
-#' 	less_representative_class=as.character(grp[1,1])
-#' 
-#' 	lift_table=round(100*sapply(quantile_cuts, function(x) sum(data[data$neg_score<=x, str_target]==less_representative_class))/sum(data[, str_target]==less_representative_class),2)
-#' 
-#' 	lift_res=rbind(lift_table,-quantile_cuts)
-#' 	rownames(lift_res)=c("Gain", "Score Point")
-#' 	lift_res[1,]=round(lift_res[1,],2)
-#' 	print(lift_res)
-#' }
+
+#' @title Generates lift (gain) performance table
+#' @description It retrieves the cumulative positive rate when score is divided in (i.e.) 10 segments.
+#' @param data input data source
+#' @param str_score the variable which contains the score number
+#' @param str_target target variable
+#' @param q_segments quantity of segments to split str_score_var, valid values: 5, 10 or 20
+#' @examples
+#' fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
+#' heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
+#' lift_table(data=heart_disease,str_score='score',str_target='has_heart_disease')
+#'
+#' @return lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the positive class is set to the column "Score Point"
+#' @export
+lift_table <- function(data, str_score, str_target, q_segments)
+{
+  # The negative score produces that the highest score are at the top
+  data$neg_score=-data[, str_score]
+  
+  # Valid values for q_segments
+  if(missing(q_segments))
+    q_segments=10
+  
+  if(q_segments==20)
+    seq_v=seq(from=0.05, to=0.95, by=0.05)
+  
+  if(q_segments==10 | !(q_segments %in% c(5,10,20)))
+    seq_v=seq(from=0.1, to=0.9, by=0.1)
+  
+  if(q_segments==5)
+    seq_v=seq(from=0.2, to=0.8, by=0.2)
+  
+  quantile_cuts=quantile(data$neg_score, probs=seq_v)
+  
+  data[,str_target]=as.character(data[,str_target])
+  
+  grp=dplyr::group_by(data, data[,str_target]) %>% dplyr::summarise(q=n()) %>% dplyr::arrange(q)
+  
+  less_representative_class=as.character(grp[1,1])
+  
+  lift_table=round(100*sapply(quantile_cuts, function(x) sum(data[data$neg_score<=x, str_target]==less_representative_class))/sum(data[, str_target]==less_representative_class),2)
+  
+  lift_res=rbind(lift_table,-quantile_cuts)
+  rownames(lift_res)=c("Gain", "Score Point")
+  lift_res[1,]=round(lift_res[1,],2)
+  print(lift_res)
+}
+
 
