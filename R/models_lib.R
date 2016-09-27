@@ -128,35 +128,54 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 lift_table <- function(data, str_score, str_target, q_segments)
 {
   # The negative score produces that the highest score are at the top
+	# data=heart_disease; str_score='score'; str_target='has_heart_disease'; q_segments='10'
   data$neg_score=-data[, str_score]
-  
+
   # Valid values for q_segments
   if(missing(q_segments))
     q_segments=10
-  
+
   if(q_segments==20)
     seq_v=seq(from=0.05, to=0.95, by=0.05)
-  
+
   if(q_segments==10 | !(q_segments %in% c(5,10,20)))
     seq_v=seq(from=0.1, to=0.9, by=0.1)
-  
+
   if(q_segments==5)
     seq_v=seq(from=0.2, to=0.8, by=0.2)
-  
+
   quantile_cuts=quantile(data$neg_score, probs=seq_v)
-  
+
   data[,str_target]=as.character(data[,str_target])
-  
-  grp=dplyr::group_by(data, data[,str_target]) %>% dplyr::summarise(q=n()) %>% dplyr::arrange(q)
-  
+
+  grp=group_by(data, data[,str_target]) %>% summarise(q=n()) %>% arrange(q)
+
   less_representative_class=as.character(grp[1,1])
-  
+
+
   lift_table=round(100*sapply(quantile_cuts, function(x) sum(data[data$neg_score<=x, str_target]==less_representative_class))/sum(data[, str_target]==less_representative_class),2)
-  
+
+
   lift_res=rbind(lift_table,-quantile_cuts)
   rownames(lift_res)=c("Gain", "Score Point")
-  lift_res[1,]=round(lift_res[1,],2)
-  print(lift_res)
+
+  # likelihood of being less representative class (lrc)
+  likelihood_lrc=grp[1,2]/(grp[2,2]+grp[1,2])
+
+  lift_res_t=data.frame(t(lift_res))
+  lift_res_t$Population=as.character(row.names(lift_res_t))
+  row.names(lift_res_t)=NULL
+  lift_res_t=select(lift_res_t, Population, Gain, Score.Point)
+
+	lift_res_t$Lift=round(lift_res_t$Gain/100/seq_v,2)
+  lift_res_t$Gain=paste(lift_res_t$Gain, "%", sep='')
+
+  lift_res_t=select(lift_res_t, Population, Gain, Lift, Score.Point)
+
+  print(lift_res_t)
+
+
+
 }
 
 
