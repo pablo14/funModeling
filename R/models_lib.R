@@ -117,7 +117,7 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 #' @param data input data source
 #' @param str_score the variable which contains the score number
 #' @param str_target target variable
-#' @param q_segments quantity of segments to split str_score_var, valid values: 5, 10 or 20
+#' @param q_segments quantity of segments to split str_score, valid values: 5, 10 or 20
 #' @examples
 #' fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
 #' heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
@@ -144,6 +144,8 @@ lift_table <- function(data, str_score, str_target, q_segments)
   if(q_segments==5)
     seq_v=seq(from=0.2, to=0.8, by=0.2)
 
+  seq_v=c(seq_v, 1)
+
   quantile_cuts=quantile(data$neg_score, probs=seq_v)
 
   data[,str_target]=as.character(data[,str_target])
@@ -167,12 +169,31 @@ lift_table <- function(data, str_score, str_target, q_segments)
   row.names(lift_res_t)=NULL
   lift_res_t=select(lift_res_t, Population, Gain, Score.Point)
 
-	lift_res_t$Lift=round(lift_res_t$Gain/100/seq_v,2)
-  lift_res_t$Gain=paste(lift_res_t$Gain, "%", sep='')
+	lift_res_t$Population <- factor(lift_res_t$Population, levels =  lift_res_t$Population[order(seq_v)])
+
+
+
+	ggplot(lift_res_t, aes(Population, Gain, label=Gain, group=1)) + geom_line(stat="identity") +   geom_point(aes(colour=Gain) ) +
+  theme_bw() +
+		theme(
+        panel.grid.minor=element_blank(),
+        legend.title=element_blank(),
+        plot.title = element_text(vjust=2),
+  			axis.title.y=element_blank(),
+  		 	axis.ticks.y=element_blank(),
+  			axis.text.y=element_blank(),
+				panel.background = element_blank(),
+			panel.border = element_blank()
+        )+geom_label(aes(fill = factor(Gain)), colour = "white", fontface = "bold",vjust = -.5) + ylim(0, 110) + guides(fill=F) +  scale_colour_continuous(guide = FALSE)
+
+
+
+	lift_res_t$Gain=paste(lift_res_t$Gain, "%", sep='')
 
   lift_res_t=select(lift_res_t, Population, Gain, Lift, Score.Point)
 
   print(lift_res_t)
+
 
 
 
