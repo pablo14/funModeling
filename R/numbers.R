@@ -200,3 +200,44 @@ range01 <- function(var)
 {
 	return((var-min(var, na.rm=T))/(max(var, na.rm=T)-min(var, na.rm=T)))
 }
+
+#' @title Frequency table for categorical variables
+#' @description Retrieves the frequency and percentage for str_input
+#' @param data input data containing the variable to describe
+#' @param str_input string variable name
+#' @examples
+#' freq(mtcars, 'gear')
+#' @return vector with the values scaled into the 0 to 1 range
+#' @export
+freq <- function(data, str_input)
+{
+	tbl=data.frame(table(data[,str_input]))
+	tbl=rename(tbl, category=Var1, frequency=Freq) %>% arrange(-frequency)
+	tbl$percentage=round(100*tbl$frequency/sum(tbl$frequency),2)
+
+	# Plot
+	tbl_plot=tbl
+	tbl_plot$label=sprintf('%s (%s%%)', tbl_plot$frequency, tbl_plot$percentage)
+
+	tbl_plot$category=factor(tbl_plot$category, levels =  tbl_plot$category[order(tbl_plot$percentage)])
+
+	ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
+	geom_bar(stat='identity') + coord_flip() +	theme_bw() +
+	theme(
+		panel.grid.minor=element_blank(),
+		legend.title=element_blank(),
+		plot.title = element_text(vjust=2),
+		axis.ticks.y=element_blank(),
+		axis.ticks.x=element_blank(),
+		axis.text.x=element_blank(),
+		axis.text.y=element_text(size=14),
+		axis.title.x=element_text(size=14, margin=margin(15,0,0,0)),
+		axis.title.y=element_text(size=16, margin=margin(0,15,0,0))
+	) + ylab("Frequency (Percentage %)") + xlab(str_input) + geom_label(fontface = "bold", color='white', size=5) + guides(fill=F) +
+		scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.1))
+
+	return(tbl)
+}
+
+plot_freq <- function()
+
