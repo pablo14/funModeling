@@ -221,7 +221,7 @@ freq <- function(data, str_input)
 
 	tbl_plot$category=factor(tbl_plot$category, levels =  tbl_plot$category[order(tbl_plot$percentage)])
 
-	ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
+	p=ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
 	geom_bar(stat='identity') + coord_flip() +	theme_bw() +
 	theme(
 		panel.grid.minor=element_blank(),
@@ -233,11 +233,12 @@ freq <- function(data, str_input)
 		axis.text.y=element_text(size=14),
 		axis.title.x=element_text(size=14, margin=margin(15,0,0,0)),
 		axis.title.y=element_text(size=16, margin=margin(0,15,0,0))
-	) + ylab("Frequency (Percentage %)") + xlab(str_input) + geom_label(fontface = "bold", color='white', size=5) + guides(fill=F) +
-		scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.1))
+	) + ylab("Frequency / (Percentage %)") + xlab(str_input) + geom_label(color='white', size=4,label.padding = unit(.2, "lines"), hjust=0) + guides(fill=F) +
+		scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.3))
+
+	plot(p)
 
 	return(tbl)
 }
 
-plot_freq <- function()
 

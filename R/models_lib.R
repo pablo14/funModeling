@@ -166,35 +166,36 @@ lift_table <- function(data, str_score, str_target, q_segments)
 
 	## Create table
 	lift_res_t=data.frame(t(lift_res))
-	lift_res_t$Population=as.character(row.names(lift_res_t))
+	lift_res_t$Population=as.numeric(100*seq_v)
 	row.names(lift_res_t)=NULL
 	lift_res_t=select(lift_res_t, Population, Gain, Score.Point)
 
 	## Generate population factor variable to correclty display
-	lift_res_t$Population = factor(lift_res_t$Population, levels =  lift_res_t$Population[order(seq_v)])
+	#lift_res_t$Population = factor(lift_res_t$Population, levels =  lift_res_t$Population[order(seq_v)])
 
 	## Generate lift variable
 	lift_res_t$Lift=round(lift_res_t$Gain/100/seq_v,2)
+	lift_res_t_gain=rbind(c(0, 0, NA, NA), lift_res_t)
 
-	p_gain=ggplot(lift_res_t, aes(Population, Gain, label=Gain, group=1)) + geom_line(stat="identity") +   geom_point(aes(colour=Gain) ) +
-		theme_bw()  + ylab("Cumulative Gain") +
+	p_gain=
+		ggplot(lift_res_t_gain, aes(Population, Gain, label=round(Gain,1), group=1)) + geom_line(stat="identity") +   geom_point(aes(colour=Gain) ) +
+		theme_bw()  + ylab("Cumulative Gain (%)") + xlab("Population (%)")+
 		theme(
 			panel.grid.minor=element_blank(),
 			legend.title=element_blank(),
 			plot.title = element_text(vjust=2),
-			#axis.title.y=element_blank(),
 			axis.ticks.y=element_blank(),
 			axis.text.y=element_blank(),
 			panel.background = element_blank(),
 			axis.title.x=element_text(margin=margin(15,0,0,0)),
 			axis.title.y=element_text(margin=margin(0,15,0,0))
+		)+geom_label(aes(fill = factor(Gain)), colour = "white", fontface = "bold",vjust = -.5, label.padding = unit(.2, "lines")) + ylim(0, 110)  +
+			guides(fill=F) +  scale_colour_continuous(guide = FALSE) + xlim(-2, 105) + geom_segment(x = 0, y = 0, xend = 100, yend = 100,linetype="dotted")
 
-			#panel.border = element_blank()
-		)+geom_label(aes(fill = factor(Gain)), colour = "white", fontface = "bold",vjust = -.5) + ylim(0, 110) +
-			guides(fill=F) +  scale_colour_continuous(guide = FALSE)
 
-	p_lift=ggplot(lift_res_t, aes(Population, Lift, label=Lift, group=1)) + geom_line(stat="identity") + geom_point(aes(colour=Lift)) +
-		theme_bw()  + ylab("Lift") +
+	p_lift=
+		ggplot(lift_res_t, aes(Population, Lift, label=Lift, group=1)) + geom_line(stat="identity") + geom_point(aes(colour=Lift)) +
+		theme_bw()  + ylab("Lift") + xlab("Population (%)")+
 		theme(
 			panel.grid.minor=element_blank(),
 			legend.title=element_blank(),
@@ -203,20 +204,18 @@ lift_table <- function(data, str_score, str_target, q_segments)
 			axis.text.y=element_blank(),
 			axis.title.x=element_text(margin=margin(15,0,0,0)),
 			axis.title.y=element_text(margin=margin(0,15,0,0))
-		)+geom_label(fontface = "bold", vjust = -.5) + ylim(min(lift_res_t$Lift), max(lift_res_t$Lift*1.05)) +
-			guides(fill=F) + scale_colour_continuous(guide = FALSE)
+		)+geom_label(aes(fill=-Lift), size=3.5, colour="white", vjust = -.5, label.padding = unit(.2, "lines")) + ylim(min(lift_res_t$Lift), max(lift_res_t$Lift*1.1)) +
+			guides(fill=F) + scale_colour_continuous(guide = FALSE) + xlim(-2, 102)
+
 
 
 	final_plot=grid.arrange(p_gain, p_lift, ncol=2)
 	plot(final_plot)
 
-	lift_res_t$Gain=paste(lift_res_t$Gain, "%", sep='')
 
 	lift_res_t=select(lift_res_t, Population, Gain, Lift, Score.Point)
 
 	print(lift_res_t)
-
-
 
 
 }

@@ -2,18 +2,18 @@
 % Please edit documentation in R/models_lib.R
 \name{lift_table}
 \alias{lift_table}
-\title{Generates lift (gain) performance table}
+\title{Generates lift and cumulative gain performance table and plot}
 \usage{
 lift_table(data, str_score, str_target, q_segments)
 }
 \arguments{
 \item{data}{input data source}
 
-\item{str_score}{the variable which contains the score number}
+\item{str_score}{the variable which contains the score number, or likelihood of being positive class}
 
-\item{str_target}{target variable}
+\item{str_target}{target binary variable indicating class label}
 
-\item{q_segments}{quantity of segments to split str_score_var, valid values: 5, 10 or 20}
+\item{q_segments}{quantity of segments to split str_score, valid values: 5, 10 or 20}
 }
 \value{
 lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the positive class is set to the column "Score Point"
