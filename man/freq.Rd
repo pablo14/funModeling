@@ -4,12 +4,14 @@
 \alias{freq}
 \title{Frequency table for categorical variables}
 \usage{
-freq(data, str_input)
+freq(data, str_input, path_out)
 }
 \arguments{
 \item{data}{input data containing the variable to describe}
 
-\item{str_input}{string variable name}
+\item{str_input}{string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
+
+\item{path_out}{path directory, if it has a value the plot is saved}
 }
 \value{
 vector with the values scaled into the 0 to 1 range
@@ -18,6 +20,6 @@ vector with the values scaled into the 0 to 1 range
 Retrieves the frequency and percentage for str_input
 }
 \examples{
-freq(mtcars, 'gear')
+freq(data=heart_disease, str_input = c('thal','chest_pain'))
 }
 

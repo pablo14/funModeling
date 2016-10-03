@@ -113,7 +113,7 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 
 
 #' @title Generates lift and cumulative gain performance table and plot
-#' @description It retrieves the cumulative positive rate when score is divided in (i.e.) 10 segments.
+#' @description It retrieves the cumulative positive rate -gain curve- and the lift chart & plot when score is divided in 5, 10 or 20 segments. Both metrics give a quality measure about how well the model predicts. Higher values at the beginning of the population implies a better model.
 #' @param data input data source
 #' @param str_score the variable which contains the score number, or likelihood of being positive class
 #' @param str_target target binary variable indicating class label
@@ -121,11 +121,11 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 #' @examples
 #' fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
 #' heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
-#' lift_table(data=heart_disease,str_score='score',str_target='has_heart_disease')
+#' gain_lift(data=heart_disease,str_score='score',str_target='has_heart_disease')
 #'
 #' @return lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the positive class is set to the column "Score Point"
 #' @export
-lift_table <- function(data, str_score, str_target, q_segments)
+gain_lift <- function(data, str_score, str_target, q_segments)
 {
 	# The negative score produces that the highest score are at the top
 	# data=heart_disease; str_score='score'; str_target='has_heart_disease'; q_segments='10'

@@ -204,12 +204,33 @@ range01 <- function(var)
 #' @title Frequency table for categorical variables
 #' @description Retrieves the frequency and percentage for str_input
 #' @param data input data containing the variable to describe
-#' @param str_input string variable name
+#' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param path_out path directory, if it has a value the plot is saved
 #' @examples
-#' freq(mtcars, 'gear')
+#' freq(data=heart_disease, str_input = c('thal','chest_pain'))
 #' @return vector with the values scaled into the 0 to 1 range
 #' @export
-freq <- function(data, str_input)
+freq <- function(data, str_input, path_out)
+{
+	if(missing(path_out)) path_out=NA
+
+  ## If str_input then runs for all variables
+  if(missing(str_input))
+	{
+		## Excluding target variable
+  	status=df_status(data, print_results = F)
+		str_input=status[status$type %in% c("factor", "character"), 'variable']
+	}
+
+	## Iterator
+  for(i in 1:length(str_input))
+  {
+    freq_logic(data = data, str_input=str_input[i], path_out = path_out)
+  }
+
+}
+
+freq_logic <- function(data, str_input, path_out)
 {
 	tbl=data.frame(table(data[,str_input]))
 	tbl=rename(tbl, category=Var1, frequency=Freq) %>% arrange(-frequency)
@@ -236,9 +257,28 @@ freq <- function(data, str_input)
 	) + ylab("Frequency / (Percentage %)") + xlab(str_input) + geom_label(color='white', size=4,label.padding = unit(.2, "lines"), hjust=0) + guides(fill=F) +
 		scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.3))
 
-	plot(p)
 
+	## Save plot
+  if(!is.na(path_out))
+  {
+  	dir.create(path_out, showWarnings = F)
+
+    if(dir.exists(path_out))
+    {
+      jpeg(sprintf("%s/%s.jpeg", path_out, str_input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
+
+		plot(p)
+		dev.off()
+    } else {
+      warning(sprintf("The directory '%s' doesn't exists.", path_out))
+    }
+  } else {
+  	plot(p)
+  }
+
+
+	colnames(tbl)[1]=str_input
+	print(tbl)
 	return(tbl)
 }
-
 
