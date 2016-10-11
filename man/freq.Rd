@@ -4,12 +4,14 @@
 \alias{freq}
 \title{Frequency table for categorical variables}
 \usage{
-freq(data, str_input, path_out)
+freq(data, str_input, plot = T, path_out)
 }
 \arguments{
 \item{data}{input data containing the variable to describe}
 
 \item{str_input}{string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
+
+\item{plot}{flag indicating if the plot is desired, TRUE by default}
 
 \item{path_out}{path directory, if it has a value the plot is saved}
 }

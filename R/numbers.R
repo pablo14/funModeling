@@ -205,12 +205,13 @@ range01 <- function(var)
 #' @description Retrieves the frequency and percentage for str_input
 #' @param data input data containing the variable to describe
 #' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param plot flag indicating if the plot is desired, TRUE by default
 #' @param path_out path directory, if it has a value the plot is saved
 #' @examples
 #' freq(data=heart_disease, str_input = c('thal','chest_pain'))
 #' @return vector with the values scaled into the 0 to 1 range
 #' @export
-freq <- function(data, str_input, path_out)
+freq <- function(data, str_input, plot=T, path_out)
 {
 	if(missing(path_out)) path_out=NA
 
@@ -225,57 +226,60 @@ freq <- function(data, str_input, path_out)
 	## Iterator
   for(i in 1:length(str_input))
   {
-    freq_logic(data = data, str_input=str_input[i], path_out = path_out)
+    freq_logic(data = data, str_input=str_input[i], plot, path_out = path_out)
   }
 
 }
 
-freq_logic <- function(data, str_input, path_out)
+freq_logic <- function(data, str_input, plot, path_out)
 {
 	tbl=data.frame(table(data[,str_input]))
 	tbl=rename(tbl, category=Var1, frequency=Freq) %>% arrange(-frequency)
 	tbl$percentage=round(100*tbl$frequency/sum(tbl$frequency),2)
 
-	# Plot
-	tbl_plot=tbl
-	tbl_plot$label=sprintf('%s (%s%%)', tbl_plot$frequency, tbl_plot$percentage)
+	if(plot)
+	{
+		# Plot
+		tbl_plot=tbl
+		tbl_plot$label=sprintf('%s (%s%%)', tbl_plot$frequency, tbl_plot$percentage)
 
-	tbl_plot$category=factor(tbl_plot$category, levels =  tbl_plot$category[order(tbl_plot$percentage)])
+		tbl_plot$category=factor(tbl_plot$category, levels =  tbl_plot$category[order(tbl_plot$percentage)])
 
-	p=ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
-	geom_bar(stat='identity') + coord_flip() +	theme_bw() +
-	theme(
-		panel.grid.minor=element_blank(),
-		legend.title=element_blank(),
-		plot.title = element_text(vjust=2),
-		axis.ticks.y=element_blank(),
-		axis.ticks.x=element_blank(),
-		axis.text.x=element_blank(),
-		axis.text.y=element_text(size=14),
-		axis.title.x=element_text(size=14, margin=margin(15,0,0,0)),
-		axis.title.y=element_text(size=16, margin=margin(0,15,0,0))
-	) + ylab("Frequency / (Percentage %)") + xlab(str_input) + geom_label(color='white', size=4,label.padding = unit(.2, "lines"), hjust=0) + guides(fill=F) +
-		scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.3))
+		p=ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
+		geom_bar(stat='identity') + coord_flip() +	theme_bw() +
+		theme(
+			panel.grid.minor=element_blank(),
+			legend.title=element_blank(),
+			plot.title = element_text(vjust=2),
+			axis.ticks.y=element_blank(),
+			axis.ticks.x=element_blank(),
+			axis.text.x=element_blank(),
+			axis.text.y=element_text(size=14),
+			axis.title.x=element_text(size=14, margin=margin(15,0,0,0)),
+			axis.title.y=element_text(size=16, margin=margin(0,15,0,0))
+		) + ylab("Frequency / (Percentage %)") + xlab(str_input) + geom_label(color='white', size=4,label.padding = unit(.2, "lines"), hjust=0) + guides(fill=F) +
+			scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.3))
 
 
-	## Save plot
-  if(!is.na(path_out))
-  {
-  	dir.create(path_out, showWarnings = F)
+		## Save plot
+	  if(!is.na(path_out))
+	  {
+	  	dir.create(path_out, showWarnings = F)
 
-    if(dir.exists(path_out))
-    {
-      jpeg(sprintf("%s/%s.jpeg", path_out, str_input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
+	    if(dir.exists(path_out))
+	    {
+	      jpeg(sprintf("%s/%s.jpeg", path_out, str_input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
 
-		plot(p)
-		dev.off()
-    } else {
-      warning(sprintf("The directory '%s' doesn't exists.", path_out))
-    }
-  } else {
-  	plot(p)
-  }
+			plot(p)
+			dev.off()
+	    } else {
+	      warning(sprintf("The directory '%s' doesn't exists.", path_out))
+	    }
+	  } else {
+	  	plot(p)
+	  }
 
+	}
 
 	colnames(tbl)[1]=str_input
 	print(tbl)

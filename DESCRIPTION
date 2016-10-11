@@ -6,8 +6,8 @@ Description: Around 10% of almost any predictive modeling project
     livebook.datascienceheroes.com/> are intended to cover remaining 90%: data
     preparation, profiling, selecting best variables 'dataViz', assessing model
     performance and other functions.
-Version: 1.3
-Date: 2016-10-02
+Version: 1.4
+Date: 2016-10-10
 Author: Pablo Casas
 Maintainer: Pablo Casas <pabloc@datascienceheroes.com>
 License: GPL-2

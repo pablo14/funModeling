@@ -3,7 +3,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 
 #' @importFrom grDevices dev.off jpeg rainbow
 #' @importFrom graphics abline grid
-#' @importFrom stats predict
+#' @importFrom stats predict frequency
 #' @importFrom pander pandoc.table
 #' @importFrom  Hmisc cut2
 #' @importFrom  ggplot2 ggplot

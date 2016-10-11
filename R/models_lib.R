@@ -209,15 +209,11 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 
 
 
-	final_plot=grid.arrange(p_gain, p_lift, ncol=2)
-	plot(final_plot)
-
+	grid.arrange(p_gain, p_lift, ncol=2)
 
 	lift_res_t=select(lift_res_t, Population, Gain, Lift, Score.Point)
 
 	print(lift_res_t)
-
-
 }
 
 
