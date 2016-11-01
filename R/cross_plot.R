@@ -149,8 +149,8 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	          panel.grid.minor = element_blank(),
 	  				panel.border = element_blank(),
 	    			plot.background = element_blank(),
-	  		  	axis.title.x=element_text(margin=margin(15,0,0,0)),
-						axis.title.y=element_text(margin=margin(0,15,0,0))
+	  		  	axis.title.x=element_text(margin=ggplot2::margin(15,0,0,0)),
+						axis.title.y=element_text(margin=ggplot2::margin(0,15,0,0))
 	  		) +
 	    scale_y_continuous(labels=percent)
 
@@ -166,8 +166,8 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	    			panel.border = element_blank(),
     				axis.text.x=element_text(angle = 45, hjust = 1),
     				legend.title=element_blank(),
-	    			axis.title.x=element_text(margin=margin(15,0,0,0)),
-						axis.title.y=element_text(margin=margin(0,15,0,0))) +
+	    			axis.title.x=element_text(margin=ggplot2::margin(15,0,0,0)),
+						axis.title.y=element_text(margin=ggplot2::margin(0,15,0,0))) +
 	    guides(col = guide_legend(ncol = 1, byrow = TRUE)) +
 	    scale_fill_discrete(name=str_target)
 
