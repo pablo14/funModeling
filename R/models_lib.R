@@ -19,7 +19,7 @@ df_status <- function(data, print_results)
 		p_na=round(100*sapply(data, function(x) sum(is.na(x)))/nrow(data),2),
 		q_inf=sapply(data, function(x) sum(is.infinite(x))),
 		p_inf=round(100*sapply(data, function(x) sum(is.infinite(x)))/nrow(data),2),
-		type=sapply(data, class),
+		type=sapply(data, get_type_v),
 		unique=sapply(data, function(x) sum(!is.na(unique(x))))
 	)
 
@@ -33,6 +33,22 @@ df_status <- function(data, print_results)
 	## Print or return results
 	if(print_results) print(df_status_res) else return(df_status_res)
 }
+
+is.POSIXct <- function(x) inherits(x, "POSIXct")
+is.POSIXlt <- function(x) inherits(x, "POSIXlt")
+is.POSIXt <- function(x) inherits(x, "POSIXt")
+
+get_type_v <- function(x)
+{
+	## handler for posix object, because class function returns a list in this case
+	posix=ifelse(is.POSIXct(x), "POSIXct", "")
+	posix=ifelse(is.POSIXlt(x), paste(posix, "POSIXlt", sep="/"), posix)
+	posix=ifelse(is.POSIXt(x), paste(posix, "POSIXt", sep="/"), posix)
+
+	# ifnot posix..then something else
+	ifelse(posix=="", return(class(x)), return(posix))
+}
+
 
 
 #' @title Get model perfomance metrics (KS, AUC and ROC)
