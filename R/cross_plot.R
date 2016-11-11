@@ -6,7 +6,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom stats predict frequency
 #' @importFrom pander pandoc.table
 #' @importFrom  Hmisc cut2
-#' @importFrom  ggplot2 ggplot
+#' @import  ggplot2
 #' @import dplyr
 #' @importFrom reshape2 dcast melt
 #' @importFrom utils packageVersion
@@ -15,6 +15,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom gridExtra grid.arrange
 #' @importFrom ROCR prediction performance plot
 #' @importFrom stats cor quantile
+
 #' @title Cross-plotting input variable vs. target variable
 #' @description The cross_plot shows how the input variable is correlated with the target variable, getting the likelihood rates for each input's bin/bucket .
 #' @param data data frame source
@@ -84,6 +85,9 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	  target=data[, as.character(str_target)]
 	  varInput=data[, as.character(str_input)]
 
+	  q_unique_input_values=length(unique(varInput))
+
+
 	  ## Auto binning #############################
 	  if(is.numeric(varInput))
 	  {
@@ -93,11 +97,14 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 		    varInput=suppressWarnings(equal_freq(varInput, 10))
 		  }
 
-	  	if(is.na(auto_binning) & length(unique(varInput))>20)
+	  	if(is.na(auto_binning) & q_unique_input_values>20)
 		  {
 		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", str_input))
 		    varInput=suppressWarnings(equal_freq(varInput, 10))
 		  }
+	  } else {
+	  	if(q_unique_input_values>50)
+	  		stop(sprintf('Skipping "%s" variable: more than 50 unique values.', str_input))
 	  }
 	  #############################################
 
@@ -149,8 +156,8 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	          panel.grid.minor = element_blank(),
 	  				panel.border = element_blank(),
 	    			plot.background = element_blank(),
-	  		  	axis.title.x=element_text(margin=ggplot2::margin(15,0,0,0)),
-						axis.title.y=element_text(margin=ggplot2::margin(0,15,0,0))
+	  		  	axis.title.x=element_text(margin=margin(15,0,0,0)),
+						axis.title.y=element_text(margin=margin(0,15,0,0))
 	  		) +
 	    scale_y_continuous(labels=percent)
 
@@ -166,8 +173,8 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	    			panel.border = element_blank(),
     				axis.text.x=element_text(angle = 45, hjust = 1),
     				legend.title=element_blank(),
-	    			axis.title.x=element_text(margin=ggplot2::margin(15,0,0,0)),
-						axis.title.y=element_text(margin=ggplot2::margin(0,15,0,0))) +
+	    			axis.title.x=element_text(margin=margin(15,0,0,0)),
+						axis.title.y=element_text(margin=margin(0,15,0,0))) +
 	    guides(col = guide_legend(ncol = 1, byrow = TRUE)) +
 	    scale_fill_discrete(name=str_target)
 

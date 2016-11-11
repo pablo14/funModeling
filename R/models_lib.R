@@ -143,8 +143,9 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 #' @export
 gain_lift <- function(data, str_score, str_target, q_segments)
 {
+	options(scipen = 999)
 	# The negative score produces that the highest score are at the top
-	# data=heart_disease; str_score='score'; str_target='has_heart_disease'; q_segments='10'
+	# data=heart_disease; str_score='score'; str_target='has_heart_disease'; q_segments='5'
 	data$neg_score=-data[, str_score]
 
 	# Valid values for q_segments
@@ -170,12 +171,10 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 
 	less_representative_class=as.character(grp[1,1])
 
-
 	lift_table=round(100*sapply(quantile_cuts, function(x) sum(data[data$neg_score<=x, str_target]==less_representative_class))/sum(data[, str_target]==less_representative_class),2)
 
-
 	lift_res=rbind(lift_table,-quantile_cuts)
-	rownames(lift_res)=c("Gain", "Score Point")
+	rownames(lift_res)=c("Gain", "Score.Point")
 
 	# likelihood of being less representative class (lrc)
 	likelihood_lrc=grp[1,2]/(grp[2,2]+grp[1,2])
@@ -185,9 +184,6 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 	lift_res_t$Population=as.numeric(100*seq_v)
 	row.names(lift_res_t)=NULL
 	lift_res_t=select(lift_res_t, Population, Gain, Score.Point)
-
-	## Generate population factor variable to correclty display
-	#lift_res_t$Population = factor(lift_res_t$Population, levels =  lift_res_t$Population[order(seq_v)])
 
 	## Generate lift variable
 	lift_res_t$Lift=round(lift_res_t$Gain/100/seq_v,2)
@@ -206,7 +202,8 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 			axis.title.x=element_text(margin=margin(15,0,0,0)),
 			axis.title.y=element_text(margin=margin(0,15,0,0))
 		)+geom_label(aes(fill = factor(Gain)), colour = "white", fontface = "bold",vjust = -.5, label.padding = unit(.2, "lines")) + ylim(0, 110)  +
-			guides(fill=F) +  scale_colour_continuous(guide = FALSE) + xlim(-2, 105) + geom_segment(x = 0, y = 0, xend = 100, yend = 100,linetype="dotted")
+			guides(fill=F) +  scale_colour_continuous(guide = FALSE)  +
+		geom_segment(x = 0, y = 0, xend = 100, yend = 100,linetype="dotted") + scale_x_continuous(breaks = c(0, seq(10, 100, by=10)))
 
 
 	p_lift=
@@ -221,7 +218,7 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 			axis.title.x=element_text(margin=margin(15,0,0,0)),
 			axis.title.y=element_text(margin=margin(0,15,0,0))
 		)+geom_label(aes(fill=-Lift), size=3.5, colour="white", vjust = -.5, label.padding = unit(.2, "lines")) + ylim(min(lift_res_t$Lift), max(lift_res_t$Lift*1.1)) +
-			guides(fill=F) + scale_colour_continuous(guide = FALSE) + xlim(-2, 102)
+			guides(fill=F) + scale_colour_continuous(guide = FALSE) + scale_x_continuous(breaks = c(0, seq(10, 100, by=10)))
 
 
 
