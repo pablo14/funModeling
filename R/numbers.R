@@ -224,10 +224,19 @@ freq <- function(data, str_input, plot=T, path_out)
 	}
 
 	## Iterator
-  for(i in 1:length(str_input))
-  {
-    freq_logic(data = data, str_input=str_input[i], plot, path_out = path_out)
-  }
+	tot_vars=length(str_input)
+	if(tot_vars==1)
+	{
+		res=freq_logic(data = data, str_input=str_input, plot, path_out = path_out)
+		return(res)
+	} else {
+		for(i in 1:tot_vars)
+		{
+			res=freq_logic(data = data, str_input=str_input[i], plot, path_out = path_out)
+			print(res)
+		}
+
+	}
 
 }
 
@@ -236,6 +245,8 @@ freq_logic <- function(data, str_input, plot, path_out)
 	tbl=data.frame(table(data[,str_input]))
 	tbl=rename(tbl, category=Var1, frequency=Freq) %>% arrange(-frequency)
 	tbl$percentage=round(100*tbl$frequency/sum(tbl$frequency),2)
+	tbl$cumulative_perc=cumsum(tbl$percentage)
+	tbl$cumulative_perc[length(tbl$cumulative_perc)]=100.00
 
 	if(plot)
 	{
@@ -282,7 +293,6 @@ freq_logic <- function(data, str_input, plot, path_out)
 	}
 
 	colnames(tbl)[1]=str_input
-	print(tbl)
 	return(tbl)
 }
 
