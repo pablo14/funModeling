@@ -25,7 +25,7 @@ bayesian_plot(data, str_input, str_target, title = "Bayesian comparison",
 \item{path_out}{path directory, if it has a value the plot is saved}
 }
 \value{
-cross plot
+bayesian plot
 }
 \description{
 The bayesian_plot shows how the input variable is correlated with the target variable, comparing with a bayesian approach the posterior conversion rate to the target variable. It's useful to compare categorical values, which have no intrinsic ordering. If they have instrinsic ordering, cross_plot can be used instead.

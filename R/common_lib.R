@@ -54,6 +54,17 @@ give_me_num_vars <- function(data, str_target=NULL)
 	return(str_input)
 }
 
+give_me_character_vars <- function(data, str_target=NULL)
+{
+	##
+	status=df_status(data, print_results = F)
+
+	## Excluding not numeric variables
+	str_input=status[status$type %in% "factor" | status$type %in% "character", 'variable']
+
+	return(str_input)
+}
+
 #' @title Filtering variables by string name
 #' @description Based on the variables name present in 'str_input', it returns the original data frame (keep=T), or it deletes all except the desired ones.
 #' @param data data frame

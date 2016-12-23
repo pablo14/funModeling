@@ -234,7 +234,10 @@ freq <- function(data, str_input, plot=T, path_out)
 		{
 			res=freq_logic(data = data, str_input=str_input[i], plot, path_out = path_out)
 			print(res)
+			cat("", sep="\n")
 		}
+
+		return(sprintf("Variables processed: %s", paste(str_input, collapse = ", ")))
 
 	}
 
@@ -248,6 +251,20 @@ freq_logic <- function(data, str_input, plot, path_out)
 	tbl$cumulative_perc=cumsum(tbl$percentage)
 	tbl$cumulative_perc[length(tbl$cumulative_perc)]=100.00
 
+	## calculating best font size
+	uq=nrow(tbl)
+	if(uq<=10)
+	{
+		letter_size=4
+		axis_size=12
+	} else if(uq<=20){
+		letter_size=3
+		axis_size=10
+	} else {
+		letter_size=2
+		axis_size=8
+	}
+
 	if(plot)
 	{
 		# Plot
@@ -257,18 +274,19 @@ freq_logic <- function(data, str_input, plot, path_out)
 		tbl_plot$category=factor(tbl_plot$category, levels =  tbl_plot$category[order(tbl_plot$percentage)])
 
 		p=ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
-		geom_bar(stat='identity') + coord_flip() +	theme_bw() +
-		theme(
-			panel.grid.minor=element_blank(),
-			legend.title=element_blank(),
-			plot.title = element_text(vjust=2),
-			axis.ticks.y=element_blank(),
-			axis.ticks.x=element_blank(),
-			axis.text.x=element_blank(),
-			axis.text.y=element_text(size=14),
-			axis.title.x=element_text(size=14, margin=margin(15,0,0,0)),
-			axis.title.y=element_text(size=16, margin=margin(0,15,0,0))
-		) + ylab("Frequency / (Percentage %)") + xlab(str_input) + geom_label(color='white', size=4,label.padding = unit(.2, "lines"), hjust=0) + guides(fill=F) +
+			geom_bar(stat='identity') + coord_flip() +	theme_bw() +
+			theme(
+				panel.grid.minor=element_blank(),
+				legend.title=element_blank(),
+				plot.title = element_text(vjust=2),
+				axis.ticks.y=element_blank(),
+				axis.ticks.x=element_blank(),
+				axis.text.x=element_blank(),
+				axis.text.y=element_text(size=axis_size),
+				axis.title.x=element_text(size=14, margin=margin(15,0,0,0)),
+				axis.title.y=element_text(size=16, margin=margin(0,15,0,0))
+			) + ylab("Frequency / (Percentage %)") + xlab(str_input) +
+			geom_label(color='white', size=letter_size,label.padding = unit(.1, "lines"), hjust=0) + guides(fill=F) +
 			scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.3))
 
 
@@ -293,6 +311,7 @@ freq_logic <- function(data, str_input, plot, path_out)
 	}
 
 	colnames(tbl)[1]=str_input
+	tbl[,str_input]=as.character(tbl[,str_input])
 	return(tbl)
 }
 

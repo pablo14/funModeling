@@ -123,3 +123,80 @@ boxplot_target <- function(data, str_input, str_target)
 	return(plot_box)
 }
 
+#' @title Profiling analysis of categorical vs. target variable
+#' @description Retrieves a complete summary of the grouped input variable against the target variable. Type of target variable must be binary for now. A positive case will be the less representative one.
+#' It returns the total positive cases (sum_{STR_TARGET}); pecentage of total positive cases (perc_{STR_TARGET}) that fell in that category (this column sums 1); likelihood or mean of positive cases
+#'  (mean_{STR_TARGET}) measured by the total positive cases over total cases in that category;
+#' quantity of rows of that category (q_rows) and in percentage (perc_rows) -this column sums 1.
+#' @param data input data containing the variable to describe
+#' @param str_input string input variable (if empty, it runs for all categorical variable), it can take a single character value or a character vector.
+#' @param str_target string target variable. Binary or two class is only supported by now.
+#' @examples
+#' categ_analysis(country, "country", "has_flu")
+#' @return if str_input has 1 variable, it retrurns a data frame indicating all the metrics, otherwise prints in console all variable results.
+#' @export
+categ_analysis<-function(data, str_input, str_target)
+{
+	data=as.data.frame(data)
+
+	## Parameters & Error handlers #####################
+	check_target_existence(data, str_target=str_target)
+
+	data=remove_na_target(data, str_target=str_target)
+
+	check_target_2_values(data, str_target=str_target)
+	#####################################################
+
+	## If missing it runs for all categorical variables
+	if(missing(str_input))
+	{
+		data_2=data[, !(names(data) %in% str_target)]
+		str_input=give_me_character_vars(data_2)
+	}
+
+	## Iterator
+	q_vars=length(str_input)
+	if(q_vars==1)
+	{
+		res=categ_analysis_logic(data = data, str_input=str_input, str_target=str_target)
+		return(res)
+	} else {
+		for(i in 1:q_vars)
+		{
+			res=categ_analysis_logic(data = data, str_input=str_input[i], str_target=str_target)
+			print(res)
+			cat("", sep="\n")
+		}
+
+		cat("", sep="\n")
+		return(sprintf("Variables processed: %s", paste(str_input, collapse = ", ")))
+	}
+
+}
+
+categ_analysis_logic <- function(data, str_input, str_target)
+{
+	## Infering positive class as the less representative class.
+	data[,str_target]=as.character(data[,str_target])
+	grp_class=group_by(data, data[,str_target]) %>% summarise(q=n()) %>% arrange(q)
+	pred_class=as.character(grp_class[1,1])
+	tot_pos=sum(data[,str_target]==pred_class)
+
+	## profiling
+	grp=group_by_(data, str_input) %>% summarise_(sum_target=interp(~sum(var==pred_class, na.rm = TRUE), var = as.name(str_target)),
+																								perc_target=interp(~round(sum(var==pred_class, na.rm = TRUE)/tot_pos,3), var = as.name(str_target)),
+																								mean_target=interp(~round(mean(var==pred_class, na.rm = TRUE), 3), var = as.name(str_target)),
+																								q_rows=~n(),
+																								perc_rows=~round(n()/nrow(data), 3)
+	) %>% arrange(-sum_target)
+
+	colnames(grp)[colnames(grp)=='sum_target']=paste("sum", str_target, sep="_")
+	colnames(grp)[colnames(grp)=='perc_target']=paste("perc", str_target, sep="_")
+	colnames(grp)[colnames(grp)=='mean_target']=paste("mean", str_target , sep="_")
+
+	grp=data.frame(grp, stringsAsFactors = F)
+
+	return(grp)
+}
+
+
