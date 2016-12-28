@@ -2,13 +2,14 @@
 #' @description Visual correlation analysis. Plot different graphs in order to expose the inner information of any numeric variable against the target variable
 #' @param data data frame source
 #' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
-#' @param str_target string of the variable to predict
+#' @param str_target string of the variable to predict, it supports binary or multinominal values.
 #' @param plot_type Indicates the type of plot to retrieve, available values: "boxplot" or "histdens".
 #' @param path_out path directory, if it has a value the plot is saved
 #' @examples
 #' ## Run for all numeric variables
 #' plotar(data=heart_disease, str_target="has_heart_disease",
 #' 	plot_type="histdens")
+#' plotar(heart_disease, str_input = 'age', str_target = 'chest_pain', plot_type = "boxplot")
 #' @return Single or multiple plots specified by 'plot_type' parameter
 #' @export
 plotar <- function(data, str_input, str_target, plot_type, path_out)
@@ -26,7 +27,7 @@ plotar <- function(data, str_input, str_target, plot_type, path_out)
 
 	data=remove_na_target(data, str_target=str_target)
 
-	check_target_2_values(data, str_target=str_target)
+	#check_target_2_values(data, str_target=str_target)
 
 	## Convert to factor target variable
 	data[,str_target]=as.factor(data[,str_target])
@@ -183,12 +184,13 @@ categ_analysis_logic <- function(data, input, target)
 	tot_pos=sum(data[,target]==pred_class)
 
 	## profiling
-	grp=group_by_(data, input) %>% summarise_(sum_target=interp(~sum(var==pred_class, na.rm = TRUE), var = as.name(target)),
-																								perc_target=interp(~round(sum(var==pred_class, na.rm = TRUE)/tot_pos,3), var = as.name(target)),
-																								mean_target=interp(~round(mean(var==pred_class, na.rm = TRUE), 3), var = as.name(target)),
-																								q_rows=~n(),
-																								perc_rows=~round(n()/nrow(data), 3)
-	) %>% arrange(-sum_target)
+	grp=group_by_(data, input) %>% summarise_(
+					mean_target=interp(~round(mean(var==pred_class, na.rm = TRUE), 3), var = as.name(target)),
+					sum_target=interp(~sum(var==pred_class, na.rm = TRUE), var = as.name(target)),
+					perc_target=interp(~round(sum(var==pred_class, na.rm = TRUE)/tot_pos,3), var = as.name(target)),
+					q_rows=~n(),
+					perc_rows=~round(n()/nrow(data), 3)
+	) %>% arrange(-mean_target)
 
 	#colnames(grp)[colnames(grp)=='sum_target']=paste("sum", target, sep="_")
 	#colnames(grp)[colnames(grp)=='perc_target']=paste("perc", target, sep="_")
