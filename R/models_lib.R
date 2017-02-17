@@ -46,7 +46,13 @@ get_type_v <- function(x)
 	posix=ifelse(is.POSIXt(x), paste(posix, "POSIXt", sep="/"), posix)
 
 	# ifnot posix..then something else
-	ifelse(posix=="", return(class(x)), return(posix))
+	if(posix=="")
+	{
+		cl=class(x)
+		return(ifelse(length(cl)>1, paste(cl, collapse = "-"), cl))
+	} else {
+		return(posix)
+	}
 }
 
 
@@ -227,6 +233,79 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 	lift_res_t=select(lift_res_t, Population, Gain, Lift, Score.Point)
 
 	print(lift_res_t)
+}
+
+#' @title Coordinate plot and table
+#' @description Calculate the means per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means.
+#' @param data input data source
+#' @param group_var variable to make the group by
+#' @param print_table False by default, if true it retrieves the mean table used to generate the plot.
+#' @examples
+#' coord_plot(data=mtcars, "cyl")
+#' coord_plot(data=mtcars, "cyl", print_table=T)
+#' @return coordinate plot, if print_table=T it also prints a table with the average per column plus the average of the whole column
+#' @export
+coord_plot <- function(data, group_var, group_func=mean, print_table=F )
+{
+	## calculate only for numeric variables
+	status=df_status(data, print_results = F)
+	vars_to_keep=status[status$type %in% c("integer", "numeric") & status$variable != group_var, "variable"]
+
+	grp_mean=data %>% group_by_(group_var) %>% summarise_each_(funs(group_func), vars_to_keep) %>% mutate_each_(funs(round(.,2)), vars_to_keep)
+	grp_mean=data.frame(grp_mean)
+
+	data2=select(data, one_of(vars_to_keep))
+	a=select(grp_mean, -one_of(group_var))
+	b=colMeans(data2)
+
+	a=data.frame(t(data2))
+	data.frame(t(data2)) %>%
+    rowwise() %>%
+    mutate(c=mean(select(., 1:ncol(.))))
+
+	all_results=rbind(a, b)
+	all_results_report=all_results
+
+	######################################################################
+	##  Cluster profiling. Extracting main characteristics from each one.
+	######################################################################
+
+	## Scale data to plot all in only one graph
+	maxs <- apply(all_results, 2, max)
+	mins <- apply(all_results, 2, min)
+	cl_scaled=as.data.frame(scale(all_results, center = mins, scale = maxs - mins))
+
+	## Assign group number (label)
+	cl_scaled[,group_var]=c(data.frame(grp_mean[,group_var])[,1], "All")
+
+	## This transform the data according to needed input of ggplot. The best way to understand this is to take a look at the data.
+	melted_data=melt(cl_scaled, id.vars = group_var)
+
+	colourCount = length(unique(cl_scaled[,group_var]))
+	getPalette = suppressWarnings(colorRampPalette(brewer.pal(9, "Set2")))
+
+	## Coordinate plot
+	co_plot=ggplot(melted_data, aes_string(x="variable", y="value",  group=group_var, color=group_var),  environment = environment()) +
+		geom_path(alpha = 0.9) +
+		geom_point() +
+		xlab("Variables") +
+		ylab("Scaled value") +
+		ggtitle("Coordinate Plot") +
+		theme_bw() +
+		theme(axis.text.x=element_text(angle = 90, vjust = 0.5), plot.title=element_text(size=14,face="bold")) +
+		scale_fill_manual(values = getPalette(colourCount))
+
+	plot(co_plot)
+
+	if(print_table)
+	{
+		all_results_report[,group_var]=c(grp_mean[,group_var], "All")
+
+		# rearrange columns
+		nc=ncol(all_results_report)
+		all_results_report=all_results_report[,c(nc, 1:(nc-1))]
+		return(all_results_report)
+	}
 }
 
 
