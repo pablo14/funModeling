@@ -1,50 +1,45 @@
-#' @importFrom grDevices dev.off jpeg
-#' @import ggplot2
-#' @import dplyr
-#' @import lazyeval
-#' @importFrom stats cor quantile rbeta
-#' @importFrom utils head tail
 #' @title Cross-plotting input variable vs. target variable
 #' @description The bayesian_plot shows how the input variable is correlated with the target variable, comparing with a bayesian approach the posterior conversion rate to the target variable. It's useful to compare categorical values, which have no intrinsic ordering. If they have instrinsic ordering, cross_plot can be used instead.
 #' @param data data frame source
-#' @param str_input string input variable (if empty, it runs for all variables), it can take a single character value or a character vector.
-#' @param str_target string of the variable to predict
+#' @param input string input variable (if empty, it runs for all variables), it can take a single character value or a character vector.
+#' @param target string of the variable to predict
 #' @param title Plot title
 #' @param plot_all By default, if there are more than 10 unique values, the plot will only show the top and bottom 5 values, and conglomerate the rest in "Other categories".
 #' @param extra_above How many of the most likely occurrences to plot above
 #' @param extra_under How many of the least likely occurrences to plot above
 #' @param path_out path directory, if it has a value the plot is saved
 #' @examples
+#' \dontrun{
 #' ## Example 1:
-#' bayesian_plot(data=heart_disease, str_input="chest_pain", str_target="has_heart_disease")
+#' bayesian_plot(data=heart_disease, input="chest_pain", target="has_heart_disease")
 #'
 #' ## Example 2: Saving the plot into a folder:
-#' bayesian_plot(data=heart_disease, str_input="oldpeak",
-#' 		str_target="has_heart_disease", path_out = "my_folder")
+#' bayesian_plot(data=heart_disease, input="oldpeak",
+#' 		target="has_heart_disease", path_out = "my_folder")
 #'
 #' ## Example 3: Running with multiple input variables at the same time:
-#' bayesian_plot(data=heart_disease, str_input=c("gender", "age"),
-#' 		str_target="has_heart_disease", path_out = ".")
-#'
+#' bayesian_plot(data=heart_disease, input=c("gender", "age"),
+#' 		target="has_heart_disease", path_out = ".")
+#'}
 #' @return bayesian plot
 #' @export
-bayesian_plot <- function(data, str_input, str_target, title="Bayesian comparison", plot_all=F, extra_above=5, extra_under=5, path_out){
+bayesian_plot <- function(data, input, target, title="Bayesian comparison", plot_all=F, extra_above=5, extra_under=5, path_out){
 
 	## Handling missing parameters
 	if(missing(path_out)) path_out=NA
 
 	## If str_input then runs for all variables
-	if(missing(str_input))
+	if(missing(input))
 	{
 		## Excluding target variable
-		str_input=colnames(data)
-		str_input=str_input[str_input!=str_target]
+		input=colnames(data)
+		input=input[input!=target]
 	}
 
 	## Iterator
-	for(i in 1:length(str_input))
+	for(i in 1:length(input))
 	{
-		b = bayesian_plot_logic(data, str_input[i], str_target, title, plot_all, extra_above, extra_under, path_out)
+		b = bayesian_plot_logic(data, input[i], target, title, plot_all, extra_above, extra_under, path_out)
 	}
 	b
 }
@@ -108,13 +103,13 @@ bayesian_plot_logic = function(df, str_input, str_target, title, plot_all, extra
 
 		noconv = dplyr::group_by_(df, .dots=as.symbol(str_input)) %>%
 			dplyr::summarize_(sum_pos=lazyeval::interp(~sum(var), var=as.name(str_target))) %>%
-			filter_(sum_pos==0)
+			filter(sum_pos==0)
 
 		others=  unique(data.frame(rbind(nonrep[,1], noconv[,1])))
 		likelihoods = dplyr::anti_join(df, others, by=str_input) %>%
 			dplyr::group_by_(.dots=as.symbol(str_input)) %>%
 			dplyr::summarize_(likelih=interp(~sum(var) /sum(var == 0), var=as.name(str_target))) %>%
-			dplyr::arrange_(desc(likelih))
+			dplyr::arrange(desc(likelih))
 
 		top = data.frame(head(likelihoods, extra_above))[,1]
 		bottom = data.frame(tail(likelihoods, extra_under))[,1]
