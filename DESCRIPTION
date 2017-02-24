@@ -3,9 +3,9 @@ Type: Package
 Title: Learn Data Science Through the "Data Science Live Book"
 Description: Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book <http://livebook.datascienceheroes.com/> are intended to cover remaining 90%: data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
 Version: 1.6.1
-Date: 2017-02-16
+Date: 2017-02-24
 Author: Pablo Casas
-Maintainer: Pablo Casas <pabloc@datascienceheroes.com>
+Maintainer: Pablo Casas <pcasas.biz@gmail.com>
 License: GPL-2
 BugReports: https://github.com/pablo14/funModeling/issues
 URL: livebook.datascienceheroes.com

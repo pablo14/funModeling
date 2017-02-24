@@ -235,20 +235,24 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 	print(lift_res_t)
 }
 
-#' @title Describing all variables per group
-#' @description Calculate the means (or other function) per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means. It automatically adds a row representing the sumarization of the column regardless the group_var categories, this is useful to compare each segement with the whole population.
+#' @title Profiling categorical variable (rank)
+#' @description Calculate the means (or other function) per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means. It automatically adds a row representing the sumarization of the column regardless the group_var categories, this is useful to compare each segement with the whole population. It will exclude all factor/character variables.
 #' @param data input data source
 #' @param group_var variable to make the group by
 #' @param group_func the data type of this parameter is a function, not an string, this is the function to be used in the group by, the default value is: mean
+#' @param add_all_data_row flag indicating if final data contains the row: 'All_Data', which is the function applied regardless the grouping. Useful to compare with the rest of the values.
 #' @examples
+#' # default grouping function: mean
 #' desc_groups(data=mtcars, group_var="cyl")
+#'
 #' # using the median as the grouping function
 #' desc_groups(data=mtcars, group_var="cyl", group_func=median)
+#'
 #' # using the max as the grouping function
 #' desc_groups(data=mtcars, group_var="gear", group_func=max)
-#' @return coordinate plot, if print_table=T it also prints a table with the average per column plus the average of the whole column
+#' @return grouped data frame
 #' @export
-desc_groups <- function(data, group_var, group_func=mean)
+desc_groups <- function(data, group_var, group_func=mean, add_all_data_row=T)
 {
 	## calculate only for numeric variables
 	status=df_status(data, print_results = F)
@@ -274,38 +278,42 @@ desc_groups <- function(data, group_var, group_func=mean)
 	nc=ncol(all_results_report)
 	all_results_report=all_results_report[,c(nc, 1:(nc-1))]
 
-	all_results_report_t=t(all_results_report)
-	data.frame(variable=rownames(all_results_report_t), groipall_results_report_t)
+	# excluding all_data row if needed
+	if(!add_all_data_row) {
+		all_results_report=all_results_report[-nrow(all_results_report),]
+	}
 
 	return(all_results_report)
 }
 
-#' @title Describing all variables per group
-#' @description Calculate the means (or other function) per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means. It automatically adds a row representing the sumarization of the column regardless the group_var categories, this is useful to compare each segement with the whole population.
+#' @title Profiling categorical variable (rank)
+#' @description Similar to 'desc_groups' function, this one computes the rank of each value in order to quickly know what is the value in each segment that has the highest value (rank=1). 1 represent the highest number. It will exclude all factor/character variables.
 #' @param data input data source
 #' @param group_var variable to make the group by
 #' @param group_func the data type of this parameter is a function, not an string, this is the function to be used in the group by, the default value is: mean
 #' @examples
-#' desc_groups(data=mtcars, group_var="cyl")
+#' # default grouping function: mean
+#' desc_groups_rank(data=mtcars, group_var="gear")
+#'
 #' # using the median as the grouping function
 #' desc_groups(data=mtcars, group_var="cyl", group_func=median)
+#'
 #' # using the max as the grouping function
-#' desc_groups(data=mtcars, group_var="gear", group_func=max)
-#' @return coordinate plot, if print_table=T it also prints a table with the average per column plus the average of the whole column
+#' desc_groups_rank(data=mtcars, group_var="gear", group_func=max)
+#' @return grouped data frame, showing the rank instead of the absolute values/
 #' @export
 desc_groups_rank <- function(data, group_var, group_func=mean)
 {
-	d_group=desc_groups(data, group_var, group_func)
-	d_group_2=d_group[-nrow(d_group),]
+	d_group=desc_groups(data, group_var, group_func, add_all_data_row = F)
 
-	select(d_group_2, -one_of(group_var)) %>% mutate_each_(funs(dense_rank(desc(.))), group_var)
-
-	all_col=colnames(d_group_2)
+	# excluding grouping variable, from the grouping
+	all_col=colnames(d_group)
 	vars_to_group=all_col[all_col!=group_var]
 
-	d_group_2 %>% mutate_each_(funs(dense_rank(desc(.))), vars_to_group)
+	# mutate each does the group by only for variables defined in vars_to_group
+	d_group_rank=d_group %>% mutate_each_(funs(dense_rank(desc(.))), vars_to_group)
 
-	return(d_group_2)
+	return(d_group_rank)
 }
 
 #' @title Coordinate plot

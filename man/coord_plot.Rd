@@ -23,6 +23,9 @@ Calculate the means (or other function defined in 'group_func' parameter) per gr
 }
 \examples{
 coord_plot(data=mtcars, group_var="cyl")
-coord_plot(data=mtcars, "cyl", print_table=T)
+# printing the table used to generate the coord_plot
+coord_plot(data=mtcars, group_var="cyl", print_table=T)
+# printing the table used to generate the coord_plot
+coord_plot(data=mtcars, group_var="cyl", group_func=median, print_table=T)
 }
 
