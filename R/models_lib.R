@@ -323,16 +323,19 @@ desc_groups_rank <- function(data, group_var, group_func=mean)
 #' @param group_func the data type of this parameter is a function, not an string, this is the function to be used in the group by, the default value is: mean
 #' @param print_table False by default, if true it retrieves the mean table used to generate the plot.
 #' @examples
+#' \dontrun{
+#' # calculating the differences based on function 'mean'
 #' coord_plot(data=mtcars, group_var="cyl")
 #' # printing the table used to generate the coord_plot
-#' coord_plot(data=mtcars, group_var="cyl", print_table=T)
+#' coord_plot(data=mtcars, group_var="cyl", print_table=TRUE)
 #' # printing the table used to generate the coord_plot
-#' coord_plot(data=mtcars, group_var="cyl", group_func=median, print_table=T)
+#' coord_plot(data=mtcars, group_var="cyl", group_func=median, print_table=TRUE)
+#' }
 #' @return coordinate plot, if print_table=T it also prints a table with the average per column plus the average of the whole column
 #' @export
-coord_plot <- function(data, group_var, group_func=mean, print_table=F)
+coord_plot <- function(data, group_var, group_func=mean, print_table=FALSE)
 {
-	all_results_report=desc_groups(data, group_var, group_func)
+	all_results_report=desc_groups(data = data, group_var = group_var, group_func = group_func)
 
 	# excluding group_var column
 	all_results=all_results_report[,2:ncol(all_results_report)]
@@ -346,7 +349,7 @@ coord_plot <- function(data, group_var, group_func=mean, print_table=F)
 	cl_scaled=as.data.frame(scale(all_results, center = mins, scale = maxs - mins))
 
 	## Assign group number (label)
-	cl_scaled[,group_var]=c(data.frame(grp_mean[,group_var])[,1], "All_Data")
+	cl_scaled[,group_var]=all_results_report[, group_var]
 
 	## This transform the data according to needed input of ggplot. The best way to understand this is to take a look at the data.
 	melted_data=melt(cl_scaled, id.vars = group_var)

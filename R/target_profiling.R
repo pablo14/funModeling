@@ -6,10 +6,12 @@
 #' @param plot_type Indicates the type of plot to retrieve, available values: "boxplot" or "histdens".
 #' @param path_out path directory, if it has a value the plot is saved
 #' @examples
+#' \dontrun{
 #' ## Run for all numeric variables
 #' plotar(data=heart_disease, str_target="has_heart_disease",
 #' 	plot_type="histdens")
 #' plotar(heart_disease, str_input = 'age', str_target = 'chest_pain', plot_type = "boxplot")
+#' }
 #' @return Single or multiple plots specified by 'plot_type' parameter
 #' @export
 plotar <- function(data, str_input, str_target, plot_type, path_out)
