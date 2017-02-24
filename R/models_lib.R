@@ -235,17 +235,20 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 	print(lift_res_t)
 }
 
-#' @title Coordinate plot and table
-#' @description Calculate the means per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means.
+#' @title Describing all variables per group
+#' @description Calculate the means (or other function) per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means. It automatically adds a row representing the sumarization of the column regardless the group_var categories, this is useful to compare each segement with the whole population.
 #' @param data input data source
 #' @param group_var variable to make the group by
-#' @param print_table False by default, if true it retrieves the mean table used to generate the plot.
+#' @param group_func the data type of this parameter is a function, not an string, this is the function to be used in the group by, the default value is: mean
 #' @examples
-#' coord_plot(data=mtcars, "cyl")
-#' coord_plot(data=mtcars, "cyl", print_table=T)
+#' desc_groups(data=mtcars, group_var="cyl")
+#' # using the median as the grouping function
+#' desc_groups(data=mtcars, group_var="cyl", group_func=median)
+#' # using the max as the grouping function
+#' desc_groups(data=mtcars, group_var="gear", group_func=max)
 #' @return coordinate plot, if print_table=T it also prints a table with the average per column plus the average of the whole column
 #' @export
-coord_plot <- function(data, group_var, group_func=mean, print_table=F )
+desc_groups <- function(data, group_var, group_func=mean)
 {
 	## calculate only for numeric variables
 	status=df_status(data, print_results = F)
@@ -254,29 +257,88 @@ coord_plot <- function(data, group_var, group_func=mean, print_table=F )
 	grp_mean=data %>% group_by_(group_var) %>% summarise_each_(funs(group_func), vars_to_keep) %>% mutate_each_(funs(round(.,2)), vars_to_keep)
 	grp_mean=data.frame(grp_mean)
 
-	data2=select(data, one_of(vars_to_keep))
+	# select all except the group var
 	a=select(grp_mean, -one_of(group_var))
-	b=colMeans(data2)
 
-	a=data.frame(t(data2))
-	data.frame(t(data2)) %>%
-    rowwise() %>%
-    mutate(c=mean(select(., 1:ncol(.))))
+	# vars_to_keep have all num variables (excluding group_var and factor/char). Calculate 'All_Data' means per column
+	data_num=select(data, one_of(vars_to_keep))
+	b=as.data.frame(data_num) %>% summarise_each(funs(group_func))
 
+	## putting all together: the sumarization per group plus the total per column
 	all_results=rbind(a, b)
 	all_results_report=all_results
 
+	all_results_report[,group_var]=c(grp_mean[,group_var], "All_Data")
+
+	# rearrange columns
+	nc=ncol(all_results_report)
+	all_results_report=all_results_report[,c(nc, 1:(nc-1))]
+
+	all_results_report_t=t(all_results_report)
+	data.frame(variable=rownames(all_results_report_t), groipall_results_report_t)
+
+	return(all_results_report)
+}
+
+#' @title Describing all variables per group
+#' @description Calculate the means (or other function) per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means. It automatically adds a row representing the sumarization of the column regardless the group_var categories, this is useful to compare each segement with the whole population.
+#' @param data input data source
+#' @param group_var variable to make the group by
+#' @param group_func the data type of this parameter is a function, not an string, this is the function to be used in the group by, the default value is: mean
+#' @examples
+#' desc_groups(data=mtcars, group_var="cyl")
+#' # using the median as the grouping function
+#' desc_groups(data=mtcars, group_var="cyl", group_func=median)
+#' # using the max as the grouping function
+#' desc_groups(data=mtcars, group_var="gear", group_func=max)
+#' @return coordinate plot, if print_table=T it also prints a table with the average per column plus the average of the whole column
+#' @export
+desc_groups_rank <- function(data, group_var, group_func=mean)
+{
+	d_group=desc_groups(data, group_var, group_func)
+	d_group_2=d_group[-nrow(d_group),]
+
+	select(d_group_2, -one_of(group_var)) %>% mutate_each_(funs(dense_rank(desc(.))), group_var)
+
+	all_col=colnames(d_group_2)
+	vars_to_group=all_col[all_col!=group_var]
+
+	d_group_2 %>% mutate_each_(funs(dense_rank(desc(.))), vars_to_group)
+
+	return(d_group_2)
+}
+
+#' @title Coordinate plot
+#' @description Calculate the means (or other function defined in 'group_func' parameter) per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means.
+#' @param data input data source
+#' @param group_var variable to make the group by
+#' @param group_func the data type of this parameter is a function, not an string, this is the function to be used in the group by, the default value is: mean
+#' @param print_table False by default, if true it retrieves the mean table used to generate the plot.
+#' @examples
+#' coord_plot(data=mtcars, group_var="cyl")
+#' # printing the table used to generate the coord_plot
+#' coord_plot(data=mtcars, group_var="cyl", print_table=T)
+#' # printing the table used to generate the coord_plot
+#' coord_plot(data=mtcars, group_var="cyl", group_func=median, print_table=T)
+#' @return coordinate plot, if print_table=T it also prints a table with the average per column plus the average of the whole column
+#' @export
+coord_plot <- function(data, group_var, group_func=mean, print_table=F)
+{
+	all_results_report=desc_groups(data, group_var, group_func)
+
+	# excluding group_var column
+	all_results=all_results_report[,2:ncol(all_results_report)]
 	######################################################################
-	##  Cluster profiling. Extracting main characteristics from each one.
+	##  Group profiling. Extracting main characteristics from each one.
 	######################################################################
 
 	## Scale data to plot all in only one graph
-	maxs <- apply(all_results, 2, max)
-	mins <- apply(all_results, 2, min)
+	maxs=apply(all_results, 2, max)
+	mins=apply(all_results, 2, min)
 	cl_scaled=as.data.frame(scale(all_results, center = mins, scale = maxs - mins))
 
 	## Assign group number (label)
-	cl_scaled[,group_var]=c(data.frame(grp_mean[,group_var])[,1], "All")
+	cl_scaled[,group_var]=c(data.frame(grp_mean[,group_var])[,1], "All_Data")
 
 	## This transform the data according to needed input of ggplot. The best way to understand this is to take a look at the data.
 	melted_data=melt(cl_scaled, id.vars = group_var)
@@ -299,11 +361,6 @@ coord_plot <- function(data, group_var, group_func=mean, print_table=F )
 
 	if(print_table)
 	{
-		all_results_report[,group_var]=c(grp_mean[,group_var], "All")
-
-		# rearrange columns
-		nc=ncol(all_results_report)
-		all_results_report=all_results_report[,c(nc, 1:(nc-1))]
 		return(all_results_report)
 	}
 }
