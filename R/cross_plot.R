@@ -1,4 +1,4 @@
-utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","variable","geom_bar","geom_text","position","guides","labs","theme","element_text","scale_y_continuous","position_dodge","ylim","guide_legend","scale_fill_discrete", "aes_string", "geom_boxplot","stat_summary", "theme_bw", "freq", "geom_vline", "geom_density", "margin", "scale_colour_continuous",'Var1','label','coord_flip','ylab','xlab','geom_label','unit','Population','Gain','Score.Point','geom_line','geom_point','xlim','geom_segment','Lift', 'Freq', 'sum_pos', 'likelih','.','one_of','grp_mean', 'mean_target'), package = "funModeling", add = F)
+utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","variable","geom_bar","geom_text","position","guides","labs","theme","element_text","scale_y_continuous","position_dodge","ylim","guide_legend","scale_fill_discrete", "aes_string", "geom_boxplot","stat_summary", "theme_bw", "freq", "geom_vline", "geom_density", "margin", "scale_colour_continuous",'Var1','label','coord_flip','ylab','xlab','geom_label','unit','Population','Gain','Score.Point','geom_line','geom_point','xlim','geom_segment','Lift', 'Freq', 'sum_pos', 'likelih','.','one_of','grp_mean', 'mean_target',"'colorRampPalette","head","tail","rbeta"), package = "funModeling", add = F)
 
 
 #' @importFrom grDevices dev.off jpeg rainbow
@@ -16,6 +16,9 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom ROCR prediction performance plot
 #' @importFrom stats cor quantile
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom grDevices" colorRampPalette
+#' @importFrom stats kmeans rbeta hclust cutree
+#' @importFrom utils head tail
 
 #' @title Cross-plotting input variable vs. target variable
 #' @description The cross_plot shows how the input variable is correlated with the target variable, getting the likelihood rates for each input's bin/bucket .
