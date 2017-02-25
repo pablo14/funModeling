@@ -16,8 +16,8 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom ROCR prediction performance plot
 #' @importFrom stats cor quantile
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom grDevices" colorRampPalette
-#' @importFrom stats kmeans rbeta hclust cutree
+#' @importFrom grDevices colorRampPalette
+#' @importFrom stats kmeans rbeta hclust cutree dist
 #' @importFrom utils head tail
 
 #' @title Cross-plotting input variable vs. target variable
