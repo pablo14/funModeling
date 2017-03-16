@@ -1,11 +1,15 @@
+library(funModeling)
+
 ## normal ##########################################
 cross_plot(data=heart_disease, str_input="chest_pain", str_target="has_heart_disease")
 
 ## normal + auto_binning= T ##########################################
 # forcing hp to have less than 20 uniq values
 mtcars=prep_outliers(mtcars, str_input = "hp",prob = 0.80)
-# binning
+# binning 1
 cross_plot(data=mtcars, str_input="hp", str_target="vs", auto_binning = T)
+mtcars$hp_2=equal_freq(mtcars$hp, 5)
+cross_plot(data=mtcars, str_input="hp_2", str_target="vs", auto_binning = T)
 # not binning
 cross_plot(data=mtcars, str_input="hp", str_target="vs", auto_binning = F)
 
@@ -32,5 +36,5 @@ describe(heart_disease$has_heart_disease_num)
 cross_plot(data=heart_disease, str_input="chest_pain", str_target="has_heart_disease_num")
 
 
-## str_input missing ##########################################
+## str_input missing, run for every variable ##########################################
 cross_plot(data=heart_disease, str_target="has_heart_disease")

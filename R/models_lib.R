@@ -235,7 +235,7 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 	print(lift_res_t)
 }
 
-#' @title Profiling categorical variable (rank)
+#' @title Profiling categorical variable
 #' @description Calculate the means (or other function) per group to analyze how each segment behave. It scales each variable mean inti the 0 to 1 range to easily profile the groups according to its mean. It also calculate the mean regardless the grouping. This function is also useful when you want to profile cluster results in terms of its means. It automatically adds a row representing the sumarization of the column regardless the group_var categories, this is useful to compare each segement with the whole population. It will exclude all factor/character variables.
 #' @param data input data source
 #' @param group_var variable to make the group by
@@ -260,6 +260,8 @@ desc_groups <- function(data, group_var, group_func=mean, add_all_data_row=T)
 
 	grp_mean=data %>% group_by_(group_var) %>% summarise_each_(funs(group_func), vars_to_keep) %>% mutate_each_(funs(round(.,2)), vars_to_keep)
 	grp_mean=data.frame(grp_mean)
+
+	grp_mean[,group_var]=as.character(grp_mean[,group_var])
 
 	# select all except the group var
 	a=select(grp_mean, -one_of(group_var))

@@ -113,9 +113,7 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	  }
 	  #############################################
 
-
 	  ## Infer the less representative class (commonly the one to predict)
-	  #dcount=data.frame(count(target))
 	  df_target=data.frame(target=target)
 	  dcount=group_by(df_target, target) %>% summarise(freq=n()) %>% arrange(freq)
 	  ## Converting factors to character
@@ -134,7 +132,6 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	  ## Getting percentage numbers
 	  m1=group_by(dataMelt, varInput) %>% mutate(ratio = value/sum(value)) %>% select(varInput, ratio) %>% arrange(varInput)
 
-
 	  ## Order by var input
 	  m2 = dataMelt[order(dataMelt$varInput ),]
 	  dataGrafPrep=data.frame(m2,ratio=m1$ratio)
@@ -146,15 +143,19 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	  dataGrafPrep$fum=as.numeric(as.numeric(rownames(dataGrafPrep)) %% 2 == 0)
 
 	  ## Computing middle position in each sub bar
-		dataGrafPrep=group_by(dataGrafPrep, varInput) %>% mutate(position = 0.5*ratio+fum*(sum(value)-value)/sum(value))
-
+	  dataGrafPrep=group_by(dataGrafPrep, varInput) %>% mutate(position = 0.5*ratio+fum*(sum(value)-value)/sum(value))
 
 	  lGraf=list()
 
-	   ## Percentual
-	  lGraf$percentual =  ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, fill=variable))+geom_bar(position="fill",stat="identity") +
+	  ## set factor to print correct bars
+	  dataGrafPrep$variable=factor(dataGrafPrep$variable, levels = c(negClass,posClass), ordered = FALSE)
+
+	  ## Percentual
+	  lGraf$percentual = ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, fill=variable))+
+	  	geom_bar(position="fill",stat="identity") +
 	    geom_text(aes(label = sprintf("%0.1f", 100*ratio), y = position)) +
-	    guides(fill=FALSE) + labs(x = str_input, y = paste(str_target, " (%)", sep=" ")) +
+	    guides(fill=FALSE) +
+	  	labs(x = str_input, y = paste(str_target, " (%)", sep=" ")) +
 	    theme_bw() +
 	  	theme(axis.text.x=element_text(angle = 45, hjust = 1),
 	          panel.grid.major = element_blank(),
@@ -164,10 +165,10 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	  		  	axis.title.x=element_text(margin=margin(15,0,0,0)),
 						axis.title.y=element_text(margin=margin(0,15,0,0))
 	  		) +
-	    scale_y_continuous(labels=percent)
+	    scale_y_continuous(labels=percent) +
+	  	scale_fill_manual(values=c("#00BFC4","#F8766D"))
 
-
-	    ## Quantity plot
+	  ## Quantity plot
 	  lGraf$quantity = ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, ymax=max(value)*1.05, fill=variable)) +
 	  	geom_bar(position=position_dodge(),stat="identity") +
 	    geom_text(aes(label=value), position=position_dodge(width=0.9), vjust=-0.25, size=4) +
@@ -181,8 +182,7 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 	    			axis.title.x=element_text(margin=margin(15,0,0,0)),
 						axis.title.y=element_text(margin=margin(0,15,0,0))) +
 	    guides(col = guide_legend(ncol = 1, byrow = TRUE)) +
-	    scale_fill_discrete(name=str_target)
-
+	  	scale_fill_manual(values=c("#00BFC4","#F8766D"))
 
 
 	  if(plot_type=='both')
