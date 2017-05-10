@@ -152,7 +152,7 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 	options(scipen = 999)
 	# The negative score produces that the highest score are at the top
 	# data=heart_disease; str_score='score'; str_target='has_heart_disease'; q_segments='5'
-	data$neg_score=-data[, str_score]
+	data$neg_score=-data[[str_score]]
 
 	# Valid values for q_segments
 	if(missing(q_segments))
