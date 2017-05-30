@@ -1,3 +1,28 @@
+#' @title Fibonacci series
+#' @description
+#' It retrieves a vector containing the first N numbers specified in 'length' parameter of the Fibonacci series.
+#' @param length data frame
+#' @param remove_first removes the first value of the series, because first 2 elements are the same (number=1). False by default.
+#' @examples
+#' # Get the first 4 elements of Fibonacci series
+#' fibonacci(4)
+#' @return vector
+#' @export
+fibonacci <- function(length, remove_first=F)
+{
+	fibvals = numeric(length)
+	fibvals[1] = 1
+	fibvals[2] = 1
+	for (i in 3:length) {
+		fibvals[i] = fibvals[i-1] + fibvals[i-2]
+	}
+
+	if(remove_first)
+		fibvals=fibvals[-1]
+
+	return(fibvals)
+}
+
 remove_na_target <- function(data, str_target)
 {
 	## Removing NA from target variable #########

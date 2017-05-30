@@ -150,6 +150,7 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 gain_lift <- function(data, str_score, str_target, q_segments)
 {
 	options(scipen = 999)
+	data=data.frame(data)
 	# The negative score produces that the highest score are at the top
 	# data=heart_disease; str_score='score'; str_target='has_heart_disease'; q_segments='5'
 	data$neg_score=-data[, str_score]

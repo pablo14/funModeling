@@ -4,7 +4,7 @@
 \alias{freq}
 \title{Frequency table for categorical variables}
 \usage{
-freq(data, str_input, plot = T, path_out)
+freq(data, str_input = NA, plot = T, na.rm = F, path_out)
 }
 \arguments{
 \item{data}{input data containing the variable to describe}

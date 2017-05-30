@@ -19,6 +19,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom grDevices colorRampPalette
 #' @importFrom stats kmeans rbeta hclust cutree dist
 #' @importFrom utils head tail
+#' @importFrom moments skewness kurtosis
 
 #' @title Cross-plotting input variable vs. target variable
 #' @description The cross_plot shows how the input variable is correlated with the target variable, getting the likelihood rates for each input's bin/bucket .
@@ -239,17 +240,14 @@ cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, 
 #' @export
 equal_freq <- function(var, n_bins)
 {
-  n_bins_orig=n_bins
-
-  ## Call the cut2 from Hmisc
-  res=cut2(var, g = n_bins)
-
-  n_bins_final=length(unique(res))
-
-  if(n_bins_final != n_bins)
-    warning(sprintf("It's not possible to calculate with n_bins=%s, setting n_bins in: %s.", n_bins, n_bins_final))
-
-  return(res)
+	n_bins_orig = n_bins
+	res = cut2(var, g = n_bins)
+	uq=unique(res)
+	n_bins_final = length(uq)
+	if (n_bins_final != n_bins & sum(is.na(uq))==0)
+		warning(sprintf("It's not possible to calculate with n_bins=%s, setting n_bins in: %s.",
+										n_bins, n_bins_final))
+	return(res)
 }
 
 

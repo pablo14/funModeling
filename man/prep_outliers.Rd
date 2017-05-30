@@ -4,11 +4,11 @@
 \alias{prep_outliers}
 \title{Outliers Data Preparation}
 \usage{
-prep_outliers(data, str_input, type = c("stop", "set_na"), top_percent,
+prep_outliers(data, str_input = NA, type = c("stop", "set_na"), top_percent,
   bottom_percent)
 }
 \arguments{
-\item{data}{data frame}
+\item{data}{a data frame or a single vector. If it's a data frame, the function returns a data frame, otherwise it returns a vector.}
 
 \item{str_input}{string input variable (if empty, it runs for all numeric variable).}
 
@@ -27,7 +27,7 @@ Deal with outliers by setting an 'NA value' or by 'stopping' them at a certain. 
 Setting NA is recommended when doing statistical analysis, parameter: type='set_na'.
 Stopping is recommended when creating a predictive model without biasing the result due to outliers, parameter: type='stop'.
 
-Automatization: `prep_outliers` skip all factor/char columns, so it can receive a whole data frame, removing outliers by finally, returning a the cleaned data.
+The function can take a data frame, and returns the same data plus the transformations specified in the str_input parameter. Or it can take a single vector (in the same 'data' parameter), and it returns a vector.
 }
 \examples{
 # Creating data frame with outliers
@@ -47,19 +47,15 @@ summary(df)
 # checking the value for the top 1\% of highest values (percentile 0.99), which is ~ 7.05
 quantile(df$var1, 0.99)
 
-# Setting type='set_na' sets NA to the highest value)
-var1_treated=prep_outliers(data = df,  str_input = 'var1', type='set_na', top_percent  = 0.01)
+# Setting type='set_na' sets NA to the highest value specified by top_percent.
+# In this case 'data' parameter is single vector, thus it returns a single vector as well.
+var1_treated=prep_outliers(data = df$var1, type='set_na', top_percent  = 0.01)
 
-# now the mean (~ 0.94) is more accurate, and note that: 1st, median and 3rd
+# now the mean (~ 1) is more accurate, and note that: 1st, median and 3rd
 #  quartiles remaining very similar to the original variable.
 summary(var1_treated)
 
-#### EXAMPLE 2: if 'str_input' is missing, then it runs for all numeric variables
-#  (which have 3 or more distinct values).
-df_treated2=prep_outliers(data = df, type='set_na', top_percent  = 0.01)
-summary(df_treated2)
-
-#### EXAMPLE 3: Removing top 1\% (and bottom 1\%) for 'N' specific variables.
+#### EXAMPLE 2: Removing top and bottom 1\% for the specified input variables.
 vars_to_process=c('var1', 'var2')
 df_treated3=prep_outliers(data = df, str_input = vars_to_process, type='set_na',
  bottom_percent = 0.01, top_percent  = 0.01)
@@ -69,7 +65,7 @@ summary(df_treated3)
 ### PREPARING OUTLIERS FOR PREDICTIVE MODELING
 ########################################################
 
-#### EXAMPLE 4: Stopping outliers at the top 1\% value for all variables. For example
+#### EXAMPLE 3: Stopping outliers at the top 1\% value for all variables. For example
 #   if the top 1\% has a value of 7, then all values above will be set to 7. Useful
 #   when modeling because outlier cases can be used.
 df_treated4=prep_outliers(data = df, top_percent  = 0.01, type='stop')
