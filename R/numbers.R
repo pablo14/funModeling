@@ -40,7 +40,7 @@ profiling_num <- function(data, print_results=T, digits=2)
 		print_results=T
 
 	df_res=data.frame(
-		avg=sapply(data_num, function(x) mean(x, na.rm=T)),
+		mean=sapply(data_num, function(x) mean(x, na.rm=T)),
 		std_dev=sapply(data_num, function(x) sd(x, na.rm=T)),
 		p_01=sapply(data_num, function(x) quantile(x, probs = 0.01, na.rm=T)),
 		p_05=sapply(data_num, function(x) quantile(x, probs = 0.05, na.rm=T)),
@@ -57,7 +57,7 @@ profiling_num <- function(data, print_results=T, digits=2)
 		iqr=sapply(data_num, function(x) IQR(x, na.rm=T))
 	)
 
-	df_res$variation_coef=df_res$std_dev/df_res$avg
+	df_res$variation_coef=df_res$std_dev/df_res$mean
 	df_res$range_98=sprintf("[%s, %s]", round(df_res$p_01, digits), round(df_res$p_99, digits))
 	df_res$range_80=sprintf("[%s, %s]", round(df_res$p_10, digits), round(df_res$p_90, digits))
 
@@ -67,14 +67,8 @@ profiling_num <- function(data, print_results=T, digits=2)
 	df_res$variable=rownames(df_res)
 	rownames(df_res)=NULL
 
-	# setting digits
-	#options(digits=digits)
-
 	# reordering columns
-	df_res=select(df_res, variable, everything(), skewness, kurtosis, iqr)
-
-#	df_res %>% mutate_at(.cols=vars(-variable), .funs=funs(sum(., digits)))
-
+	df_res=select(df_res, variable, mean, std_dev, variation_coef, everything(), skewness, kurtosis, iqr)
 
 	## Print or return results
 	if(print_results) print(df_res) else return(df_res)
@@ -143,20 +137,15 @@ prep_outliers <- function(data, str_input=NA, type=c('stop', 'set_na'), top_perc
 	if(!(type %in% c('stop', 'set_na')))
 		stop("Parameter 'type' must be one 'stop' or 'set_na'")
 
-	## If str_input is NA then it runs for all variables
-	if(sum(is.na(str_input)>0))
+	## If str_input is NA then ask for a single vector. True if it is a single vector
+	if(sum(is.na(str_input)>0) & mode(data) %in% c("logical","numeric","complex","character"))
 	{
-		# True if it is a single vector
-		if(mode(data) %in% c("logical","numeric","complex","character"))
-		{
-			data=data.frame(var=data)
-			str_input="var"
-		} else {
-			## Keeping all categorical variables
-			data=data.frame(data)
-			status=df_status(data, print_results = F)
-			str_input=status[status$type %in% c("factor", "character"), 'variable']
-		}
+		# creates a ficticious variable called 'var'
+		data=data.frame(var=data)
+		str_input="var"
+		input_one_var=TRUE
+	} else {
+		input_one_var=FALSE
 	}
 
 
@@ -196,7 +185,8 @@ prep_outliers <- function(data, str_input=NA, type=c('stop', 'set_na'), top_perc
 		}
 	}
 
-	return(data)
+	ifelse(input_one_var,  return(data$var), return(data))
+
 }
 
 #' @title Compare two vectors
