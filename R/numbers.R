@@ -1,8 +1,8 @@
 #' @title Plotting numerical data
 #' @description
-#' One plot containing all the numerical variables distribution
+#' One plot containing all the histograms for numerical variables. NA values will not be displayed.
 #' @param data data frame
-#' @param bins number of bar to plot each histogram, 10 by default
+#' @param bins number of bars (bins) to plot each histogram, 10 by default
 #' @examples
 #' plot_num(mtcars)
 #' @return plot containing all numerical variables
@@ -13,7 +13,7 @@ plot_num <- function(data, bins=10)
 	# The official documentation is quite clear about it: http://seananderson.ca/2013/10/19/reshape.html
 	wide_data=suppressMessages(melt(data))
 	p=ggplot(data = wide_data, mapping = aes(x = value)) +
-		geom_histogram(bins = 10) + facet_wrap(~variable, scales = 'free_x') +  aes(fill = variable) + guides(fill=FALSE)
+		geom_histogram(bins = bins, na.rm=T) + facet_wrap(~variable, scales = 'free_x') +  aes(fill = variable) + guides(fill=FALSE)
 
 	p
 
@@ -23,7 +23,7 @@ plot_num <- function(data, bins=10)
 #' @title Profiling numerical data
 #' @description
 #' Get a metric table with many indicators for all numerical variables, automatically skipping the non-numerical variables. Current metrics are:
-#' mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewness, kurtosis, iqr: inter quartile range, variation_coef: the ratio of sd/mean, range_98 is the limit for which the 98% of fall, range_80 similar to range_98 but with 80%
+#' mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewness, kurtosis, iqr: inter quartile range, variation_coef: the ratio of sd/mean, range_98 is the limit for which the 98% of fall, range_80 similar to range_98 but with 80%. All NA values will be skipped from calculations.
 #' @param data data frame
 #' @param print_results prints the result, TRUE by default.
 #' @param digits the number of digits to show the result, 2 by default.
@@ -34,10 +34,15 @@ plot_num <- function(data, bins=10)
 profiling_num <- function(data, print_results=T, digits=2)
 {
 	options(digits=digits)
-	data_num=data[give_me_num_vars(data)]
+
+	## Keeping all non factor nor char variables
+	status=df_status(data, print_results = F)
+	vars_num=filter(status,!(type %in% c("character", "factor"))) %>% .$variable
+	data_num=select(data, one_of(vars_num))
 
 	if(missing(print_results))
 		print_results=T
+
 
 	df_res=data.frame(
 		mean=sapply(data_num, function(x) mean(x, na.rm=T)),
@@ -68,7 +73,7 @@ profiling_num <- function(data, print_results=T, digits=2)
 	rownames(df_res)=NULL
 
 	# reordering columns
-	df_res=select(df_res, variable, mean, std_dev, variation_coef, everything(), skewness, kurtosis, iqr)
+	df_res=select(df_res, variable, mean, std_dev, variation_coef, everything(), iqr, skewness, kurtosis)
 
 	## Print or return results
 	if(print_results) print(df_res) else return(df_res)
@@ -91,6 +96,7 @@ profiling_num <- function(data, print_results=T, digits=2)
 #' @param bottom_percent value from 0 to 1, represents the lowest X percentage of values to treat
 #' @param type can be 'stop' or 'set_na', in the first case the original variable is stopped at the desiered percentile, 'set_na'  sets NA to the same values.
 #' @examples
+#' \dontrun{
 #' # Creating data frame with outliers
 #' set.seed(10)
 #' df=data.frame(var1=rchisq(1000,df = 1), var2=rnorm(1000))
@@ -104,7 +110,7 @@ profiling_num <- function(data, print_results=T, digits=2)
 #' ### PREPARING OUTLIERS FOR DESCRIPTIVE STATISTICS
 #' ########################################################
 #'
-#' #### EXAMPLE 1: Removing top 1% for a single variable
+#' #### EXAMPLE 1: Removing top 1%% for a single variable
 #' # checking the value for the top 1% of highest values (percentile 0.99), which is ~ 7.05
 #' quantile(df$var1, 0.99)
 #'
@@ -126,10 +132,11 @@ profiling_num <- function(data, print_results=T, digits=2)
 #' ### PREPARING OUTLIERS FOR PREDICTIVE MODELING
 #' ########################################################
 #'
-#' #### EXAMPLE 3: Stopping outliers at the top 1% value for all variables. For example
-#' #   if the top 1% has a value of 7, then all values above will be set to 7. Useful
+#' #### EXAMPLE 3: Stopping outliers at the top 1%% value for all variables. For example
+#' #   if the top 1%% has a value of 7, then all values above will be set to 7. Useful
 #' #   when modeling because outlier cases can be used.
 #' df_treated4=prep_outliers(data = df, top_percent  = 0.01, type='stop')
+#' }
 #' @return A data frame with the desired outlier transformation
 #' @export
 prep_outliers <- function(data, str_input=NA, type=c('stop', 'set_na'), top_percent, bottom_percent)
@@ -161,7 +168,7 @@ prep_outliers <- function(data, str_input=NA, type=c('stop', 'set_na'), top_perc
 	  for(i in 1:length(str_input))
 	  {
 	   	top_value=quantile(data[,str_input[i]], probs=(1-top_percent), names=F, na.rm=T)
-	   	data[, str_input[i]][data[, str_input[i]]>top_value]=ifelse(type=='stop', top_value, NA)
+	   	data[, str_input[i]][data[, str_input[i]]>=top_value]=ifelse(type=='stop', top_value, NA)
 
 	   	if(length(na.omit(unique(data[, str_input[i]])))==1)
 	   	{
@@ -176,7 +183,7 @@ prep_outliers <- function(data, str_input=NA, type=c('stop', 'set_na'), top_perc
 	  for(i in 1:length(str_input))
 	  {
 	   	bottom_value=quantile(data[,str_input[i]], probs=bottom_percent, names=F, na.rm=T)
-	   	data[, str_input[i]][data[, str_input[i]]<bottom_value]=ifelse(type=='stop', bottom_value, NA)
+	   	data[, str_input[i]][data[, str_input[i]]<=bottom_value]=ifelse(type=='stop', bottom_value, NA)
 	  }
 
 		if(length(na.omit(unique(data[, str_input[i]])))==1)
@@ -283,12 +290,14 @@ range01 <- function(var)
 #' @param data input data containing the variable to describe
 #' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param plot flag indicating if the plot is desired, TRUE by default
+#' @param na.rm flag indicating if NA values must be included in the analysis, TRUE by default
 #' @param path_out path directory, if it has a value the plot is saved
 #' @examples
+#' freq(data=heart_disease$thal)
 #' freq(data=heart_disease, str_input = c('thal','chest_pain'))
 #' @return vector with the values scaled into the 0 to 1 range
 #' @export
-freq <- function(data, str_input=NA, plot=T, na.rm=F, path_out)
+freq <- function(data, str_input=NA, plot=T, na.rm=T, path_out)
 {
 	if(missing(path_out)) path_out=NA
 
@@ -348,10 +357,10 @@ freq_logic <- function(data, str_input, plot, na.rm, path_out)
 	uq=nrow(tbl)
 	if(uq<=10)
 	{
-		letter_size=4
+		letter_size=3
 		axis_size=12
 	} else if(uq<=20){
-		letter_size=3
+		letter_size=2.5
 		axis_size=10
 	} else {
 		letter_size=2
@@ -366,43 +375,55 @@ freq_logic <- function(data, str_input, plot, na.rm, path_out)
 
 		tbl_plot$category=factor(tbl_plot$category, levels =  tbl_plot$category[order(tbl_plot$percentage)])
 
-		p=ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
-			geom_bar(stat='identity') + coord_flip() +	theme_bw() +
-			theme(
-				panel.grid.minor=element_blank(),
-				legend.title=element_blank(),
-				plot.title = element_text(vjust=2),
-				axis.ticks.y=element_blank(),
-				axis.ticks.x=element_blank(),
-				axis.text.x=element_blank(),
-				axis.text.y=element_text(size=axis_size),
-				axis.title.x=element_text(size=12, margin=margin(10,0,0,0)),
-				axis.title.y=element_text(size=14, margin=margin(0,10,0,0))
-			) + ylab("Frequency / (Percentage %)") + xlab(str_input) +
-			geom_label(color='white', size=letter_size, hjust=0, position = position_stack(vjust = 0.0)) + guides(fill=F) +
-			scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.15))
 
-		## Save plot
-		if(!is.na(path_out))
+		if(nrow(tbl_plot)<200)
 		{
-			dir.create(path_out, showWarnings = F)
+			p=ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
+				geom_bar(stat='identity') + coord_flip() +	theme_bw() +
+				theme(
+					panel.grid.minor=element_blank(),
+						panel.grid.major =element_blank(),
+					legend.title=element_blank(),
+					plot.title = element_text(vjust=2),
+					axis.ticks.y=element_blank(),
+					axis.ticks.x=element_blank(),
+					axis.text.x=element_blank(),
+					axis.text.y=element_text(size=axis_size),
+					axis.title.x=element_text(size=12, margin=margin(10,0,0,0)),
+					axis.title.y=element_text(size=14, margin=margin(0,10,0,0))
+				) + ylab("Frequency / (Percentage %)") + xlab(str_input) +
+				geom_text( color="#151515", size=letter_size, hjust=-.06) +
+				guides(fill=F) +
+				scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.2))
 
-			if(dir.exists(path_out))
+	## Save plot
+			if(!is.na(path_out))
 			{
-				jpeg(sprintf("%s/%s.jpeg", path_out, str_input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
+				dir.create(path_out, showWarnings = F)
 
-				plot(p)
-				dev.off()
+				if(dir.exists(path_out))
+				{
+					jpeg(sprintf("%s/%s.jpeg", path_out, str_input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
+
+					plot(p)
+					dev.off()
+				} else {
+					warning(sprintf("The directory '%s' doesn't exists.", path_out))
+				}
 			} else {
-				warning(sprintf("The directory '%s' doesn't exists.", path_out))
+				plot(p)
 			}
+
 		} else {
-			plot(p)
+			message_high_card=sprintf("Skipping plot for variable '%s' (more than 200 categories)", str_input)
 		}
 
 	}
 
 	colnames(tbl)[1]=str_input
 	tbl[,str_input]=as.character(tbl[,str_input])
+
+	if(exists("message_high_card")) {warning(message_high_card)}
+
 	return(tbl)
 }

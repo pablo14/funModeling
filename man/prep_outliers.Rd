@@ -30,6 +30,7 @@ Stopping is recommended when creating a predictive model without biasing the res
 The function can take a data frame, and returns the same data plus the transformations specified in the str_input parameter. Or it can take a single vector (in the same 'data' parameter), and it returns a vector.
 }
 \examples{
+\dontrun{
 # Creating data frame with outliers
 set.seed(10)
 df=data.frame(var1=rchisq(1000,df = 1), var2=rnorm(1000))
@@ -43,7 +44,7 @@ summary(df)
 ### PREPARING OUTLIERS FOR DESCRIPTIVE STATISTICS
 ########################################################
 
-#### EXAMPLE 1: Removing top 1\% for a single variable
+#### EXAMPLE 1: Removing top 1\%\% for a single variable
 # checking the value for the top 1\% of highest values (percentile 0.99), which is ~ 7.05
 quantile(df$var1, 0.99)
 
@@ -65,9 +66,10 @@ summary(df_treated3)
 ### PREPARING OUTLIERS FOR PREDICTIVE MODELING
 ########################################################
 
-#### EXAMPLE 3: Stopping outliers at the top 1\% value for all variables. For example
-#   if the top 1\% has a value of 7, then all values above will be set to 7. Useful
+#### EXAMPLE 3: Stopping outliers at the top 1\%\% value for all variables. For example
+#   if the top 1\%\% has a value of 7, then all values above will be set to 7. Useful
 #   when modeling because outlier cases can be used.
 df_treated4=prep_outliers(data = df, top_percent  = 0.01, type='stop')
+}
 }
 

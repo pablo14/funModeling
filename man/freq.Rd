@@ -4,7 +4,7 @@
 \alias{freq}
 \title{Frequency table for categorical variables}
 \usage{
-freq(data, str_input = NA, plot = T, na.rm = F, path_out)
+freq(data, str_input = NA, plot = T, na.rm = T, path_out)
 }
 \arguments{
 \item{data}{input data containing the variable to describe}
@@ -12,6 +12,8 @@ freq(data, str_input = NA, plot = T, na.rm = F, path_out)
 \item{str_input}{string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
 
 \item{plot}{flag indicating if the plot is desired, TRUE by default}
+
+\item{na.rm}{flag indicating if NA values must be included in the analysis, TRUE by default}
 
 \item{path_out}{path directory, if it has a value the plot is saved}
 }
@@ -22,6 +24,7 @@ vector with the values scaled into the 0 to 1 range
 Retrieves the frequency and percentage for str_input
 }
 \examples{
+freq(data=heart_disease$thal)
 freq(data=heart_disease, str_input = c('thal','chest_pain'))
 }
 

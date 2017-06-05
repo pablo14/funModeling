@@ -27,7 +27,9 @@ df_equivalence is a data frame containing the str_input category and the new cat
 Reduce the cardinality of an input variable based on a target -binary for now- variable based on attribitues of accuracy and representativity, for both input and target variable. It uses a cluster model to create the new groups. Full documentation can be found at: <http://http://livebook.datascienceheroes.com/data_preparation/high_cardinality_predictive_modeling.html/>
 }
 \examples{
+\dontrun{
 # Reducing quantity of countries based on has_flu variable
 auto_grouping(data=data_country, input='country', target="has_flu", n_groups=8)
+}
 }
 

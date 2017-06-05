@@ -1,9 +1,9 @@
 Package: funModeling
 Type: Package
-Title: Data preparation tool-box used in the "Data Science Live Book"
-Description: Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book <http://livebook.datascienceheroes.com/> are intended to cover remaining 90%: exploratory data analysis, data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
+Title: Exploratory Data Analysis and Data Preparation Tool-Box Book
+Description: Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book Data Science Live Book (<http://livebook.datascienceheroes.com/>) are intended to cover remaining 90%: data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
 Version: 1.6.3
-Date: 2017-05-30
+Date: 2017-06-03
 Author: Pablo Casas
 Maintainer: Pablo Casas <pcasas.biz@gmail.com>
 License: GPL-2

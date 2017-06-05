@@ -7,8 +7,10 @@
 #' @param model is the clustering model used to create the grouping, supported models: "kmeans" (default) or hclust.
 #' @param seed optional, random number used internally for the k-means, changing this value will change the model
 #' @examples
+#' \dontrun{
 #' # Reducing quantity of countries based on has_flu variable
 #' auto_grouping(data=data_country, input='country', target="has_flu", n_groups=8)
+#' }
 #' @return A list containing 3 elements: recateg_results which contains the description of the target variable with the new groups;
 #' df_equivalence is a data frame containing the str_input category and the new category; fit_cluster which is the cluster model used to do the re-grouping
 #' @export
