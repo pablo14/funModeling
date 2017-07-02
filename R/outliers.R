@@ -1,0 +1,246 @@
+#' @title Outliers Data Preparation
+#' @description
+#' Deal with outliers by setting an 'NA value' or by 'stopping' them at a certain. The parameters: 'top_percent'/'bottom_percent' are used to consider a value as outlier.
+#'
+#' Setting NA is recommended when doing statistical analysis, parameter: type='set_na'.
+#' Stopping is recommended when creating a predictive model without biasing the result due to outliers, parameter: type='stop'.
+#'
+#' The function can take a data frame, and returns the same data plus the transformations specified in the str_input parameter. Or it can take a single vector (in the same 'data' parameter), and it returns a vector.
+#'
+#' @param data a data frame or a single vector. If it's a data frame, the function returns a data frame, otherwise it returns a vector.
+#' @param str_input string input variable (if empty, it runs for all numeric variable).
+#' @param type can be 'stop' or 'set_na', in the first case the original variable is stopped at the desiered percentile, 'set_na'  sets NA to the same values.
+#' @param method indicates the method used to flag the outliers, it can be: "bottom_top", "tukey" or "hampel".
+#' @param top_percent value from 0 to 1, represents the highest X percentage of values to treat. Valid only when method="bottom_top".
+#' @param bottom_percent value from 0 to 1, represents the lowest X percentage of values to treat. Valid only when method="bottom_top".
+#' @examples
+#' \dontrun{
+#' # Creating data frame with outliers
+#' set.seed(10)
+#' df=data.frame(var1=rchisq(1000,df = 1), var2=rnorm(1000))
+#' df=rbind(df, 1135, 2432) # forcing outliers
+#' df$id=as.character(seq(1:1002))
+#'
+#' # for var1: mean is ~ 4.56, and max 2432
+#' summary(df)
+#'
+#' ########################################################
+#' ### PREPARING OUTLIERS FOR DESCRIPTIVE STATISTICS
+#' ########################################################
+#'
+#' #### EXAMPLE 1: Removing top 1%% for a single variable
+#' # checking the value for the top 1% of highest values (percentile 0.99), which is ~ 7.05
+#' quantile(df$var1, 0.99)
+#'
+#' # Setting type='set_na' sets NA to the highest value specified by top_percent.
+#' # In this case 'data' parameter is single vector, thus it returns a single vector as well.
+#' var1_treated=prep_outliers(data = df$var1, type='set_na', top_percent  = 0.01,method = "bottom_top")
+#'
+#' # now the mean (~ 1) is more accurate, and note that: 1st, median and 3rd
+#' #  quartiles remaining very similar to the original variable.
+#' summary(var1_treated)
+#'
+#' #### EXAMPLE 2: Removing top and bottom 1% for the specified input variables.
+#' vars_to_process=c('var1', 'var2')
+#' df_treated3=prep_outliers(data = df, str_input = vars_to_process, type='set_na',
+#'  bottom_percent = 0.01, top_percent  = 0.01, method = "bottom_top")
+#' summary(df_treated3)
+#'
+#' ########################################################
+#' ### PREPARING OUTLIERS FOR PREDICTIVE MODELING
+#' ########################################################
+#'
+#' data_prep_h=funModeling::prep_outliers(data = heart_disease, str_input = c('age','resting_blood_pressure'), method = "hampel",  type='stop')
+#'
+#' # Using Hampel method to flag outliers:
+#'summary(heart_disease$age);summary(data_prep_h$age) # it changed from 29 to 29.31, and the max remains the same at 77
+#'hampel_outlier(heart_disease$age) # checking the thresholds
+#'
+#' }
+#' @return A data frame with the desired outlier transformation
+#' @export
+prep_outliers <- function(data, str_input=NA, type=c('stop', 'set_na'), method=c("bottom_top", "tukey", "hampel"), bottom_percent, top_percent)
+{
+	if(!(type %in% c('stop', 'set_na')))
+		stop("Parameter 'type' must be one of the following 'stop' or 'set_na'")
+
+	if(!(method %in% c("bottom_top", "tukey", "hampel")))
+		stop("Parameter 'method' must be one of the following 'bottom_top', 'tukey' or 'hampel'")
+
+	if(method !="bottom_top" & (!missing(top_percent) | !missing(bottom_percent)))
+		warning("Parameters 'bottom_percent' and/or 'top_percent' will be ignored. Only valid when method='bottom_top'")
+
+	## If str_input is NA then ask for a single vector. True if it is a single vector
+	if(sum(is.na(str_input)>0) & mode(data) %in% c("logical","numeric","complex","character"))
+	{
+		# creates a ficticious variable called 'var'
+		data=data.frame(var=data)
+		str_input="var"
+		input_one_var=TRUE
+	} else {
+		input_one_var=FALSE
+	}
+
+
+	#########################################################
+	### Stopping and Setting NA processing
+	#########################################################
+	if(missing(top_percent) & missing(bottom_percent) & method=="bottom_top")
+		stop("Parameters 'top_percent' and 'bottom_percent' cannot be missing at the same time if method is 'bottom_top'.")
+
+	## Logic for top value ##################################################
+	warn_mess_top=NA
+	for(i in 1:length(str_input))
+	{
+		cur_var=str_input[i]
+		x=data[[cur_var]]
+
+		if(method=="bottom_top" & !missing(top_percent))
+		{
+			top_value=quantile(x, probs=(1-top_percent), names=F, na.rm=T)
+		} else if(method=="tukey")
+		{
+			top_value=tukey_outlier(x)[2]
+		} else if(method=="hampel")
+		{
+			top_value=hampel_outlier(x)[2]
+		} else if(missing(bottom_percent)){
+				stop(sprintf("Method '%s' is not implemented.", method))
+		}
+
+		bkp_var=x
+		x[x>=top_value]=ifelse(type=='stop', top_value, NA)
+
+		if(length(na.omit(unique(x)))==1)
+		{
+			## if there is only 1 unique value, then recover the original value (thus no transformation) and warn it
+			x=bkp_var
+			if(is.na(warn_mess_top))
+			{
+				warn_mess_top=cur_var
+			} else {
+				warn_mess_top=paste(warn_mess_top, cur_var, sep=", ")
+			}
+		}
+
+		## assign the final value to the input data frame
+		data[[cur_var]]=x
+	}
+
+	if(!is.na(warn_mess_top))
+	{
+		warning(sprintf("Skip the transformation (top value) for some variables because the threshold would have left them with 1 unique value. Variable list printed in the console."))
+		print(sprintf("Variables to adjust top threshold: %s", warn_mess_top))
+	}
+
+
+	## Logic for bottom value ######################################################
+	warn_mess_bott=NA
+
+	for(i in 1:length(str_input))
+	{
+		cur_var=str_input[i]
+		x=data[[cur_var]]
+
+		if(method=="bottom_top" & !missing(bottom_percent))
+		{
+			bottom_value=quantile(x, probs=bottom_percent, names=F, na.rm=T)
+		} else if(method=="bottom_top" & !missing(top_percent))
+		{
+			# it was bottom_top and top without bottom, it has to finish
+			ifelse(input_one_var,  return(data$var), return(data))
+		} else if(method=="tukey")
+		{
+			bottom_value=tukey_outlier(x)[1]
+		} else if(method=="hampel")
+		{
+			bottom_value=hampel_outlier(x)[1]
+		} else {
+			stop(sprintf("Method '%s' is not implemented.", method))
+		}
+
+
+		bkp_var=x
+		x[x<=bottom_value]=ifelse(type=='stop', bottom_value, NA)
+
+		if(length(na.omit(unique(x)))==1)
+		{
+			## if there is only 1 unique value, then recover the original value (thus no transformation) and warn it
+			x=bkp_var
+			if(is.na(warn_mess_bott))
+			{
+				warn_mess_bott=cur_var
+			} else {
+				warn_mess_bott=paste(warn_mess_bott, cur_var, sep=", ")
+			}
+		}
+
+		## assign the final value to the input data frame
+		data[[cur_var]]=x
+
+		if(!is.na(warn_mess_bott))
+		{
+			warning(sprintf("Skip the transformation (bottom value) for some variables because the threshold would have left them with 1 unique value. Variable list printed in the console."))
+			print(sprintf("Variables to adjust bottom threshold: %s", warn_mess_bott))
+		}
+	}
+
+	ifelse(input_one_var,  return(data$var), return(data))
+
+}
+
+#' @title Tukey Outlier Threshold
+#' @description
+#' Retrieves the bottom and top boundaries to flag outliers or extreme values, according to the Tukey's test. More info at <https://en.wikipedia.org/wiki/Outlier#Tukey.27s_test>
+#' This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded.
+#' @param input Numeric variable vector
+#' @examples
+#' \dontrun{
+#' tukey_outlier(heart_disease$age)
+#' }
+#' @return A two-item vector, the first value represents the bottom threshold, while the second one is the top threshold
+#' @export
+tukey_outlier <- function(input)
+{
+	input_cleaned=na.omit(input)
+
+	q_var=quantile(input_cleaned, na.rm=T, names = F)
+	q_25=q_var[2]
+	q_75=q_var[4]
+	iqr=IQR(input, na.rm = T)
+
+	bottom_threshold=q_25-(iqr * 3)
+	top_threshold=(iqr * 3) + q_75
+
+	v_res=c(bottom_threshold, top_threshold)
+	names(v_res)=c("bottom_threshold", "top_threshold")
+
+	return(v_res)
+}
+
+#' @title Hampel Outlier Threshold
+#' @description
+#' Retrieves the bottom and top boundaries to flag outliers or extreme values, according to the Hampel method. This technique takes into account the median and MAD value, which is a is a robust measure of the variability of a univariate sample of quantitative data (Wikipedia). Similar to standard deviation but less sensitve to outliers.
+#' This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded.
+#' @param input Numeric variable vector
+#' @examples
+#' \dontrun{
+#' hampel_outlier(heart_disease$age)
+#' }
+#' @return A two-item vector, the first value represents the bottom threshold, while the second one is the top threshold
+#' @export
+hampel_outlier <- function(input, k=3)
+{
+	input_cleaned=na.omit(input)
+
+	mad_value=mad(input_cleaned)
+	median_value=median(input_cleaned)
+
+	bottom_threshold=median_value-k*mad_value
+	top_threshold=median_value+k*mad_value
+
+	v_res=c(bottom_threshold, top_threshold)
+	names(v_res)=c("bottom_threshold", "top_threshold")
+
+	return(v_res)
+}

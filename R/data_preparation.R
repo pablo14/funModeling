@@ -1,5 +1,5 @@
 #' @title Reduce cardinality in categorical variable by automatic grouping
-#' @description Reduce the cardinality of an input variable based on a target -binary for now- variable based on attribitues of accuracy and representativity, for both input and target variable. It uses a cluster model to create the new groups. Full documentation can be found at: <http://http://livebook.datascienceheroes.com/data_preparation/high_cardinality_predictive_modeling.html/>
+#' @description Reduce the cardinality of an input variable based on a target -binary by now- variable based on attribitues of accuracy and representativity, for both input and target variable. It uses a cluster model to create the new groups. Full documentation can be found at: <http://http://livebook.datascienceheroes.com/data_preparation/high_cardinality_predictive_modeling.html/>
 #' @param data data frame source
 #' @param input categorical variable indicating
 #' @param target string of the variable to optimize the re-grouping
@@ -20,7 +20,7 @@ auto_grouping <- function(data, input, target, n_groups, model="kmeans", seed=99
 
 	df_categ=categ_analysis(data, input , target)
 
-	d=select_(df_categ, "sum_target", "mean_target", "perc_rows")
+	d=select_(df_categ, "perc_target",  "perc_rows")
 
 	set.seed(seed)
 	if(model=="kmeans") {
