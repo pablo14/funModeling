@@ -1,7 +1,10 @@
 #' @title Outliers Data Preparation
 #' @description
-#' Deal with outliers by setting an 'NA value' or by 'stopping' them at a certain. The parameters: 'top_percent'/'bottom_percent' are used to consider a value as outlier.
+#' Deal with outliers by setting an 'NA value' or by 'stopping' them at a certain.
+#' There are three supported methods to flag the values as outliers: "bottom_top", "tukey" and "hampel".
+#' The parameters: 'top_percent' and/or 'bottom_percent' are used only when method="bottom_top".
 #'
+#' For a full reference please check the official documentation at: <http://livebook.datascienceheroes.com/data_preparation/outliers_treatment.html>
 #' Setting NA is recommended when doing statistical analysis, parameter: type='set_na'.
 #' Stopping is recommended when creating a predictive model without biasing the result due to outliers, parameter: type='stop'.
 #'
@@ -53,8 +56,13 @@
 #' data_prep_h=funModeling::prep_outliers(data = heart_disease, str_input = c('age','resting_blood_pressure'), method = "hampel",  type='stop')
 #'
 #' # Using Hampel method to flag outliers:
-#'summary(heart_disease$age);summary(data_prep_h$age) # it changed from 29 to 29.31, and the max remains the same at 77
-#'hampel_outlier(heart_disease$age) # checking the thresholds
+#' summary(heart_disease$age);summary(data_prep_h$age) # it changed from 29 to 29.31, and the max remains the same at 77
+#' hampel_outlier(heart_disease$age) # checking the thresholds
+#'
+#' data_prep_a=funModeling::prep_outliers(data = heart_disease, str_input = c('age','resting_blood_pressure'), method = "tukey",  type='stop')
+#'
+#' max(heart_disease$age);max(data_prep_a$age) # remains the same (77) because the max thers for age is 100
+#' tukey_outlier(heart_disease$age)
 #'
 #' }
 #' @return A data frame with the desired outlier transformation

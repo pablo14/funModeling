@@ -1,7 +1,7 @@
-#' @title Get a summary for the given data frame.
+#' @title Get a summary for the given data frame (o vector).
 #' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA/p_na), and infinite values (q_inf/p_inf). Last two columns indicates data type and quantity of unique values.
 #' This function print and return the results.
-#' @param data data frame
+#' @param data data frame or a single vector
 #' @param print_results if FALSE then there is not a print in the console, TRUE by default.
 #' @examples
 #' df_status(heart_disease)
@@ -9,6 +9,14 @@
 #' @export
 df_status <- function(data, print_results)
 {
+	## If str_input is NA then ask for a single vector. True if it is a single vector
+	if(mode(data) %in% c("logical","numeric","complex","character"))
+	{
+		# creates a ficticious variable called 'var'
+		data=data.frame(var=data)
+		str_input="var"
+	}
+
 	if(missing(print_results))
 		print_results=T
 

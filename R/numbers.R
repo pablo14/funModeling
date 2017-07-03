@@ -227,7 +227,7 @@ freq <- function(data, str_input=NA, plot=TRUE, na.rm=FALSE, path_out)
 	} else {
 		for(i in 1:tot_vars)
 		{
-			res=freq_logic(data = data, str_input=cur_var, plot, na.rm, path_out = path_out)
+			res=freq_logic(data = data, str_input=str_input[i], plot, na.rm, path_out = path_out)
 			print(res)
 			cat("", sep="\n")
 		}
