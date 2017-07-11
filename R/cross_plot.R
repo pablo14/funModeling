@@ -17,7 +17,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom stats cor quantile
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
-#' @importFrom stats kmeans rbeta hclust cutree dist IQR na.omit sd
+#' @importFrom stats kmeans rbeta hclust cutree dist IQR na.omit sd mad median
 #' @importFrom utils head tail
 #' @importFrom moments skewness kurtosis
 

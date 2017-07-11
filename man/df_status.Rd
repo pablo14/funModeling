@@ -2,12 +2,12 @@
 % Please edit documentation in R/models_lib.R
 \name{df_status}
 \alias{df_status}
-\title{Get a summary for the given data frame.}
+\title{Get a summary for the given data frame (o vector).}
 \usage{
 df_status(data, print_results)
 }
 \arguments{
-\item{data}{data frame}
+\item{data}{data frame or a single vector}
 
 \item{print_results}{if FALSE then there is not a print in the console, TRUE by default.}
 }

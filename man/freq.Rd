@@ -4,7 +4,7 @@
 \alias{freq}
 \title{Frequency table for categorical variables}
 \usage{
-freq(data, str_input = NA, plot = T, na.rm = T, path_out)
+freq(data, str_input = NA, plot = TRUE, na.rm = FALSE, path_out)
 }
 \arguments{
 \item{data}{input data containing the variable to describe}
@@ -13,7 +13,7 @@ freq(data, str_input = NA, plot = T, na.rm = T, path_out)
 
 \item{plot}{flag indicating if the plot is desired, TRUE by default}
 
-\item{na.rm}{flag indicating if NA values must be included in the analysis, TRUE by default}
+\item{na.rm}{flag indicating if NA values must be included in the analysis, FALSE by default}
 
 \item{path_out}{path directory, if it has a value the plot is saved}
 }

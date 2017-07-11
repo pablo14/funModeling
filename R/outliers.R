@@ -53,22 +53,29 @@
 #' ### PREPARING OUTLIERS FOR PREDICTIVE MODELING
 #' ########################################################
 #'
-#' data_prep_h=funModeling::prep_outliers(data = heart_disease, str_input = c('age','resting_blood_pressure'), method = "hampel",  type='stop')
+#' data_prep_h=funModeling::prep_outliers(data = heart_disease,
+#' str_input = c('age','resting_blood_pressure'),
+#'  method = "hampel",  type='stop')
 #'
 #' # Using Hampel method to flag outliers:
-#' summary(heart_disease$age);summary(data_prep_h$age) # it changed from 29 to 29.31, and the max remains the same at 77
+#' summary(heart_disease$age);summary(data_prep_h$age)
+#' # it changed from 29 to 29.31, and the max remains the same at 77
 #' hampel_outlier(heart_disease$age) # checking the thresholds
 #'
-#' data_prep_a=funModeling::prep_outliers(data = heart_disease, str_input = c('age','resting_blood_pressure'), method = "tukey",  type='stop')
+#' data_prep_a=funModeling::prep_outliers(data = heart_disease,
+#' str_input = c('age','resting_blood_pressure'),
+#'  method = "tukey",  type='stop')
 #'
-#' max(heart_disease$age);max(data_prep_a$age) # remains the same (77) because the max thers for age is 100
+#' max(heart_disease$age);max(data_prep_a$age)
+#' # remains the same (77) because the max thers for age is 100
 #' tukey_outlier(heart_disease$age)
 #'
 #' }
 #' @return A data frame with the desired outlier transformation
 #' @export
-prep_outliers <- function(data, str_input=NA, type=c('stop', 'set_na'), method=c("bottom_top", "tukey", "hampel"), bottom_percent, top_percent)
+prep_outliers <- function(data, str_input=NA, type=NA, method=NA, bottom_percent=NA, top_percent=NA)
 {
+
 	if(!(type %in% c('stop', 'set_na')))
 		stop("Parameter 'type' must be one of the following 'stop' or 'set_na'")
 
@@ -96,106 +103,127 @@ prep_outliers <- function(data, str_input=NA, type=c('stop', 'set_na'), method=c
 	if(missing(top_percent) & missing(bottom_percent) & method=="bottom_top")
 		stop("Parameters 'top_percent' and 'bottom_percent' cannot be missing at the same time if method is 'bottom_top'.")
 
-	## Logic for top value ##################################################
-	warn_mess_top=NA
-	for(i in 1:length(str_input))
+
+	## logic to compute bott and/or top:
+	flag_bott_top=NA
+	if(method!="bottom_top")
 	{
-		cur_var=str_input[i]
-		x=data[[cur_var]]
-
-		if(method=="bottom_top" & !missing(top_percent))
-		{
-			top_value=quantile(x, probs=(1-top_percent), names=F, na.rm=T)
-		} else if(method=="tukey")
-		{
-			top_value=tukey_outlier(x)[2]
-		} else if(method=="hampel")
-		{
-			top_value=hampel_outlier(x)[2]
-		} else if(missing(bottom_percent)){
-				stop(sprintf("Method '%s' is not implemented.", method))
-		}
-
-		bkp_var=x
-		x[x>=top_value]=ifelse(type=='stop', top_value, NA)
-
-		if(length(na.omit(unique(x)))==1)
-		{
-			## if there is only 1 unique value, then recover the original value (thus no transformation) and warn it
-			x=bkp_var
-			if(is.na(warn_mess_top))
-			{
-				warn_mess_top=cur_var
-			} else {
-				warn_mess_top=paste(warn_mess_top, cur_var, sep=", ")
-			}
-		}
-
-		## assign the final value to the input data frame
-		data[[cur_var]]=x
-	}
-
-	if(!is.na(warn_mess_top))
-	{
-		warning(sprintf("Skip the transformation (top value) for some variables because the threshold would have left them with 1 unique value. Variable list printed in the console."))
-		print(sprintf("Variables to adjust top threshold: %s", warn_mess_top))
-	}
-
-
-	## Logic for bottom value ######################################################
-	warn_mess_bott=NA
-
-	for(i in 1:length(str_input))
-	{
-		cur_var=str_input[i]
-		x=data[[cur_var]]
-
-		if(method=="bottom_top" & !missing(bottom_percent))
-		{
-			bottom_value=quantile(x, probs=bottom_percent, names=F, na.rm=T)
-		} else if(method=="bottom_top" & !missing(top_percent))
-		{
-			# it was bottom_top and top without bottom, it has to finish
-			ifelse(input_one_var,  return(data$var), return(data))
-		} else if(method=="tukey")
-		{
-			bottom_value=tukey_outlier(x)[1]
-		} else if(method=="hampel")
-		{
-			bottom_value=hampel_outlier(x)[1]
+		flag_bott_top="run_both" # it's tuley or hampel
+	} else {
+		if(!missing(top_percent) & !missing(bottom_percent)) {
+			# both with values? if yes the it run for both, otherwise, we must know which way
+			flag_bott_top="run_both"
+		} else if(!missing(top_percent)) {
+			flag_bott_top="only_top"
 		} else {
-			stop(sprintf("Method '%s' is not implemented.", method))
+			flag_bott_top="only_bottom"
 		}
+	}
 
 
-		bkp_var=x
-		x[x<=bottom_value]=ifelse(type=='stop', bottom_value, NA)
 
-		if(length(na.omit(unique(x)))==1)
+	if(flag_bott_top %in% c("only_top", "run_both"))
+	{
+		## Logic for top value ##################################################
+		warn_mess_top=NA
+		for(i in 1:length(str_input))
 		{
-			## if there is only 1 unique value, then recover the original value (thus no transformation) and warn it
-			x=bkp_var
-			if(is.na(warn_mess_bott))
+			cur_var=str_input[i]
+			x=data[[cur_var]]
+
+			if(method=="bottom_top" & !missing(top_percent))
 			{
-				warn_mess_bott=cur_var
-			} else {
-				warn_mess_bott=paste(warn_mess_bott, cur_var, sep=", ")
+				top_value=quantile(x, probs=(1-top_percent), names=F, na.rm=T)
+			} else if(method=="tukey")
+			{
+				top_value=tukey_outlier(x)[2]
+			} else if(method=="hampel")
+			{
+				top_value=hampel_outlier(x)[2]
 			}
+
+
+			bkp_var=x
+			x[x>=top_value]=ifelse(type=='stop', top_value, NA)
+
+			if(length(na.omit(unique(x)))==1)
+			{
+				## if there is only 1 unique value, then recover the original value (thus no transformation) and warn it
+				x=bkp_var
+				if(is.na(warn_mess_top))
+				{
+					warn_mess_top=cur_var
+				} else {
+					warn_mess_top=paste(warn_mess_top, cur_var, sep=", ")
+				}
+			}
+
+			## assign the final value to the input data frame
+			data[[cur_var]]=x
+
 		}
 
-		## assign the final value to the input data frame
-		data[[cur_var]]=x
-
-		if(!is.na(warn_mess_bott))
+		if(!is.na(warn_mess_top))
 		{
-			warning(sprintf("Skip the transformation (bottom value) for some variables because the threshold would have left them with 1 unique value. Variable list printed in the console."))
-			print(sprintf("Variables to adjust bottom threshold: %s", warn_mess_bott))
+			warning(sprintf("Skip the transformation (top value) for some variables because the threshold would have left them with 1 unique value. Variable list printed in the console."))
+			print(sprintf("Variables to adjust top threshold: %s", warn_mess_top))
+		}
+	}
+
+
+	if(flag_bott_top %in% c("only_bottom", "run_both"))
+	{
+		## Logic for bottom value ######################################################
+		warn_mess_bott=NA
+
+		for(i in 1:length(str_input))
+		{
+			cur_var=str_input[i]
+			x=data[[cur_var]]
+
+			if(method=="bottom_top" & !missing(bottom_percent))
+			{
+				bottom_value=quantile(x, probs=bottom_percent, names=F, na.rm=T)
+			} else if(method=="tukey")
+			{
+				bottom_value=tukey_outlier(x)[1]
+			} else if(method=="hampel")
+			{
+				bottom_value=hampel_outlier(x)[1]
+			} else {
+				stop(sprintf("Method '%s' is not implemented.", method))
+			}
+
+			bkp_var=x
+			x[x<=bottom_value]=ifelse(type=='stop', bottom_value, NA)
+
+			if(length(na.omit(unique(x)))==1)
+			{
+				## if there is only 1 unique value, then recover the original value (thus no transformation) and warn it
+				x=bkp_var
+				if(is.na(warn_mess_bott))
+				{
+					warn_mess_bott=cur_var
+				} else {
+					warn_mess_bott=paste(warn_mess_bott, cur_var, sep=", ")
+				}
+			}
+
+			## assign the final value to the input data frame
+			data[[cur_var]]=x
+
+			if(!is.na(warn_mess_bott))
+			{
+				warning(sprintf("Skip the transformation (bottom value) for some variables because the threshold would have left them with 1 unique value. Variable list printed in the console."))
+				print(sprintf("Variables to adjust bottom threshold: %s", warn_mess_bott))
+			}
 		}
 	}
 
 	ifelse(input_one_var,  return(data$var), return(data))
 
 }
+
 
 #' @title Tukey Outlier Threshold
 #' @description
@@ -231,21 +259,22 @@ tukey_outlier <- function(input)
 #' Retrieves the bottom and top boundaries to flag outliers or extreme values, according to the Hampel method. This technique takes into account the median and MAD value, which is a is a robust measure of the variability of a univariate sample of quantitative data (Wikipedia). Similar to standard deviation but less sensitve to outliers.
 #' This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded.
 #' @param input Numeric variable vector
+#' @param k_mad_value 'K' multiplier for the median absolute deviation. The higher the value, the more outliers will be detected. Default value=3 (it's an standad)
 #' @examples
 #' \dontrun{
 #' hampel_outlier(heart_disease$age)
 #' }
 #' @return A two-item vector, the first value represents the bottom threshold, while the second one is the top threshold
 #' @export
-hampel_outlier <- function(input, k=3)
+hampel_outlier <- function(input, k_mad_value=3)
 {
 	input_cleaned=na.omit(input)
 
 	mad_value=mad(input_cleaned)
 	median_value=median(input_cleaned)
 
-	bottom_threshold=median_value-k*mad_value
-	top_threshold=median_value+k*mad_value
+	bottom_threshold=median_value-k_mad_value*mad_value
+	top_threshold=median_value+k_mad_value*mad_value
 
 	v_res=c(bottom_threshold, top_threshold)
 	names(v_res)=c("bottom_threshold", "top_threshold")

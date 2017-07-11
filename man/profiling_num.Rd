@@ -18,7 +18,7 @@ metrics table
 }
 \description{
 Get a metric table with many indicators for all numerical variables, automatically skipping the non-numerical variables. Current metrics are:
-mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewness, kurtosis, iqr: inter quartile range, variation_coef: the ratio of sd/mean, range_98 is the limit for which the 98% of fall, range_80 similar to range_98 but with 80%
+mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewness, kurtosis, iqr: inter quartile range, variation_coef: the ratio of sd/mean, range_98 is the limit for which the 98% of fall, range_80 similar to range_98 but with 80%. All NA values will be skipped from calculations.
 }
 \examples{
 profiling_num(mtcars)

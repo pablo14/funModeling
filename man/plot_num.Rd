@@ -9,13 +9,13 @@ plot_num(data, bins = 10)
 \arguments{
 \item{data}{data frame}
 
-\item{bins}{number of bar to plot each histogram, 10 by default}
+\item{bins}{number of bars (bins) to plot each histogram, 10 by default}
 }
 \value{
 plot containing all numerical variables
 }
 \description{
-One plot containing all the numerical variables distribution
+One plot containing all the histograms for numerical variables. NA values will not be displayed.
 }
 \examples{
 plot_num(mtcars)
