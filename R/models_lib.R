@@ -161,22 +161,14 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 	data=data.frame(data)
 	# The negative score produces that the highest score are at the top
 	# data=heart_disease; str_score='score'; str_target='has_heart_disease'; q_segments='5'
-	data$neg_score=-data[, str_score]
+	data$neg_score=-data[[str_score]]
 
 	# Valid values for q_segments
-	if(missing(q_segments))
-		q_segments=10
+	if(q_segments<1 | missing(q_segments)){
+		q_segments = 2
+	}
 
-	if(q_segments==20)
-		seq_v=seq(from=0.05, to=0.95, by=0.05)
-
-	if(q_segments==10 | !(q_segments %in% c(5,10,20)))
-		seq_v=seq(from=0.1, to=0.9, by=0.1)
-
-	if(q_segments==5)
-		seq_v=seq(from=0.2, to=0.8, by=0.2)
-
-	seq_v=c(seq_v, 1)
+	seq_v=c(seq(from=1/q_segments, to=1-1/q_segments, by=1/q_segments), 1) # Add all cutpoints from 1/q_segments to 1, by 1/q_segments increments.
 
 	quantile_cuts=quantile(data$neg_score, probs=seq_v)
 
