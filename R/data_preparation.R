@@ -117,7 +117,7 @@ df_recover_cuts <- function(data, file_name, stringsAsFactors=F)
 {
 	## Parte 2b: recover cuts
 	data_cuts=read.delim(file=file_name, stringsAsFactors = F)
-	cols_to_conv=data_cuts$variable
+	vars_num=data_cuts$variable
 
 	for(i in cols_to_conv)
 	{
@@ -133,8 +133,10 @@ df_recover_cuts <- function(data, file_name, stringsAsFactors=F)
 		data_2b=data %>% mutate_at(vars(vars_num), conv_factor)
 		data_3=data_2b %>% mutate_at(vars(vars_num), funs(factor(replace(., is.na(.), "NA."))))
 	} else {
-		data_3=data %>% mutate_at(vars(cols_to_conv), funs(ifelse(is.na(.), "NA.", .)))
+		data_3=data %>% mutate_at(vars(vars_num), funs(ifelse(is.na(.), "NA.", .)))
 	}
+
+	print(sprintf("Variables processed: %s", paste(vars_num, collapse = ", ")))
 
 	return(data_3)
 }
@@ -175,13 +177,8 @@ df_categorical <- function(data, input=NULL, n_bins=5, save_cuts=F, save_as=NULL
 
 conv_factor <- function(x)
 {
-	x2=ifelse(is.character(x), as.factor(x), x)
-
-	as.factor(x)
-
 	levels(x)=c(levels(x), "NA.")
 	new_x=factor(x, levels = levels(x))
 
 	return(new_x)
 }
-
