@@ -165,7 +165,7 @@ gain_lift <- function(data, str_score, str_target, q_segments)
 
 	# Valid values for q_segments
 	if(q_segments<1 | missing(q_segments)){
-		q_segments = 2
+		q_segments = 10
 	}
 
 	seq_v=c(seq(from=1/q_segments, to=1-1/q_segments, by=1/q_segments), 1) # Add all cutpoints from 1/q_segments to 1, by 1/q_segments increments.
