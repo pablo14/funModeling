@@ -32,4 +32,3 @@ Reduce the cardinality of an input variable based on a target -binary by now- va
 auto_grouping(data=data_country, input='country', target="has_flu", n_groups=8)
 }
 }
-

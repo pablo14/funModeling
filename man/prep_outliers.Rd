@@ -90,4 +90,3 @@ tukey_outlier(heart_disease$age)
 
 }
 }
-

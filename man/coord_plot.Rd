@@ -31,4 +31,3 @@ coord_plot(data=mtcars, group_var="cyl", print_table=TRUE)
 coord_plot(data=mtcars, group_var="cyl", group_func=median, print_table=TRUE)
 }
 }
-

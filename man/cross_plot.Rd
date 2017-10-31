@@ -44,4 +44,3 @@ cross_plot(data=heart_disease, str_input=c("age", "oldpeak", "max_heart_rate"),
 		str_target="has_heart_disease")
 }
 }
-

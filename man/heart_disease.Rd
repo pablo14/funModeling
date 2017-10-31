@@ -16,4 +16,3 @@ heart_disease
 There are variables related to patient clinic trial. The variable to predict is `has_heart_disease`.
 }
 \keyword{datasets}
-

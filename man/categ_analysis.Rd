@@ -22,4 +22,3 @@ Retrieves a complete summary of the grouped input variable against the target va
 \examples{
 categ_analysis(data_country, "country", "has_flu")
 }
-

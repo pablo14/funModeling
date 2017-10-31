@@ -20,4 +20,3 @@ One plot containing all the histograms for numerical variables. NA values will n
 \examples{
 plot_num(mtcars)
 }
-

@@ -29,4 +29,3 @@ desc_groups(data=mtcars, group_var="cyl", group_func=median)
 # using the max as the grouping function
 desc_groups_rank(data=mtcars, group_var="gear", group_func=max)
 }
-

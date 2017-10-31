@@ -21,4 +21,3 @@ It retrieves a vector containing the first N numbers specified in 'length' param
 # Get the first 4 elements of Fibonacci series
 fibonacci(4)
 }
-

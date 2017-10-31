@@ -23,4 +23,3 @@ Get model performance for tree models (rpart library), or glm. It returns qualit
 fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
 model_performance(fit=fit_glm, data = heart_disease, target_var = "has_heart_disease")
 }
-

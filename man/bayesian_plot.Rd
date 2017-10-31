@@ -44,4 +44,3 @@ bayesian_plot(data=heart_disease, input=c("gender", "age"),
 		target="has_heart_disease", path_out = ".")
 }
 }
-

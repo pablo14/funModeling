@@ -23,4 +23,3 @@ This function is used in 'prep_outliers' function. All `NA`s values are automati
 hampel_outlier(heart_disease$age)
 }
 }
-

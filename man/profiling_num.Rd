@@ -23,4 +23,3 @@ mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewne
 \examples{
 profiling_num(mtcars)
 }
-

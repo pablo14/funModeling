@@ -26,4 +26,3 @@ index_sample=get_sample(data=heart_disease, percentage_tr_rows=0.8)
 data_tr=heart_disease[index_sample,]
 data_ts=heart_disease[-index_sample,]
 }
-

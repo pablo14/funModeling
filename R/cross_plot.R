@@ -20,6 +20,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom stats kmeans rbeta hclust cutree dist IQR na.omit sd mad median
 #' @importFrom utils head tail
 #' @importFrom moments skewness kurtosis
+#' @importFrom arules discretize
 
 #' @title Cross-plotting input variable vs. target variable
 #' @description The cross_plot shows how the input variable is correlated with the target variable, getting the likelihood rates for each input's bin/bucket .

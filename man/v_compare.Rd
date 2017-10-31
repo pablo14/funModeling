@@ -25,4 +25,3 @@ res=v_compare(vector_x=v1, vector_y=v2)
 res
 # Accessing the keys not present in
 }
-

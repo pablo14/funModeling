@@ -18,4 +18,3 @@ Range a variable into [0-1], assigning 0 to the min and 1 to the max of the inpu
 \examples{
 range01(mtcars$cyl)
 }
-

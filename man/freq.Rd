@@ -27,4 +27,3 @@ Retrieves the frequency and percentage for str_input
 freq(data=heart_disease$thal)
 freq(data=heart_disease, str_input = c('thal','chest_pain'))
 }
-

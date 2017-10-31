@@ -21,4 +21,3 @@ This function print and return the results.
 \examples{
 df_status(heart_disease)
 }
-

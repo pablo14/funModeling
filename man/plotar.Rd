@@ -31,4 +31,3 @@ plotar(data=heart_disease, str_target="has_heart_disease",
 plotar(heart_disease, str_input = 'age', str_target = 'chest_pain', plot_type = "boxplot")
 }
 }
-

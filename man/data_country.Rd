@@ -16,4 +16,3 @@ country: country of the person, 70 different countries
 has_flu: character variable with values "yes" or "no" indicating if the person has flu
 }
 \keyword{datasets}
-

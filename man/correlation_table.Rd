@@ -20,4 +20,3 @@ Obtain correlation table for all variables against target variable. Only numeric
 \examples{
 correlation_table(data=heart_disease, str_target="has_heart_disease")
 }
-

@@ -21,4 +21,3 @@ This function is used in 'prep_outliers' function. All `NA`s values are automati
 tukey_outlier(heart_disease$age)
 }
 }
-

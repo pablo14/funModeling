@@ -27,4 +27,3 @@ summary(age_2)
 age_3=equal_freq(var=heart_disease$age, n_bins = 5)
 summary(age_3)
 }
-

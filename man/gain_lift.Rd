@@ -27,4 +27,3 @@ heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
 gain_lift(data=heart_disease,str_score='score',str_target='has_heart_disease')
 
 }
-

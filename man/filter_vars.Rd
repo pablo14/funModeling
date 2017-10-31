@@ -28,4 +28,3 @@ colnames(my_data_1)
 my_data_2=filter_vars(mtcars, str_input=c('mpg', 'cyl', 'qsec', 'vs'), keep=FALSE)
 colnames(my_data_2)
 }
-
