@@ -10,16 +10,16 @@
 #' }
 #' @return xxx
 #' @export
-df_recover_cuts <- function(data, data_cuts, stringsAsFactors=F)
+discretize_df <- function(data, data_bins, stringsAsFactors=F)
 {
 	## Parte 2b: recover cuts
-	vars_num=data_cuts$variable
+	vars_num=data_bins$variable
 
 	for(i in vars_num)
 	{
 		v_orig=data[[i]]
-		v_cuts=filter(data_cuts, variable==i)  %>% .$cuts
-		v_res=dis_recover(v_orig, v_cuts, stringsAsFactors)
+		v_bins=filter(data_bins, variable==i)  %>% .$cuts
+		v_res=dis_recover(v_orig, v_bins, stringsAsFactors)
 
 		data[[i]]=v_res
 	}
@@ -50,7 +50,7 @@ df_recover_cuts <- function(data, data_cuts, stringsAsFactors=F)
 #' }
 #' @return xxx
 #' @export
-df_calculate_cuts <- function(data, input=NULL, n_bins=5, stringsAsFactors=F)
+discretize_get_bins <- function(data, input=NULL, n_bins=5, stringsAsFactors=F)
 {
 	vars_num=df_status(data, print_results = F) %>% filter(type %in% c("integer","numeric"), unique>n_bins) %>% .$variable
 
@@ -60,27 +60,27 @@ df_calculate_cuts <- function(data, input=NULL, n_bins=5, stringsAsFactors=F)
 		vars_num=vars_num[vars_num %in% input]
 	}
 
-	d_cuts=sapply(select(data, one_of(vars_num)), function(x) dis_bins(x, n_bins)) %>% as.data.frame(.)
-	d_cuts$variable=as.character(rownames(d_cuts))
-	d_cuts=rename(d_cuts, cuts='.') %>% select(variable, cuts)
-	d_cuts$cuts=as.character(d_cuts$cuts)
-	rownames(d_cuts)=NULL
+	d_bins=sapply(select(data, one_of(vars_num)), function(x) dis_bins(x, n_bins)) %>% as.data.frame(.)
+	d_bins$variable=as.character(rownames(d_bins))
+	d_bins=rename(d_bins, cuts='.') %>% select(variable, cuts)
+	d_bins$cuts=as.character(d_bins$cuts)
+	rownames(d_bins)=NULL
 
 	print(sprintf("Variables processed: %s", paste(vars_num, collapse = ", ")))
 
-	return(d_cuts)
+	return(d_bins)
 }
 
 dis=function(x, n_bins)
 {
-	cuts=get_cuts_processed(x, n_bins)
-	res=discretize(x, "fixed", categories = cuts)
+	bins=discretize_bins(x, n_bins)
+	res=discretize(x, "fixed", categories = bins)
 
 	return(res)
 }
 
 
-get_cuts_processed <- function(x, n_bins)
+get_bins_processed <- function(x, n_bins)
 {
 	cuts=discretize(x, "frequency", onlycuts = T, categories = n_bins)
 
@@ -93,7 +93,7 @@ get_cuts_processed <- function(x, n_bins)
 
 dis_bins=function(x, n_bins=5, save_cuts=F)
 {
-	cuts=get_cuts_processed(x, n_bins)
+	cuts=get_bins_processed(x, n_bins)
 	res=paste(cuts, collapse = "|")
 
 	names(x)
@@ -102,16 +102,6 @@ dis_bins=function(x, n_bins=5, save_cuts=F)
 	return(res)
 }
 
-# df_save_cuts <- function(data, n_bins)
-# {
-# 	# Parte 2a: solo cuts
-# 	vars_num=df_status(data,print_results = F) %>% filter(type %in% c("integer","numeric")) %>% .$variable
-#
-# 	data_3=data %>% select(one_of(vars_num)) %>% mutate_all(funs(dis_bins(., n_bins))) %>% head(.,1)
-#
-# 	write.table(data_3, file = "cuts.txt", col.names = T, row.names=FALSE, fileEncoding="UTF-8", quote=F, sep="\t")
-# }
-
 
 dis_recover <- function(x, cuts, stringsAsFactors)
 {
@@ -119,7 +109,17 @@ dis_recover <- function(x, cuts, stringsAsFactors)
 	x[x<min(cuts_v)]=min(cuts_v)
 	x[x>max(cuts_v)]=max(cuts_v)
 
-	res=discretize(x, "fixed", categories = cuts_v)
+	res=arules::discretize(x, "fixed", categories = cuts_v)
+
+	# Correction on "-Inf" label: [-Inf, min_value)
+	if("-Inf" %in% levels(res))
+	{
+		cuts_v_aux=cuts_v[cuts_v!=-Inf]
+		min_value=min(cuts_v_aux)
+		levels(res)[levels(res)=="-Inf"]=sprintf("[-Inf, %s)", min_value)
+	}
+	########################
+
 
 	if(!stringsAsFactors)
 	{
