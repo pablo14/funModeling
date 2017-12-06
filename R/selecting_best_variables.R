@@ -19,7 +19,7 @@ discretize_df <- function(data, data_bins, stringsAsFactors=F)
 	{
 		v_orig=data[[i]]
 		v_bins=filter(data_bins, variable==i)  %>% .$cuts
-		v_res=dis_recover(v_orig, v_bins, stringsAsFactors)
+		v_res=dis_recover(x = v_orig, cuts = v_bins, stringsAsFactors = stringsAsFactors)
 
 		data[[i]]=v_res
 	}
