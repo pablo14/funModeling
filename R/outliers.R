@@ -4,7 +4,7 @@
 #' There are three supported methods to flag the values as outliers: "bottom_top", "tukey" and "hampel".
 #' The parameters: 'top_percent' and/or 'bottom_percent' are used only when method="bottom_top".
 #'
-#' For a full reference please check the official documentation at: <http://livebook.datascienceheroes.com/data_preparation/outliers_treatment.html>
+#' For a full reference please check the official documentation at: /url{https://livebook.datascienceheroes.com/data-preparation.html#treatment_outliers}>
 #' Setting NA is recommended when doing statistical analysis, parameter: type='set_na'.
 #' Stopping is recommended when creating a predictive model without biasing the result due to outliers, parameter: type='stop'.
 #'
@@ -228,7 +228,7 @@ prep_outliers <- function(data, str_input=NA, type=NA, method=NA, bottom_percent
 #' @title Tukey Outlier Threshold
 #' @description
 #' Retrieves the bottom and top boundaries to flag outliers or extreme values, according to the Tukey's test. More info at <https://en.wikipedia.org/wiki/Outlier#Tukey.27s_test>
-#' This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded.
+#' This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded. More information at: /url{https://livebook.datascienceheroes.com/data-preparation.html#how_to_deal_with_outliers_in_r}.
 #' @param input Numeric variable vector
 #' @examples
 #' \dontrun{
@@ -257,7 +257,7 @@ tukey_outlier <- function(input)
 #' @title Hampel Outlier Threshold
 #' @description
 #' Retrieves the bottom and top boundaries to flag outliers or extreme values, according to the Hampel method. This technique takes into account the median and MAD value, which is a is a robust measure of the variability of a univariate sample of quantitative data (Wikipedia). Similar to standard deviation but less sensitve to outliers.
-#' This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded.
+#' This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded. More information at: /url{https://livebook.datascienceheroes.com/data-preparation.html#how_to_deal_with_outliers_in_r}.
 #' @param input Numeric variable vector
 #' @param k_mad_value 'K' multiplier for the median absolute deviation. The higher the value, the more outliers will be detected. Default value=3 (it's an standad)
 #' @examples
