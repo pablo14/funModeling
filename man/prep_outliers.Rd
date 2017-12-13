@@ -28,7 +28,7 @@ Deal with outliers by setting an 'NA value' or by 'stopping' them at a certain.
 There are three supported methods to flag the values as outliers: "bottom_top", "tukey" and "hampel".
 The parameters: 'top_percent' and/or 'bottom_percent' are used only when method="bottom_top".
 
-For a full reference please check the official documentation at: <http://livebook.datascienceheroes.com/data_preparation/outliers_treatment.html>
+For a full reference please check the official documentation at: /url{https://livebook.datascienceheroes.com/data-preparation.html#treatment_outliers}>
 Setting NA is recommended when doing statistical analysis, parameter: type='set_na'.
 Stopping is recommended when creating a predictive model without biasing the result due to outliers, parameter: type='stop'.
 

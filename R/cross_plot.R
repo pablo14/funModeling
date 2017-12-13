@@ -6,7 +6,7 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @importFrom stats predict frequency
 #' @importFrom pander pandoc.table
 #' @importFrom  Hmisc cut2
-#' @import  ggplot2
+#' @import ggplot2
 #' @import dplyr
 #' @importFrom reshape2 dcast melt
 #' @importFrom utils packageVersion

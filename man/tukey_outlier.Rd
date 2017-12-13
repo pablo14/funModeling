@@ -14,7 +14,7 @@ A two-item vector, the first value represents the bottom threshold, while the se
 }
 \description{
 Retrieves the bottom and top boundaries to flag outliers or extreme values, according to the Tukey's test. More info at <https://en.wikipedia.org/wiki/Outlier#Tukey.27s_test>
-This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded.
+This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded. More information at: /url{https://livebook.datascienceheroes.com/data-preparation.html#how_to_deal_with_outliers_in_r}.
 }
 \examples{
 \dontrun{

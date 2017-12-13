@@ -2,28 +2,36 @@
 % Please edit documentation in R/selecting_best_variables.R
 \name{discretize_get_bins}
 \alias{discretize_get_bins}
-\title{xx}
+\title{Get the cuts, or bin threshold, to discretize a variable.}
 \usage{
 discretize_get_bins(data, input = NULL, n_bins = 5, stringsAsFactors = F)
 }
 \arguments{
-\item{data}{data frame source}
+\item{data}{Data frame source}
 
-\item{input}{xx}
+\item{input}{Vector of string containing all the variables that will be processed.
+If empty it will run for all numerical variables. NAs values are automatically handled converting
+them into another category.}
 
-\item{n_bins}{XX}
+\item{n_bins}{The number of bins (or segments) that each variable will have.
+If it is needed a different number of bins per variable, then the function must be called more than once.}
 
-\item{stringsAsFactors}{xx}
+\item{stringsAsFactors}{Boolean variable which indicates if the discretization result is character or factor.
+When TRUE, the segments are ordered. TRUE by default.}
 }
 \value{
-xxx
+Data frame containing the thresholds or cuts to bin every variable
 }
 \description{
-xxx
+It takes a data frame
 }
 \examples{
 \dontrun{
-# Reducing quantity of countries based on has_flu variable
-xxx
+# Getting the bins thresholds for each. If input is missing, will run for all numerical variables.
+d_bins=discretize_get_bins(data=heart_disease, input=c("resting_blood_pressure", "oldpeak"), n_bins=5)
+
+# Now it can be applied on the same data frame, or in a new one (for example in a predictive model that change data over time)
+heart_disease_discretized=discretize_df(data=heart_disease, data_bins=d_bins, stringsAsFactors=T)
+
 }
 }

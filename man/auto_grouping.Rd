@@ -15,7 +15,7 @@ auto_grouping(data, input, target, n_groups, model = "kmeans", seed = 999)
 
 \item{n_groups}{number of groups for the new category based on str_input, normally between 3 and 10.}
 
-\item{model}{is the clustering model used to create the grouping, supported models: "kmeans" (default) or hclust.}
+\item{model}{is the clustering model used to create the grouping, supported models: "kmeans" (default) or "hclust" (hierarchical clustering).}
 
 \item{seed}{optional, random number used internally for the k-means, changing this value will change the model}
 }
@@ -24,7 +24,7 @@ A list containing 3 elements: recateg_results which contains the description of 
 df_equivalence is a data frame containing the str_input category and the new category; fit_cluster which is the cluster model used to do the re-grouping
 }
 \description{
-Reduce the cardinality of an input variable based on a target -binary by now- variable based on attribitues of accuracy and representativity, for both input and target variable. It uses a cluster model to create the new groups. Full documentation can be found at: <http://http://livebook.datascienceheroes.com/data_preparation/high_cardinality_predictive_modeling.html/>
+Reduce the cardinality of an input variable based on a target -binary by now- variable based on attribitues of accuracy and representativity, for both input and target variable. It uses a cluster model to create the new groups. Full documentation can be found at: \url{https://livebook.datascienceheroes.com/data-preparation.html#high_cardinality_predictive_modeling}
 }
 \examples{
 \dontrun{
