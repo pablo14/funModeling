@@ -128,7 +128,7 @@ dis_recover <- function(x, cuts, stringsAsFactors)
 	res=arules::discretize(x, "fixed", categories = cuts_v)
 
 	# Correction on "-Inf" label: [-Inf, min_value)
-	if("-Inf" %in% levels(res))
+	if("-Inf" %in% trimws(levels(res)))
 	{
 		cuts_v_aux=cuts_v[cuts_v!=-Inf]
 		min_value=min(cuts_v_aux)
