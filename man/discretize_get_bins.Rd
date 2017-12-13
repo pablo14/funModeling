@@ -4,7 +4,7 @@
 \alias{discretize_get_bins}
 \title{Get the cuts, or bin threshold, to discretize a variable.}
 \usage{
-discretize_get_bins(data, input = NULL, n_bins = 5, stringsAsFactors = F)
+discretize_get_bins(data, input = NULL, n_bins = 5)
 }
 \arguments{
 \item{data}{Data frame source}
@@ -15,9 +15,6 @@ them into another category.}
 
 \item{n_bins}{The number of bins (or segments) that each variable will have.
 If it is needed a different number of bins per variable, then the function must be called more than once.}
-
-\item{stringsAsFactors}{Boolean variable which indicates if the discretization result is character or factor.
-When TRUE, the segments are ordered. TRUE by default.}
 }
 \value{
 Data frame containing the thresholds or cuts to bin every variable

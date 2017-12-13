@@ -76,7 +76,7 @@ cross_plot <- function(data, str_input, str_target, path_out, auto_binning, plot
 
 
 
-cross_plot_logic<-function(data, str_input, str_target, path_out, auto_binning, plot_type)
+cross_plot_logic <- function(data, str_input, str_target, path_out, auto_binning, plot_type)
 {
 	# data=heart_disease; str_input="max_heart_rate"; str_target="has_heart_disease"; auto_binning=T
 	  check_target_existence(data, str_target=str_target)
