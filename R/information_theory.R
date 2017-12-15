@@ -13,7 +13,7 @@
 #' }
 #' @return
 #' @export
-convert_df_to_char <- function(data, n_bins)
+convert_df_to_categoric <- function(data, n_bins)
 {
 	# Discretizing numerical variables
 	d_cuts=discretize_get_bins(data = data, n_bins = n_bins)
@@ -48,66 +48,68 @@ concatenate_n_vars <- function(data, vars)
 	return(new_col)
 }
 
-#' @title Calculate entropy between two variables
+#' @title Computes the entropy between two variables
 #' @description It calculates the entropy between two categorical variables using log2.
 #' This log2 is mentioned in most of the Claude Shannon bibliography.
-#' Input vectors, 'x' and 'y' can be numeric or character. REVISAR QUE CALCULO HAGO ACA
-#' @param x input numeric vector
-#' @param y input numeric vector
+#' Input/target can be numeric or character.
+#' @param input numeric/character vector
+#' @param target numeric/character vector
 #' @examples
 #' \dontrun{
-#' entropy_2(heart_disease$gender, heart_disease$chest_pain)
+#' # Measuring entropy between input and target variable
+#' entropy_2(input=data_golf$outlook, target=data_golf$play_golf)
 #' }
-#' @return
+#' @return Entropy measured in bits
 #' @export
-entropy_2 <- function(x, y)
+entropy_2 <- function(input, target)
 {
 	# converting x input into frequency table
-	tbl_x=table(x)
+	tbl_input=table(input)
 
 	# cell percentages (distribution)
-	probs_x=prop.table(tbl_x)
+	probs_input=prop.table(tbl_input)
 
-	tbl=table(x, y)
+	tbl=table(input, target)
 
+	# get partial entropy
 	df_tbl=as.data.frame.matrix(tbl)
 	res_entropy=data.frame(t(df_tbl)) %>% mutate_all(funs(entropy(., unit = "log2"))) %>% head(.,1)
 
 	# computing total entropy
-	total_en=sum(probs_x*res_entropy)
+	total_en=sum(probs_input*res_entropy)
 
 	return(total_en)
 }
 
-#' @title
-#' @description
-#'
-#' @param
+#' @title Information gain
+#' @description Computes the information gain between an 'input' and 'target' variable (using log2).
+#' @param input numeric/character vector
+#' @param target numeric/character vector
 #' @examples
 #' \dontrun{
-#'
+#' information_gain(input=data_golf$outlook, target=data_golf$play_golf)
 #' }
-#' @return
+#' @return information gain
 #' @export
-information_gain <- function(x, y)
+information_gain <- function(input, target)
 {
-	tbl=table(y)
+	tbl=table(target)
 	en_y=entropy(tbl, unit = "log2")
-	en=entropy_2(x, y)
+	en=entropy_2(input, target)
 	info_gain=en_y-en
 
 	return(info_gain)
 }
 
-#' @title
-#' @description
-#'
-#' @param
+#' @title Gain ratio
+#' @description Computes the information gain between an 'input' and 'target' variable (using log2). Similar to information gain but less sensitive to high cardinality variables.
+#' @param input numeric/character vector
+#' @param target numeric/character vector
 #' @examples
 #' \dontrun{
-#'
+#' gain_ratio(input=data_golf$outlook, target=data_golf$play_golf)
 #' }
-#' @return
+#' @return gain ratio
 #' @export
 gain_ratio <- function(input, target)
 {
@@ -117,10 +119,9 @@ gain_ratio <- function(input, target)
 	gain_r=ig/split
 
 	return(gain_r)
-
 }
 
-#' @title
+#' @title Importance variable ranking based on gain ratio
 #' @description
 #'
 #' @param
@@ -157,7 +158,7 @@ var_rank_info <- function(data, target)
 #' }
 #' @return
 #' @export
-infor_magic=function(input, target)
+infor_magic <- function(input, target)
 {
 	tbl_2v=table(input, target)
 

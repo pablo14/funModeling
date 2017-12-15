@@ -3,7 +3,7 @@
 export(auto_grouping)
 export(categ_analysis)
 export(concatenate_n_vars)
-export(convert_df_to_char)
+export(convert_df_to_categoric)
 export(coord_plot)
 export(correlation_table)
 export(cross_plot)

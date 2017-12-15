@@ -2,9 +2,9 @@
 % Please edit documentation in R/information_theory.R
 \name{entropy_2}
 \alias{entropy_2}
-\title{Calculate entropy between two variables}
+\title{Computes the entropy between two variables}
 \usage{
-entropy_2(x, y)
+entropy_2(input, target)
 }
 \arguments{
 \item{x}{input numeric vector}
@@ -14,10 +14,11 @@ entropy_2(x, y)
 \description{
 It calculates the entropy between two categorical variables using log2.
 This log2 is mentioned in most of the Claude Shannon bibliography.
-Input vectors, 'x' and 'y' can be numeric or character. REVISAR QUE CALCULO HAGO ACA
+Input vectors, 'x' and 'y' can be numeric or character.
 }
 \examples{
 \dontrun{
-entropy_2(heart_disease$gender, heart_disease$chest_pain)
+# Measuring entropy between an input and target variable
+entropy_2(input=heart_disease$gender, target=heart_disease$has_heart_disease)
 }
 }

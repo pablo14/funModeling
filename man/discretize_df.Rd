@@ -18,12 +18,11 @@ When TRUE, the segments are ordered. TRUE by default.}
 Data frame with the transformed variables
 }
 \description{
-Converts a numerical variable into factor or character, depending on 'stringsAsFactors' parameter.
-Binning criteria is equal frequency.
-The thresholds for each segment in each variable are generated with 'discretize_get_bins' function, which returns a data frame
-that has to be the input in 'data_bins' parameter.
+Converts all numerical variables into factor or character, depending on 'stringsAsFactors' parameter, based on equal frequency criteria.
+The thresholds for each segment in each variable are generated based on the output of \code{\link{discretize_get_bins}} function, which returns a data frame
+containing the threshold for each variable. This result is must be the 'data_bins' parameter input.
 Important to note that the returned data frame contains the non-transformed variables plus the transformed ones.
-More info about converting numerical into categorical variables can be found at: <https://livebook.datascienceheroes.com/data-preparation.html#data_types>
+More info about converting numerical into categorical variables can be found at: \url{https://livebook.datascienceheroes.com/data-preparation.html#data_types}
 }
 \examples{
 \dontrun{

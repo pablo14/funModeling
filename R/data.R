@@ -20,3 +20,11 @@
 #' @format A data frame with 910 rows and 3 variables
 #'
 "data_country"
+
+#' Play golf
+#'
+#' This well known small data frame containst 14 cases indicating wheter or not play golf based on wheather conditions. Target variable: 'play_golf.'
+#'
+#' @format A data frame with 14 rows and 3 variables
+#'
+"data_golf"
