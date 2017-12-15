@@ -2,6 +2,7 @@
 
 export(auto_grouping)
 export(categ_analysis)
+export(compare_df)
 export(concatenate_n_vars)
 export(convert_df_to_categoric)
 export(coord_plot)
