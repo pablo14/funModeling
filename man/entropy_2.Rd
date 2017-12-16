@@ -7,18 +7,21 @@
 entropy_2(input, target)
 }
 \arguments{
-\item{x}{input numeric vector}
+\item{input}{numeric/character vector}
 
-\item{y}{input numeric vector}
+\item{target}{numeric/character vector}
+}
+\value{
+Entropy measured in bits
 }
 \description{
 It calculates the entropy between two categorical variables using log2.
 This log2 is mentioned in most of the Claude Shannon bibliography.
-Input vectors, 'x' and 'y' can be numeric or character.
+Input/target can be numeric or character.
 }
 \examples{
 \dontrun{
-# Measuring entropy between an input and target variable
-entropy_2(input=heart_disease$gender, target=heart_disease$has_heart_disease)
+# Measuring entropy between input and target variable
+entropy_2(input=data_golf$outlook, target=data_golf$play_golf)
 }
 }
