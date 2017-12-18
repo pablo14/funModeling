@@ -1,53 +1,3 @@
-#' @title Convert every column in a data frame to character
-#' @description It converts all the variables present in 'data' to character. Criteria conversion is based on
-#' two functions, \code{\link{discretize_get_bins}} plus \code{\link{discretize_df}}, which will discretize
-#' all the numerical variables based on equal frequency criteria, with the number of bins equal to 'n_bins'.
-#' This only applies for numerical variables which unique valuesare more than 'n_bins' parameter.
-#' After this step, it may happen that variables remain non-character, so these variables will be converting
-#' directly into character.
-#'
-#' @param
-#' @examples
-#' \dontrun{
-#'
-#' }
-#' @return
-#' @export
-convert_df_to_categoric <- function(data, n_bins)
-{
-	# Discretizing numerical variables
-	d_cuts=discretize_get_bins(data = data, n_bins = n_bins)
-	data_cat=discretize_df(data = data, data_bins = d_cuts, stringsAsFactors = F)
-
-	# Converting remaining variables
-	data_cat_2=data_cat %>% mutate_all(as.character)
-
-	return(data_cat_2)
-}
-
-#' @title Concatenate 'N' variables
-#' @description Concatenate 'N' variables using the char pipe: <|>.
-#' This function is used when there is the need of measuring the mutual information and/or the information
-#' gain between 'N' input variables an against a target variable. This function makes sense when it is used based on categorical data.
-#' @param data data frame containing the two variables to concatenate
-#' @param vars character vector containing all variables to concatenate
-#' @examples
-#' \dontrun{
-#' new_variable=concatenate_n_vars(mtcars, c("cyl", "disp"))
-#' # Checking new variable
-#' head(new_variable)
-#' }
-#' @return
-#' @export
-concatenate_n_vars <- function(data, vars)
-{
-	df=data %>% select(one_of(vars))
-
-	new_col=apply(df, 1, function(x) paste(x, collapse = " | ") )
-
-	return(new_col)
-}
-
 #' @title Computes the entropy between two variables
 #' @description It calculates the entropy between two categorical variables using log2.
 #' This log2 is mentioned in most of the Claude Shannon bibliography.
@@ -82,7 +32,7 @@ entropy_2 <- function(input, target)
 }
 
 #' @title Information gain
-#' @description Computes the information gain between an 'input' and 'target' variable (using log2).
+#' @description Computes the information gain between an 'input' and 'target' variable (using log2). In general terms, the higher the more predictable the input is.
 #' @param input numeric/character vector
 #' @param target numeric/character vector
 #' @examples
@@ -121,42 +71,49 @@ gain_ratio <- function(input, target)
 	return(gain_r)
 }
 
-#' @title Importance variable ranking based on gain ratio
-#' @description
+#' @title Importance variable ranking based on information theory
+#' @description Retrieves a data frame containing several metrics related to information theory.
+#' Metrics are: entropy (en), mutual information (mi), information gain (ig) and gain ratio (gr).
 #'
-#' @param
+#' @param data input data frame, all the variables will be evaluated against the variable defined in 'target' parameter
+#' @param target string variable name containing the output variable.
 #' @examples
 #' \dontrun{
-#'
+#' var_rank_info(data_golf, "play_golf")
 #' }
-#' @return
+#' @return data frame ordered by gain ratio metric
 #' @export
 var_rank_info <- function(data, target)
 {
 	nam=colnames(data)
 	nam=nam[nam!=target]
 
-	df_res=data.frame(var=NULL, en=NULL, mi=NULL, ig=NULL, stringsAsFactors = F)
+	df_res=data.frame(var=NULL, en=NULL, mi=NULL, ig=NULL, gr=NULL, stringsAsFactors = F)
 
 	for(var in nam)
 	{
 		r=infor_magic(data[[var]], data[[target]])
-		df_res=rbind(df_res, data.frame(var=var, en=r[1],mi=r[2],ig=r[3], gr=r[4]))
+		df_res=rbind(df_res, data.frame(var=var, en=r[1], mi=r[2], ig=r[3], gr=r[4]))
 	}
 
 	df_res$var=as.character(df_res$var)
-	return(df_res %>% arrange(-gr))
+
+	df_res=df_res %>% arrange(-gr)
+
+	return(df_res)
 }
 
-#' @title
-#' @description
+#' @title Computes several information theory metrics between two vectors
+#' @description It retrieves the same as \code{\link{var_rank_info}} but receiving two vectors.
+#' Metrics are: entropy (en), mutual information (mi), information gain (ig) and gain ratio (gr).
 #'
-#' @param
+#' @param input vector to be evaluated against the variable defined in 'target' parameter
+#' @param target vector containing the output variable.
 #' @examples
 #' \dontrun{
-#'
+#' infor_magic(data_golf$outlook, data_golf$play_golf)
 #' }
-#' @return
+#' @return Matrix of 1 row and 4 columns, where each column represent the mentioned metrics
 #' @export
 infor_magic <- function(input, target)
 {
@@ -180,32 +137,8 @@ infor_magic <- function(input, target)
 	# Computing information gain between input and target variable.
 	gr=gain_ratio(input, target)
 
-	return(c(en, mi, ig , gr))
-}
+	res=c(en=en, mi=mi, ig=ig , gr=gr)
 
-#' @title
-#' @description
-#'
-#' @param
-#' @examples
-#' \dontrun{
-#'
-#' }
-#' @return
-#' @export
-var_rank_variation_coef <- function(data, target, sample_size=0.3, repeats=5)
-{
-	df_gr=data.frame(i=NULL, var=NULL,  gr=NULL)
-
-	for(i in 1:repeats)
-	{
-		ix=get_sample(data, percentage_tr_rows = sample_size, seed = i)
-		d_samp=data[ix, ]
-		df_info=var_rank_info(d_samp, target) %>% select(var, gr)
-
-		df_gr=rbind(df_gr, data.frame(df_info, i=i))
-	}
-
-	stats=group_by(df_gr, var) %>% summarise(variation_coef=sd(gr)/mean(gr)) %>% arrange(-variation_coef)
+	return(res)
 }
 

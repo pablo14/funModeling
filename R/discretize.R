@@ -102,7 +102,7 @@ dis=function(x, n_bins)
 
 get_bins_processed <- function(x, n_bins)
 {
-	cuts=discretize(x, "frequency", onlycuts = T, categories = n_bins)
+	cuts=cut2(x, g = n_bins, onlycuts = T)
 
 	cuts[1]=-Inf
 	cuts[length(cuts)]=Inf
@@ -111,7 +111,7 @@ get_bins_processed <- function(x, n_bins)
 }
 
 
-dis_bins=function(x, n_bins=5, save_cuts=F)
+dis_bins=function(x, n_bins=5)
 {
 	cuts=get_bins_processed(x, n_bins)
 	res=paste(cuts, collapse = "|")
@@ -125,8 +125,9 @@ dis_bins=function(x, n_bins=5, save_cuts=F)
 
 dis_recover <- function(x, cuts, stringsAsFactors)
 {
+	number_of_digits=4
 	oldopt = options("digits")
-	options(digits = 4) # number of significant decimal points
+	options(digits = number_of_digits) # number of significant decimal points
 	on.exit(options(oldopt))
 
 	cuts_v=as.numeric(unlist(strsplit(cuts, '[|]')))
@@ -159,5 +160,62 @@ conv_factor <- function(x)
 	new_x=factor(x, levels = levels(x))
 
 	return(new_x)
+}
+
+
+#' @title Convert every column in a data frame to character
+#' @description It converts all the variables present in 'data' to character. Criteria conversion is based on
+#' two functions, \code{\link{discretize_get_bins}} plus \code{\link{discretize_df}}, which will discretize
+#' all the numerical variables based on equal frequency criteria, with the number of bins equal to 'n_bins'.
+#' This only applies for numerical variables which unique valuesare more than 'n_bins' parameter.
+#' After this step, it may happen that variables remain non-character, so these variables will be converting
+#' directly into character.
+#'
+#' @param data input data frame to discretize
+#' @param n_bins number of bins/segments for each variable
+#' @examples
+#' \dontrun{
+#' # before
+#' df_status(heart_disease)
+#'
+#' # after
+#' new_df=convert_df_to_categoric(data=heart_disease, n_bins=5)
+#' df_status(new_df)
+#' }
+#' @return data frame containing all variables as character
+#' @export
+convert_df_to_categoric <- function(data, n_bins)
+{
+	# Discretizing numerical variables
+	d_cuts=discretize_get_bins(data = data, n_bins = n_bins)
+	data_cat=discretize_df(data = data, data_bins = d_cuts, stringsAsFactors = F)
+
+	# Converting remaining variables
+	data_cat_2=data_cat %>% mutate_all(as.character)
+
+	return(data_cat_2)
+}
+
+#' @title Concatenate 'N' variables
+#' @description Concatenate 'N' variables using the char pipe: <|>.
+#' This function is used when there is the need of measuring the mutual information and/or the information
+#' gain between 'N' input variables an against a target variable. This function makes sense when it is used based on categorical data.
+#' @param data data frame containing the two variables to concatenate
+#' @param vars character vector containing all variables to concatenate
+#' @examples
+#' \dontrun{
+#' new_variable=concatenate_n_vars(mtcars, c("cyl", "disp"))
+#' # Checking new variable
+#' head(new_variable)
+#' }
+#' @return vector containing the concatenated values for the given variables
+#' @export
+concatenate_n_vars <- function(data, vars)
+{
+	df=data %>% select(one_of(vars))
+
+	new_col=apply(df, 1, function(x) paste(x, collapse = " | ") )
+
+	return(new_col)
 }
 

@@ -1,6 +1,6 @@
 #' @title Plotting numerical data
 #' @description
-#' One plot containing all the histograms for numerical variables. NA values will not be displayed.
+#' Retrieves one plot containing all the histograms for numerical variables. NA values will not be displayed.
 #' @param data data frame
 #' @param bins number of bars (bins) to plot each histogram, 10 by default
 #' @examples
@@ -171,17 +171,71 @@ correlation_table <- function(data, str_target)
 
 
 
-#' @title Transform a variable into the [0-1] range
-#' @description Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable. All NA values will be removed.
-#' @param var numeric input vector
+#' @title Get a summary for the given data frame (o vector).
+#' @description For each variable it returns: Quantity and percentage of zeros (q_zeros and p_zeros respectevly). Same metrics for NA values (q_NA/p_na), and infinite values (q_inf/p_inf). Last two columns indicates data type and quantity of unique values.
+#' This function print and return the results.
+#' @param data data frame or a single vector
+#' @param print_results if FALSE then there is not a print in the console, TRUE by default.
 #' @examples
-#' range01(mtcars$cyl)
-#' @return vector with the values scaled into the 0 to 1 range
+#' df_status(heart_disease)
+#' @return Metrics data frame
 #' @export
-range01 <- function(var)
+df_status <- function(data, print_results)
 {
-	return((var-min(var, na.rm=T))/(max(var, na.rm=T)-min(var, na.rm=T)))
+	## If str_input is NA then ask for a single vector. True if it is a single vector
+	if(mode(data) %in% c("logical","numeric","complex","character"))
+	{
+		# creates a ficticious variable called 'var'
+		data=data.frame(var=data)
+		str_input="var"
+	}
+
+	if(missing(print_results))
+		print_results=T
+
+	df_status_res=data.frame(
+		q_zeros=sapply(data, function(x) sum(x==0,na.rm=T)),
+		p_zeros=round(100*sapply(data, function(x) sum(x==0,na.rm=T))/nrow(data),2),
+		q_na=sapply(data, function(x) sum(is.na(x))),
+		p_na=round(100*sapply(data, function(x) sum(is.na(x)))/nrow(data),2),
+		q_inf=sapply(data, function(x) sum(is.infinite(x))),
+		p_inf=round(100*sapply(data, function(x) sum(is.infinite(x)))/nrow(data),2),
+		type=sapply(data, get_type_v),
+		unique=sapply(data, function(x) sum(!is.na(unique(x))))
+	)
+
+	## Create new variable for column name
+	df_status_res$variable=rownames(df_status_res)
+	rownames(df_status_res)=NULL
+
+	## Reordering columns
+	df_status_res=df_status_res[, c(9,1,2,3,4,5,6,7,8)]
+
+	## Print or return results
+	if(print_results) print(df_status_res) else return(df_status_res)
 }
+
+is.POSIXct <- function(x) inherits(x, "POSIXct")
+is.POSIXlt <- function(x) inherits(x, "POSIXlt")
+is.POSIXt <- function(x) inherits(x, "POSIXt")
+
+get_type_v <- function(x)
+{
+	## handler for posix object, because class function returns a list in this case
+	posix=ifelse(is.POSIXct(x), "POSIXct", "")
+	posix=ifelse(is.POSIXlt(x), paste(posix, "POSIXlt", sep="/"), posix)
+	posix=ifelse(is.POSIXt(x), paste(posix, "POSIXt", sep="/"), posix)
+
+	# ifnot posix..then something else
+	if(posix=="")
+	{
+		cl=class(x)
+		return(ifelse(length(cl)>1, paste(cl, collapse = "-"), cl))
+	} else {
+		return(posix)
+	}
+}
+
 
 #' @title Frequency table for categorical variables
 #' @description Retrieves the frequency and percentage for str_input

@@ -15,7 +15,7 @@ information_gain(input, target)
 information gain
 }
 \description{
-Computes the information gain between an 'input' and 'target' variable (using log2).
+Computes the information gain between an 'input' and 'target' variable (using log2). In general terms, the higher the more predictable the input is.
 }
 \examples{
 \dontrun{

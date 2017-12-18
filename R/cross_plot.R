@@ -140,7 +140,7 @@ cross_plot_logic <- function(data, str_input, str_target, path_out, auto_binning
 	  ## Generating Id indicator for odd/even calculus
 	  rownames(dataGrafPrep) = 1:nrow(dataGrafPrep)
 
-	  ## Computing if the row is odd/even
+	  # Computing if the row is odd/even
 	  dataGrafPrep$fum=as.numeric(as.numeric(rownames(dataGrafPrep)) %% 2 == 0)
 
 	  ## Computing middle position in each sub bar

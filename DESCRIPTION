@@ -21,8 +21,7 @@ Imports:
     lazyeval,
     utils,
     RColorBrewer,
-    moments,
-    arules	
+    moments
 Depends:
     R (>= 3.2.1),
     Hmisc (>= 3.17.1)

@@ -52,4 +52,15 @@ auto_grouping <- function(data, input, target, n_groups, model="kmeans", seed=99
 	return(l_res)
 }
 
+#' @title Transform a variable into the [0-1] range
+#' @description Range a variable into [0-1], assigning 0 to the min and 1 to the max of the input variable. All NA values will be removed.
+#' @param var numeric input vector
+#' @examples
+#' range01(mtcars$cyl)
+#' @return vector with the values scaled into the 0 to 1 range
+#' @export
+range01 <- function(var)
+{
+	return((var-min(var, na.rm=T))/(max(var, na.rm=T)-min(var, na.rm=T)))
+}
 
