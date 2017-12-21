@@ -4,7 +4,7 @@
 \alias{gain_lift}
 \title{Generates lift and cumulative gain performance table and plot}
 \usage{
-gain_lift(data, str_score, str_target, q_segments)
+gain_lift(data, str_score, str_target, q_segments = 10)
 }
 \arguments{
 \item{data}{input data source}
@@ -16,10 +16,14 @@ gain_lift(data, str_score, str_target, q_segments)
 \item{q_segments}{quantity of segments to split str_score, valid values: 5, 10 or 20}
 }
 \value{
-lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the positive class is set to the column "Score Point"
+lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the
+positive class is set to the column "Score Point"
 }
 \description{
-It retrieves the cumulative positive rate -gain curve- and the lift chart & plot when score is divided in 5, 10 or 20 segments. Both metrics give a quality measure about how well the model predicts. Higher values at the beginning of the population implies a better model.
+It retrieves the cumulative positive rate -gain curve- and the lift chart & plot when score is divided
+in 5, 10 or 20 segments. Both metrics give a quality measure about how well the model predicts.
+Higher values at the beginning of the population implies a better model. More info at:
+ \url{https://livebook.datascienceheroes.com/model-performance.html#scoring_data}
 }
 \examples{
 fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)

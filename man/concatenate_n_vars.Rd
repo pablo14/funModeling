@@ -17,7 +17,8 @@ vector containing the concatenated values for the given variables
 \description{
 Concatenate 'N' variables using the char pipe: <|>.
 This function is used when there is the need of measuring the mutual information and/or the information
-gain between 'N' input variables an against a target variable. This function makes sense when it is used based on categorical data.
+gain between 'N' input variables an against a target variable. This function makes sense when it is used based on
+categorical data.
 }
 \examples{
 \dontrun{

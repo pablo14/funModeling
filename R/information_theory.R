@@ -44,7 +44,7 @@ entropy_2 <- function(input, target)
 information_gain <- function(input, target)
 {
 	tbl=table(target)
-	en_y=entropy(tbl, unit = "log2")
+	en_y=entropy::entropy(tbl, unit = "log2")
 	en=entropy_2(input, target)
 	info_gain=en_y-en
 
