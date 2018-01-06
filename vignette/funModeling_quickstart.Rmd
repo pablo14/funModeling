@@ -1,0 +1,280 @@
+title: "funModeling quick-start"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{funModeling quick-start}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+---
+
+# funModeling quick-start {#quick_start}
+
+Almost no explanations here, just go to the point: problem + code + solutions.
+
+Most of the `funModeling` functions are intendeed to work with one or many variables at once.
+
+<br>
+
+## Dataset health
+
+#### `df_status`
+
+Use case: analyze the zeros, missing values (`NA`), infinity, data type and number of unique values for a given dataset.
+
+```{r, message=FALSE, warning=FALSE}
+library(funModeling)
+
+df_status(heart_disease)
+```
+
+Questions:
+
+- Does every variable has the correct data type? if not, how to transform them according to project needs?
+- Is it ok that certain variable has several NAs, zeros and/or infinite values?
+- What are the high cardinality variables (`unique > 30`)? What to do with them?
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#dataset-health-status)
+
+<br>
+
+## Exploratory data analysis
+
+#### `plot_num`: Plotting distributions for numerical variables.
+
+```{r, fig.height=3, fig.width=5}
+plot_num(heart_disease)
+```
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#plotting-numerical-variable)
+
+<br>
+
+#### `profiling_num`: Calculating several statistics for numeric variables. 
+
+
+```{r}
+profiling_num(heart_disease)
+```
+
+Note: `plot_num` and `profiling_num` automatically exclude non-numeric variables
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#numerical-profiling-in-r)
+
+
+<br>
+
+#### `freq`: Getting frequency distribution for categoric variable 
+
+```{r, message=FALSE, fig.height=3, fig.width=5, warning=FALSE}
+library(dplyr)
+
+# select only two variables for this example
+heart_disease_2=heart_disease %>% select(chest_pain, thal)
+
+# frequency distribution
+freq(heart_disease_2)
+```
+
+
+Note: 
+
+* `freq` only processes `factor` and `character`, excluding non-categorical variables. 
+* It returns a distribution table.
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#profiling-categorical-variables)
+
+<br>
+
+## Correlation
+
+Use case: get correlation between input and target variable
+
+#### `correlation_table`: Calculates R statistic
+
+It retrieves R metric (or Pearson coefficient) for all numeric variables skipping the categorical ones.
+
+```{r}
+correlation_table(heart_disease, "has_heart_disease")
+```
+
+Note: Only numeric variables are analyzed. Target variable must be numeric.
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#linear-correlation)
+
+<br>
+
+#### `var_rank_info`: Correlation based on information theory
+
+Calculates correlation based on several information theory metrics between all variables in a data frame and a target variable.
+
+```{r}
+var_rank_info(heart_disease, "has_heart_disease")
+```
+
+Note: It analyzes numerical and categorical variables. Also used with a numerical discretization method before, just as `discretize_df`.
+
+Questions:
+
+- What is the rank of most important variables given? Metrics: Pearson, mutual information, gain ratio, etc.
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/selecting-best-variables.html#select_features_var_rank_info)
+
+
+<br>
+
+#### `cross_plot`: Distribution plot between input and target variable
+
+Retrieves the relative and absolute distribution between an input and target variable.
+
+```{r, fig.height=4, fig.width=7}
+cross_plot(data=heart_disease, str_input=c("age", "oldpeak"), str_target="has_heart_disease")
+```
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/selecting-best-variables.html#profiling_target_cross_plot)
+
+
+<br>
+
+#### `plotar`: Boxplot and Density histogram between input and target variable
+
+
+```{r, fig.height=2, fig.width=4}
+plotar(data=heart_disease, str_input = c("age", "oldpeak"), str_target="has_heart_disease", plot_type="boxplot")
+```
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-boxplots)
+
+
+```{r, fig.height=2, fig.width=4}
+plotar(data=heart_disease, str_input = c("age", "oldpeak"), str_target="has_heart_disease", plot_type="histdens")
+```
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-density-histograms)
+
+
+<br>
+
+## Data preparation
+
+### Data discretization
+
+#### `discretize_get_bins` + `discretize_df`: Convert numeric variables into categoric
+
+We need two functions: `discretize_get_bins` which returns the thresholds for each variable, and then `discretize_df` which takes the result from the first function and converts the desiered variables. The binning criteria is equal frequency.
+
+Example converting only two variables from a dataset.
+
+```{r}
+# Step 1: Getting the thresholds for the desiered variables: "max_heart_rate" and "oldpeak"
+d_bins=discretize_get_bins(data=heart_disease, input=c("max_heart_rate", "oldpeak"), n_bins=5)
+
+# Step 2: Applying the threshold to get final processed data frame
+heart_disease_discretized=discretize_df(data=heart_disease, data_bins=d_bins, stringsAsFactors=T)
+```
+
+Following image will illustrate how the result is, please note that variable name will remaing the same.
+
+![data discretization](data_discretization_1.png)
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/data-preparation.html#data-discretization)
+
+
+
+<br>
+
+#### `equal_freq`: Convert numeric variable into categoric
+
+Converts numeric vector into a factor using equal frequency criteria.
+
+```{r}
+new_age=equal_freq(heart_disease$age, n_bins = 5)
+
+# checking results
+Hmisc::describe(new_age)
+```
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/data-preparation.html#equal-frequency-binning)
+
+<br>
+
+#### `range01`: scales variable into 0 to 1 range 
+
+```{r}
+age_scaled=range01(heart_disease$oldpeak)
+
+# checking results
+summary(age_scaled)
+```
+
+<br>
+
+### Outliers Data Preparation
+
+#### `hampel_outlier` and  `tukey_outlier`: Gets outliers threshold
+
+Both functions retrieves a two-value vector indicating the thresholds for which the values are considered as outliers.
+
+Using Tukey's method:
+
+```{r}
+tukey_outlier(heart_disease$resting_blood_pressure)
+```
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-tukey-method)
+
+
+Using Hampel's method:
+
+```{r}
+hampel_outlier(heart_disease$resting_blood_pressure)
+```
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-hampel-method)
+
+Note: `tukey_outlier` and `hampel_outlier` are used internally in `prep_outliers`.
+
+<br>
+
+#### `prep_outliers`: Prepare outliers in a data frame
+
+It takes a data frame, and returns the same data frame plus the transformations specified in the `str_input` parameter. It also works with a single vector.
+
+
+```{r}
+# Checking max and min value for 'max_heart_rate'
+summary(heart_disease$max_heart_rate)
+
+# Get threshold according to Hampel's method
+hampel_outlier(heart_disease$resting_blood_pressure)
+
+# Apply function to stop outliers at the threshold values
+data_prep=prep_outliers(data = heart_disease,
+												str_input = c('max_heart_rate','resting_blood_pressure'),
+ 												method = "hampel", 
+												type='stop')
+
+# Check the results, the maximum value is now 174.5 (the minimum remains the same).
+summary(data_prep$resting_blood_pressure)
+
+```
+
+Notes:
+
+* `method` can be: `bottom_top`, `tukey` or `hampel`.
+* `type` can be: `stop` or `set_na`. If `stop` all values flagged as outliers will be set to the threshold. If `set_na` the flagged values will set to `NA`.
+
+`r emo::ji("mag_right")` [Read more here.](https://livebook.datascienceheroes.com/data-preparation.html#how_to_deal_with_outliers_in_r)
+
+
+
+<br>
+
+
+## Index by questions
+
+
+
+
+
+
+
+
