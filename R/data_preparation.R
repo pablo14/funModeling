@@ -19,7 +19,7 @@
 #' @export
 auto_grouping <- function(data, input, target, n_groups, model="kmeans", seed=999)
 {
-	data[, input]=as.character(data[, input])
+	data[[input]]=as.character(data[[input]])
 
 	df_categ=categ_analysis(data, input , target)
 
