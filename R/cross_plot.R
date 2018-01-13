@@ -25,50 +25,64 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 #' @title Cross-plotting input variable vs. target variable
 #' @description The cross_plot shows how the input variable is correlated with the target variable, getting the likelihood rates for each input's bin/bucket .
 #' @param data data frame source
-#' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
-#' @param str_target string of the variable to predict
+#' @param input input variable name (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param target variable name to predict
+#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality.string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param str_target THIS PARAMETER WILL BE DEPRECATED. Please use 'target' insted. Only name changes, not functionality.
 #' @param path_out path directory, if it has a value the plot is saved
-#' @param auto_binning indicates the automatic binning of str_input variable based on equal frequency (function 'equal_freq'), default value=TRUE
+#' @param auto_binning indicates the automatic binning of input variable based on equal frequency (function 'equal_freq'), default value=TRUE
 #' @param plot_type indicates if the output is the 'percentual' plot, the 'quantity' or 'both' (default).
 #' @examples
 #' \dontrun{
 #' ## Example 1:
-#' cross_plot(data=heart_disease, str_input="chest_pain", str_target="has_heart_disease")
+#' cross_plot(data=heart_disease, input="chest_pain", target="has_heart_disease")
 #'
 #' ## Example 2: Disabling auto_binning:
-#' cross_plot(data=heart_disease, str_input="oldpeak",
-#' 		str_target="has_heart_disease", auto_binning=FALSE)
+#' cross_plot(data=heart_disease, input="oldpeak",
+#' 		target="has_heart_disease", auto_binning=FALSE)
 #'
 #' ## Example 3: Saving the plot into a folder:
-#' cross_plot(data=heart_disease, str_input="oldpeak",
-#' 		str_target="has_heart_disease", path_out = "my_folder")
+#' cross_plot(data=heart_disease, input="oldpeak",
+#' 		target="has_heart_disease", path_out = "my_folder")
 #'
 #' ## Example 4: Running with multiple input variables at the same time:
-#' cross_plot(data=heart_disease, str_input=c("age", "oldpeak", "max_heart_rate"),
-#' 		str_target="has_heart_disease")
+#' cross_plot(data=heart_disease, input=c("age", "oldpeak", "max_heart_rate"),
+#' 		target="has_heart_disease")
 #'}
 #' @return cross plot
 #' @export
-cross_plot <- function(data, str_input, str_target, path_out, auto_binning, plot_type='both')
+cross_plot <- function(data, input, target, str_input, str_target, path_out, auto_binning, plot_type='both')
 {
+	if(!missing(str_input))
+	{
+		input=str_input
+		.Deprecated(msg="Parameter 'str_input' will be deprecated, please use 'input' insted (only name changed, not its functionality)")
+	}
+
+	if(!missing(str_target))
+	{
+		target=str_target
+		.Deprecated(msg = "Parameter 'str_target' will be deprecated, please use 'target' insted (only name changed, not its functionality)")
+	}
+
 	data=as.data.frame(data)
 
 	## Handling missing parameters
   if(missing(auto_binning)) auto_binning=NA
   if(missing(path_out)) path_out=NA
 
-  ## If str_input then runs for all variables
-  if(missing(str_input))
+  ## If input then runs for all variables
+  if(missing(input))
 	{
 		## Excluding target variable
-  	str_input=colnames(data)
-		str_input=str_input[str_input!=str_target]
+  	input=colnames(data)
+		input=input[input!=target]
 	}
 
 	## Iterator
-  for(i in 1:length(str_input))
+  for(i in 1:length(input))
   {
-    cross_plot_logic(data = data, str_input=str_input[i], str_target=str_target, path_out = path_out, auto_binning, plot_type)
+    cross_plot_logic(data = data, input=input[i], target=target, path_out = path_out, auto_binning, plot_type)
   }
 
 
@@ -76,21 +90,21 @@ cross_plot <- function(data, str_input, str_target, path_out, auto_binning, plot
 
 
 
-cross_plot_logic <- function(data, str_input, str_target, path_out, auto_binning, plot_type)
+cross_plot_logic <- function(data, input, target, path_out, auto_binning, plot_type)
 {
-	# data=heart_disease; str_input="max_heart_rate"; str_target="has_heart_disease"; auto_binning=T
-	  check_target_existence(data, str_target=str_target)
+	# data=heart_disease; input="max_heart_rate"; target="has_heart_disease"; auto_binning=T
+	  check_target_existence(data, target=target)
 
-		data=remove_na_target(data, str_target=str_target)
+		data=remove_na_target(data, target=target)
 
-		check_target_2_values(data, str_target=str_target)
+		check_target_2_values(data, target=target)
 
 		if(!(plot_type %in% c('both','percentual', 'quantity')))
 			stop("Value for 'plot_type' is not valid: available values: 'both', 'percentual' or 'quantity'")
 
 	  ## Initial assignments
-	  target=data[, as.character(str_target)]
-	  varInput=data[, as.character(str_input)]
+	  varTarget=data[[as.character(target)]]
+	  varInput=data[[as.character(input)]]
 
 	  q_unique_input_values=length(unique(varInput))
 
@@ -100,30 +114,30 @@ cross_plot_logic <- function(data, str_input, str_target, path_out, auto_binning
 	  {
 		  if(!is.na(auto_binning) & auto_binning )
 		  {
-		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", str_input))
+		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", input))
 		    varInput=suppressWarnings(equal_freq(varInput, 10))
 		  }
 
 	  	if(is.na(auto_binning) & q_unique_input_values>20)
 		  {
-		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", str_input))
+		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", input))
 		    varInput=suppressWarnings(equal_freq(varInput, 10))
 		  }
 	  } else {
 	  	if(q_unique_input_values>50)
-	  		stop(sprintf('Skipping "%s" variable: more than 50 unique values.', str_input))
+	  		stop(sprintf('Skipping "%s" variable: more than 50 unique values.', input))
 	  }
 	  #############################################
 
 	  ## Infer the less representative class (commonly the one to predict)
-	  df_target=data.frame(target=target)
+	  df_target=data.frame(target=varTarget)
 	  dcount=group_by(df_target, target) %>% summarise(freq=n()) %>% arrange(freq)
 	  ## Converting factors to character
 	  dcount=data.frame(lapply(dcount, as.character), stringsAsFactors=FALSE)
 	  posClass=dcount[1,1]
 	  negClass=dcount[2,1]
 
-	  dataCast = dcast(data,varInput~target,fun.aggregate=length, value.var = str_target)
+	  dataCast = dcast(data,varInput~varTarget,fun.aggregate=length, value.var = target)
 
 	  ## Melt data for ggplot
 	  dataMelt=melt(dataCast, measure.vars = c(posClass,negClass))
@@ -157,7 +171,7 @@ cross_plot_logic <- function(data, str_input, str_target, path_out, auto_binning
 	  	geom_bar(position="fill",stat="identity") +
 	    geom_text(aes(label = sprintf("%0.1f", 100*ratio), y = position)) +
 	    guides(fill=FALSE) +
-	  	labs(x = str_input, y = paste(str_target, " (%)", sep=" ")) +
+	  	labs(x = input, y = paste(target, " (%)", sep=" ")) +
 	    theme_bw() +
 	  	theme(axis.text.x=element_text(angle = 45, hjust = 1),
 	          panel.grid.major = element_blank(),
@@ -174,7 +188,7 @@ cross_plot_logic <- function(data, str_input, str_target, path_out, auto_binning
 	  lGraf$quantity = ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, ymax=max(value)*1.05, fill=variable)) +
 	  	geom_bar(position=position_dodge(),stat="identity") +
 	    geom_text(aes(label=value), position=position_dodge(width=0.9), vjust=-0.25, size=4) +
-	  	labs(x = str_input, y = paste(str_target, " (count)", sep=" ")) +
+	  	labs(x = input, y = paste(target, " (count)", sep=" ")) +
 	    ylim(0, max(dataGrafPrep$value)+max(dataGrafPrep$value)*0.05) +
 			theme_bw() +
 	    theme(plot.background = element_blank(),
@@ -213,7 +227,7 @@ cross_plot_logic <- function(data, str_input, str_target, path_out, auto_binning
 
 	    if(dir.exists(path_out))
 	    {
-	      jpeg(sprintf("%s/%s.jpeg", path_out, str_input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
+	      jpeg(sprintf("%s/%s.jpeg", path_out, input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
 
 	      plot(final_plot)
 	      dev.off()

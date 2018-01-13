@@ -35,12 +35,11 @@ profiling_num <- function(data, print_results=T, digits=2)
 {
 	options(digits=digits)
 
-	## If str_input is NA then ask for a single vector. True if it is a single vector
 	if(mode(data) %in% c("logical","numeric","complex","character"))
 	{
 		# creates a ficticious variable called 'var'
 		data=data.frame(var=data)
-		str_input="var"
+		input="var"
 	}
 
 	## Keeping all non factor nor char variables
@@ -144,22 +143,29 @@ v_compare <- function(vector_x, vector_y)
 #' @title Get correlation against target variable
 #' @description Obtain correlation table for all variables against target variable. Only numeric variables are analyzed (factor/character are skippted automatically).
 #' @param data data frame
-#' @param str_target string variable to predict
+#' @param target string variable to predict
+#' @param str_target THIS PARAMETER WILL BE DEPRECATED. Please use 'target' insted. Only name changes, not functionality.
 #' @examples
-#' correlation_table(data=heart_disease, str_target="has_heart_disease")
+#' correlation_table(data=heart_disease, target="has_heart_disease")
 #' @return Correlation index for all data input variable
 #' @export
-correlation_table <- function(data, str_target)
+correlation_table <- function(data, target, str_target)
 {
+	if(!missing(str_target))
+	{
+		target=str_target
+		.Deprecated(msg="Parameter 'str_target' will be deprecated, please use 'target' insted (only name changed, not its functionality)")
+	}
+
 	data=as.data.frame(data)
 
-	data[, str_target]=as.numeric(data[, str_target])
+	data[[target]]=as.numeric(data[[target]])
 
-	data=data[, c(give_me_num_vars(data, str_target), str_target)]
+	data=data %>% select(one_of(c(give_me_num_vars(data), target)))
 
   df_cor=as.data.frame(round(cor(data, use="complete.obs"	),2))
   df_cor$Variable = rownames(df_cor)
-  df_cor=df_cor[, names(df_cor) %in% c(str_target, "Variable")]
+  df_cor=df_cor %>% select(one_of(c(target, "Variable")))
 
   df_cor=df_cor[, c(2,1)]
 
@@ -182,12 +188,12 @@ correlation_table <- function(data, str_target)
 #' @export
 df_status <- function(data, print_results)
 {
-	## If str_input is NA then ask for a single vector. True if it is a single vector
+	## If input is NA then ask for a single vector. True if it is a single vector
 	if(mode(data) %in% c("logical","numeric","complex","character"))
 	{
 		# creates a ficticious variable called 'var'
 		data=data.frame(var=data)
-		str_input="var"
+		input="var"
 	}
 
 	if(missing(print_results))
@@ -240,65 +246,72 @@ get_type_v <- function(x)
 #' @title Frequency table for categorical variables
 #' @description Retrieves the frequency and percentage for str_input
 #' @param data input data containing the variable to describe
-#' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality.string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param plot flag indicating if the plot is desired, TRUE by default
 #' @param na.rm flag indicating if NA values must be included in the analysis, FALSE by default
 #' @param path_out path directory, if it has a value the plot is saved
 #' @examples
 #' freq(data=heart_disease$thal)
-#' freq(data=heart_disease, str_input = c('thal','chest_pain'))
+#' freq(data=heart_disease, input = c('thal','chest_pain'))
 #' @return vector with the values scaled into the 0 to 1 range
 #' @export
-freq <- function(data, str_input=NA, plot=TRUE, na.rm=FALSE, path_out)
+freq <- function(data, input=NA, str_input=NA, plot=TRUE, na.rm=FALSE, path_out)
 {
+	if(!missing(str_input))
+	{
+		input=str_input
+		.Deprecated(msg="Parameter 'str_input' will be deprecated, please use 'input' insted (only name changed, not its functionality)")
+	}
+
 	if(missing(path_out)) path_out=NA
 
-  ## If str_input is NA then it runs for all variables in case it is not a single vector
-	if(sum(is.na(str_input)>0))
+  ## If input is NA then it runs for all variables in case it is not a single vector
+	if(sum(is.na(input)>0))
 	{
   	# True if it is a single vector
   	if(mode(data) %in% c("logical","numeric","complex","character"))
   	{
   		data=data.frame(var=data)
-  		str_input="var"
+  		input="var"
   	} else {
 			## Keeping all categorical variables
   		data=data.frame(data)
 			status=df_status(data, print_results = F)
-			str_input=status[status$type %in% c("factor", "character"), 'variable']
-			if(length(str_input)==0)
+			input=status[status$type %in% c("factor", "character"), 'variable']
+			if(length(input)==0)
 				stop("None of the input variables are factor nor character")
 
   	}
 	}
 
 	## Iterator
-	tot_vars=length(str_input)
+	tot_vars=length(input)
 	if(tot_vars==1)
 	{
-		res=freq_logic(data = data, str_input=str_input, plot, na.rm, path_out = path_out)
+		res=freq_logic(data = data, input=input, plot, na.rm, path_out = path_out)
 		return(res)
 	} else {
 		for(i in 1:tot_vars)
 		{
-			res=freq_logic(data = data, str_input=str_input[i], plot, na.rm, path_out = path_out)
+			res=freq_logic(data = data, input=input[i], plot, na.rm, path_out = path_out)
 			print(res)
 			cat("", sep="\n")
 		}
 
-		return(sprintf("Variables processed: %s", paste(str_input, collapse = ", ")))
+		return(sprintf("Variables processed: %s", paste(input, collapse = ", ")))
 
 	}
 
 }
 
-freq_logic <- function(data, str_input, plot, na.rm, path_out)
+freq_logic <- function(data, input, plot, na.rm, path_out)
 {
 	if(!na.rm) {
 		# if exclude = NULL then it adds the NA cases
-		tbl=data.frame(table(factor(data[,str_input], exclude = NULL)))
+		tbl=data.frame(table(factor(data[[input]], exclude = NULL)))
 	} else {
-		tbl=data.frame(table(data[,str_input]))
+		tbl=data.frame(table(data[[input]]))
 	}
 
 	tbl=rename(tbl, category=Var1, frequency=Freq) %>% arrange(-frequency)
@@ -344,7 +357,7 @@ freq_logic <- function(data, str_input, plot, na.rm, path_out)
 					axis.text.y=element_text(size=axis_size),
 					axis.title.x=element_text(size=12, margin=margin(10,0,0,0)),
 					axis.title.y=element_text(size=14, margin=margin(0,10,0,0))
-				) + ylab("Frequency / (Percentage %)") + xlab(str_input) +
+				) + ylab("Frequency / (Percentage %)") + xlab(input) +
 				geom_text( color="#151515", size=letter_size, hjust=-.06) +
 				guides(fill=F) +
 				scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.2))
@@ -356,7 +369,7 @@ freq_logic <- function(data, str_input, plot, na.rm, path_out)
 
 				if(dir.exists(path_out))
 				{
-					jpeg(sprintf("%s/%s.jpeg", path_out, str_input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
+					jpeg(sprintf("%s/%s.jpeg", path_out, input), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
 
 					plot(p)
 					dev.off()
@@ -368,13 +381,13 @@ freq_logic <- function(data, str_input, plot, na.rm, path_out)
 			}
 
 		} else {
-			message_high_card=sprintf("Skipping plot for variable '%s' (more than 200 categories)", str_input)
+			message_high_card=sprintf("Skipping plot for variable '%s' (more than 200 categories)", input)
 		}
 
 	}
 
-	colnames(tbl)[1]=str_input
-	tbl[,str_input]=as.character(tbl[,str_input])
+	colnames(tbl)[1]=input
+	tbl[[input]]=as.character(tbl[[input]])
 
 	if(exists("message_high_card")) {warning(message_high_card)}
 

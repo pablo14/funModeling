@@ -9,9 +9,15 @@ vignette: >
 
 # funModeling quick-start {#quick_start}
 
-Almost no explanations here, just go to the point: problem + code + solutions.
+This package contains a set of functions related to exploratory data analysis, data preparation and model performance. It is used by other poeple who work in business, research and teaching (professors and students).
 
-Most of the `funModeling` functions are intendeed to work with one or many variables at once.
+All the functions intend to be the enough comented so the user can open the black-box and learn how it was developed, tune or improve any of them.
+
+`funModeling` is intimately related to the _Data Science Live Book_ -Open Source- (2017), in the sense that most of its functionality is used to to explain different topics addressed by the book.
+
+![Data Science Live Book](data-science-live-book.png)
+
+This quick-start is focused only on the functions, all explanations around them, or when/how/why used can be learnt following the link "`r emo::ji("mag_right")` [**Read more here.**]" below each section.
 
 <br>
 
@@ -337,5 +343,10 @@ Notes:
 
 <br>
 
+## Predictive model perfomance
 
+
+---
+
+* Github `funModeling` repository: https://github.com/pablo14/funModeling
 

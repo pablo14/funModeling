@@ -83,7 +83,7 @@ discretize_get_bins <- function(data, n_bins=5, input=NULL)
 {
 	vars_num=df_status(data, print_results = F) %>% filter(type %in% c("integer","numeric"), unique>n_bins) %>% .$variable
 
-	## If str_input then runs for all variables
+	## If input then runs for all variables
 	if(!missing(input))
 	{
 		vars_num=vars_num[vars_num %in% input]
@@ -105,20 +105,20 @@ get_bins_processed <- function(x, n_bins)
 {
 	cuts=cut2(x, g = n_bins, onlycuts = T)
 
-	cuts[1]=-Inf
+	# when saving the 1st element, the min, is not necesary
+	cuts=cuts[-1]
+
+	# the last is the max: Inf
 	cuts[length(cuts)]=Inf
 
 	return(cuts)
 }
 
 
-dis_bins=function(x, n_bins=5)
+dis_bins <- function(x, n_bins=5)
 {
 	cuts=get_bins_processed(x, n_bins)
 	res=paste(cuts, collapse = "|")
-
-	names(x)
-	colnames(x)
 
 	return(res)
 }
@@ -132,10 +132,14 @@ dis_recover <- function(x, cuts, stringsAsFactors)
 	on.exit(options(oldopt))
 
 	cuts_v=as.numeric(unlist(strsplit(cuts, '[|]')))
-	x[x<min(cuts_v)]=min(cuts_v)
-	x[x>max(cuts_v)]=max(cuts_v)
 
-	res=Hmisc::cut2(x = x, cuts = cuts_v, digits=number_of_digits)
+	#x[x<min(cuts_v)]=min(cuts_v)
+	#x[x>max(cuts_v)]=max(cuts_v)
+
+	# forcing -Inf as the min value
+	cuts_v=c(-Inf, cuts_v)
+
+	res=Hmisc::cut2(x = x, cuts = cuts_v, digits=number_of_digits, oneval=FALSE)
 
 	# Hack correction on "-Inf" label: [-Inf, min_value)
 	if("-Inf" %in% trimws(levels(res)))
