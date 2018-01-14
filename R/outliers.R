@@ -8,10 +8,11 @@
 #' Setting NA is recommended when doing statistical analysis, parameter: type='set_na'.
 #' Stopping is recommended when creating a predictive model without biasing the result due to outliers, parameter: type='stop'.
 #'
-#' The function can take a data frame, and returns the same data plus the transformations specified in the str_input parameter. Or it can take a single vector (in the same 'data' parameter), and it returns a vector.
+#' The function can take a data frame, and returns the same data plus the transformations specified in the input parameter. Or it can take a single vector (in the same 'data' parameter), and it returns a vector.
 #'
 #' @param data a data frame or a single vector. If it's a data frame, the function returns a data frame, otherwise it returns a vector.
-#' @param str_input string input variable (if empty, it runs for all numeric variable).
+#' @param input string input variable (if empty, it runs for all numeric variable).
+#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality. String input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param type can be 'stop' or 'set_na', in the first case the original variable is stopped at the desiered percentile, 'set_na'  sets NA to the same values.
 #' @param method indicates the method used to flag the outliers, it can be: "bottom_top", "tukey" or "hampel".
 #' @param top_percent value from 0 to 1, represents the highest X percentage of values to treat. Valid only when method="bottom_top".
@@ -45,7 +46,7 @@
 #'
 #' #### EXAMPLE 2: Removing top and bottom 1% for the specified input variables.
 #' vars_to_process=c('var1', 'var2')
-#' df_treated3=prep_outliers(data = df, str_input = vars_to_process, type='set_na',
+#' df_treated3=prep_outliers(data = df, input = vars_to_process, type='set_na',
 #'  bottom_percent = 0.01, top_percent  = 0.01, method = "bottom_top")
 #' summary(df_treated3)
 #'
@@ -54,7 +55,7 @@
 #' ########################################################
 #'
 #' data_prep_h=funModeling::prep_outliers(data = heart_disease,
-#' str_input = c('age','resting_blood_pressure'),
+#' input = c('age','resting_blood_pressure'),
 #'  method = "hampel",  type='stop')
 #'
 #' # Using Hampel method to flag outliers:
@@ -63,7 +64,7 @@
 #' hampel_outlier(heart_disease$age) # checking the thresholds
 #'
 #' data_prep_a=funModeling::prep_outliers(data = heart_disease,
-#' str_input = c('age','resting_blood_pressure'),
+#' input = c('age','resting_blood_pressure'),
 #'  method = "tukey",  type='stop')
 #'
 #' max(heart_disease$age);max(data_prep_a$age)
@@ -73,8 +74,13 @@
 #' }
 #' @return A data frame with the desired outlier transformation
 #' @export
-prep_outliers <- function(data, str_input=NA, type=NA, method=NA, bottom_percent=NA, top_percent=NA)
+prep_outliers <- function(data, input=NA, str_input=NA, type=NA, method=NA, bottom_percent=NA, top_percent=NA)
 {
+	if(!missing(str_input))
+	{
+		input=str_input
+		.Deprecated(msg="Parameter 'str_input' will be deprecated, please use 'input' insted (only name changed, not its functionality)")
+	}
 
 	if(!(type %in% c('stop', 'set_na')))
 		stop("Parameter 'type' must be one of the following 'stop' or 'set_na'")
@@ -85,12 +91,12 @@ prep_outliers <- function(data, str_input=NA, type=NA, method=NA, bottom_percent
 	if(method !="bottom_top" & (!missing(top_percent) | !missing(bottom_percent)))
 		warning("Parameters 'bottom_percent' and/or 'top_percent' will be ignored. Only valid when method='bottom_top'")
 
-	## If str_input is NA then ask for a single vector. True if it is a single vector
-	if(sum(is.na(str_input)>0) & mode(data) %in% c("logical","numeric","complex","character"))
+	## If input is NA then ask for a single vector. True if it is a single vector
+	if(sum(is.na(input)>0) & mode(data) %in% c("logical","numeric","complex","character"))
 	{
 		# creates a ficticious variable called 'var'
 		data=data.frame(var=data)
-		str_input="var"
+		input="var"
 		input_one_var=TRUE
 	} else {
 		input_one_var=FALSE
@@ -126,9 +132,9 @@ prep_outliers <- function(data, str_input=NA, type=NA, method=NA, bottom_percent
 	{
 		## Logic for top value ##################################################
 		warn_mess_top=NA
-		for(i in 1:length(str_input))
+		for(i in 1:length(input))
 		{
-			cur_var=str_input[i]
+			cur_var=input[i]
 			x=data[[cur_var]]
 
 			if(method=="bottom_top" & !missing(top_percent))
@@ -176,9 +182,9 @@ prep_outliers <- function(data, str_input=NA, type=NA, method=NA, bottom_percent
 		## Logic for bottom value ######################################################
 		warn_mess_bott=NA
 
-		for(i in 1:length(str_input))
+		for(i in 1:length(input))
 		{
-			cur_var=str_input[i]
+			cur_var=input[i]
 			x=data[[cur_var]]
 
 			if(method=="bottom_top" & !missing(bottom_percent))

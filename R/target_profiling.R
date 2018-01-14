@@ -1,21 +1,35 @@
 #' @title Correlation plots
 #' @description Visual correlation analysis. Plot different graphs in order to expose the inner information of any numeric variable against the target variable
 #' @param data data frame source
-#' @param str_input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
-#' @param str_target string of the variable to predict, it supports binary or multinominal values.
+#' @param input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param target string of the variable to predict, it supports binary or multinominal values.
+#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality.string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param str_target THIS PARAMETER WILL BE DEPRECATED. Please use 'target' insted. Only name changes, not functionality.
 #' @param plot_type Indicates the type of plot to retrieve, available values: "boxplot" or "histdens".
 #' @param path_out path directory, if it has a value the plot is saved
 #' @examples
 #' \dontrun{
-#' ## Run for all numeric variables
-#' plotar(data=heart_disease, str_target="has_heart_disease",
-#' 	plot_type="histdens")
-#' plotar(heart_disease, str_input = 'age', str_target = 'chest_pain', plot_type = "boxplot")
+#' ## It runs for all numeric variables automatically
+#' plotar(data=heart_disease, target="has_heart_disease", plot_type="histdens")
+#'
+#' plotar(heart_disease, input = 'age', target = 'chest_pain', plot_type = "boxplot")
 #' }
 #' @return Single or multiple plots specified by 'plot_type' parameter
 #' @export
-plotar <- function(data, str_input, str_target, plot_type, path_out)
+plotar <- function(data, input, target, str_input, str_target, plot_type, path_out)
 {
+	if(!missing(str_input))
+	{
+		input=str_input
+		.Deprecated(msg="Parameter 'str_input' will be deprecated, please use 'input' insted (only name changed, not its functionality)")
+	}
+
+	if(!missing(str_target))
+	{
+		target=str_target
+		.Deprecated(msg = "Parameter 'str_target' will be deprecated, please use 'target' insted (only name changed, not its functionality)")
+	}
+
 	data=as.data.frame(data)
 
 	## Parameters & Error handlers
@@ -25,73 +39,57 @@ plotar <- function(data, str_input, str_target, plot_type, path_out)
 	if(!(plot_type %in% c('histdens','boxplot')))
 		stop("Value for 'plot_type' is not valid: available values: 'histdens' or 'boxplot'.")
 
-  check_target_existence(data, str_target=str_target)
+  check_target_existence(data, target=target)
 
-	data=remove_na_target(data, str_target=str_target)
+	data=remove_na_target(data, target=target)
 
-	#check_target_2_values(data, str_target=str_target)
+	#check_target_2_values(data, target=target)
 
 	## Convert to factor target variable
-	data[,str_target]=as.factor(data[,str_target])
+	data[[target]]=as.factor(data[[target]])
 
 	if(missing(path_out)) path_out=NA
 
-	if(missing(str_input))
+	if(missing(input))
 	{
-		data_2=data[, !(names(data) %in% str_target)]
-		str_input=give_me_num_vars(data_2)
+		data_2=data[, !(names(data) %in% target)]
+		input=give_me_num_vars(data_2)
 	}
 
 	## Begin iterator logic
-  for(i in 1:length(str_input))
+  for(i in 1:length(input))
   {
-    sprintf("Plotting '%s' (%s)", str_input[i], plot_type)
+    sprintf("Plotting '%s' (%s)", input[i], plot_type)
 
     ## Get the desiered plot
-		target_plot=get_target_plot(data, str_input[i], str_target, plot_type)
+		target_plot=get_target_plot(data, input[i], target, plot_type)
 
 		plot(target_plot)
-
-		## Save plot into a jpeg file
-	  if(!is.na(path_out))
-	  {
-	  	dir.create(path_out, showWarnings = F)
-
-	    if(dir.exists(path_out))
-	    {
-		     jpeg(sprintf("%s/%s_%s.png", path_out, str_input[i], plot_type), width= 12.25, height= 6.25, units="in",res=200, quality = 90)
-				 plot(target_plot)
-	    dev.off()
-	    } else {
-	      warning(sprintf("The directory '%s' doesn't exists.", path_out))
-	    }
-	  }
-
   }
 
 }
 
 
-get_target_plot <- function(data, str_input, str_target, plot_type)
+get_target_plot <- function(data, input, target, plot_type)
 {
 	## Retrieve the desiered plot
 	if(plot_type=="histdens")
-     plot_target=histdens_target(data, str_input, str_target)
+     plot_target=histdens_target(data, input, target)
 
   if(plot_type=="boxplot")
-    plot_target=boxplot_target(data, str_input, str_target)
+    plot_target=boxplot_target(data, input, target)
 
 	return(plot_target)
 }
 
 
-histdens_target <- function(data, str_input, str_target)
+histdens_target <- function(data, input, target)
 {
-	cdf=group_by_(data, str_target) %>% summarise_(var.mean=interp(~mean(v, na.rm=T), v=as.name(str_input)))
+	cdf=group_by_(data, target) %>% summarise_(var.mean=interp(~mean(v, na.rm=T), v=as.name(input)))
 
 	cdf$var.mean=round(cdf$var.mean, 2)
 
-  plot_histdens=ggplot(data, aes_string(x=str_input, colour=str_target)) + geom_density() + geom_vline(data=cdf, aes_string(xintercept="var.mean",  colour=str_target), linetype="dashed", size=0.5) +
+  plot_histdens=ggplot(data, aes_string(x=input, colour=target)) + geom_density() + geom_vline(data=cdf, aes_string(xintercept="var.mean",  colour=target), linetype="dashed", size=0.5) +
 
 	theme_bw() +
 
@@ -107,9 +105,9 @@ histdens_target <- function(data, str_input, str_target)
 
 }
 
-boxplot_target <- function(data, str_input, str_target)
+boxplot_target <- function(data, input, target)
 {
-	plot_box=ggplot(data, aes_string(x=str_target, y=str_input, fill=str_target)) + geom_boxplot() +
+	plot_box=ggplot(data, aes_string(x=target, y=input, fill=target)) + geom_boxplot() +
          guides(fill=FALSE)+stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
 
 	theme_bw() +
@@ -133,18 +131,18 @@ boxplot_target <- function(data, str_input, str_target)
 #' @param target string target variable. Binary or two class is only supported by now.
 #' @examples
 #' categ_analysis(data_country, "country", "has_flu")
-#' @return if str_input has 1 variable, it retrurns a data frame indicating all the metrics, otherwise prints in console all variable results.
+#' @return if input has 1 variable, it retrurns a data frame indicating all the metrics, otherwise prints in console all variable results.
 #' @export
 categ_analysis<-function(data, input, target)
 {
 	data=as.data.frame(data)
 
 	## Parameters & Error handlers #####################
-	check_target_existence(data, str_target=target)
+	check_target_existence(data, target=target)
 
-	data=remove_na_target(data, str_target=target)
+	data=remove_na_target(data, target=target)
 
-	check_target_2_values(data, str_target=target)
+	check_target_2_values(data, target=target)
 	#####################################################
 
 	## If missing it runs for all categorical variables

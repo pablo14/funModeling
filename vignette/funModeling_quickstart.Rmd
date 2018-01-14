@@ -1,23 +1,30 @@
-
+---
 title: "funModeling quick-start"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{funModeling quick-start}
   %\VignetteEngine{knitr::rmarkdown}
   %\usepackage[utf8]{inputenc}
+---
 
 
 # funModeling quick-start {#quick_start}
 
-This package contains a set of functions related to exploratory data analysis, data preparation and model performance. It is used by other poeple who work in business, research and teaching (professors and students).
-
-All the functions intend to be the enough comented so the user can open the black-box and learn how it was developed, tune or improve any of them.
+This package contains a set of functions related to exploratory data analysis, data preparation and model performance. It is used by people coming from business, research and teaching (profesors and students).
 
 `funModeling` is intimately related to the _Data Science Live Book_ -Open Source- (2017), in the sense that most of its functionality is used to to explain different topics addressed by the book.
 
 ![Data Science Live Book](data-science-live-book.png)
 
-This quick-start is focused only on the functions, all explanations around them, or when/how/why used can be learnt following the link "`r emo::ji("mag_right")` [**Read more here.**]" below each section.
+## Opening the black-box 
+
+Some functions have in-line comments so the user can open the black-box and learn how it was developed, tune or improve any of them. 
+
+All the functions are well documented, explaining all the parameters as well as containing short examples. R documentation can be accessed by: `help("name_of_the_function")`.
+
+This quick-start is focused only on the functions, all explanations around them, the how and when use them, can accessed following the "_**read more here.**_" link below each section.
+
+
 
 <br>
 
@@ -33,15 +40,7 @@ library(funModeling)
 df_status(heart_disease)
 ```
 
-Questions:
-
-- Does every variable has the correct data type? if not, how to transform them according to project needs?
-- Is it ok that certain variable has several NAs, zeros and/or infinite values?
-- What are the high cardinality variables (`unique > 30`)? What to do with them?
-
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#dataset-health-status)
-
-
 
 <br>
 
@@ -54,11 +53,12 @@ It plots only numerical variables.
 plot_num(heart_disease)
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#plotting-numerical-variable)
-
 Notes:
 
 * `bins`: Sets the number of bins. 10 by default.
+* `path_out` indicates the path directory, if it has a value the plot is exported in jpeg.
+
+`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#plotting-numerical-variable)
 
 
 <br>
@@ -77,13 +77,11 @@ Note:
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#numerical-profiling-in-r)
 
-
-
 <br>
 
 ### `freq`: Getting frequency distribution for categoric variable 
 
-```{r, message=FALSE, fig.height=3, fig.width=5, warning=FALSE}
+```{r distribution_categorical_variable, message=FALSE, fig.height=3, fig.width=5, warning=FALSE}
 library(dplyr)
 
 # select only two variables for this example
@@ -98,29 +96,29 @@ Notes:
 
 * `freq` only processes `factor` and `character`, excluding non-categorical variables. 
 * It returns the distribution table as a data frame.
-* If `str_input` is empty, then it runs for all categorical variables.
-* `path_out` indicates the path directory, if it has a value the plot is exported in JPEG.
+* If `input` is empty, then it runs for all categorical variables.
+* `path_out` indicates the path directory, if it has a value the plot is exported in jpeg.
 * `na.rm` indicates if `NA` values should be excluded, `FALSE` by default.
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#profiling-categorical-variables)
-
 
 
 <br>
 
 ## Correlation
 
-Use case: get correlation between input and target variable
-
 ### `correlation_table`: Calculates R statistic
 
-It retrieves R metric (or Pearson coefficient) for all numeric variables skipping the categorical ones.
+It retrieves R metric (or Pearson coefficient) for all numeric variables skipping the categorical ones. 
 
 ```{r}
 correlation_table(heart_disease, "has_heart_disease")
 ```
 
-Note: Only numeric variables are analyzed. Target variable must be numeric.
+Notes: 
+
+* Only numeric variables are analyzed. Target variable must be numeric.
+* If target is categorical, then it will be converted to numeric.
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#linear-correlation)
 
@@ -137,9 +135,6 @@ var_rank_info(heart_disease, "has_heart_disease")
 
 Note: It analyzes numerical and categorical variables. Also used with a numerical discretization method before, just as `discretize_df`.
 
-Questions:
-
-- What is the rank of most important variables given? Metrics: Pearson, mutual information, gain ratio, etc.
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#select_features_var_rank_info)
 
@@ -152,8 +147,8 @@ Questions:
 Retrieves the relative and absolute distribution between an input and target variable. 
 Useful to explain and report if a variable is important or not.
 
-```{r, fig.height=4, fig.width=7}
-cross_plot(data=heart_disease, str_input=c("age", "oldpeak"), str_target="has_heart_disease")
+```{r profiling_variable_predictive_modeling, fig.height=4, fig.width=8}
+cross_plot(data=heart_disease, input=c("age", "oldpeak"), target="has_heart_disease")
 ```
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#profiling_target_cross_plot)
@@ -161,34 +156,40 @@ cross_plot(data=heart_disease, str_input=c("age", "oldpeak"), str_target="has_he
 Notes: 
 
 * `auto_binning`: `TRUE` by default, shows the numerical variable as categorical.
-* `path_out` indicates the path directory, if it has a value the plot is exported in JPEG.
-* `str_input` can be numeric or categoric, and `str_target` must be binary (two-class) variable
-* If `str_input` is empty, then it runs for all variables.
+* `path_out` indicates the path directory, if it has a value the plot is exported in jpeg.
+* `input` can be numeric or categoric, and `target` must be binary (two-class) variable
+* If `input` is empty, then it runs for all variables.
 
 <br>
 
 ### `plotar`: Boxplot and Density histogram between input and target variable
 
-Useful to explain and report if a variable is important or not.
+Useful to explain and report if a variable is important or not. 
 
-```{r, fig.height=2, fig.width=4}
-plotar(data=heart_disease, str_input = c("age", "oldpeak"), str_target="has_heart_disease", plot_type="boxplot")
+**Boxplot:**
+
+```{r boxplot_analysis, fig.height=2, fig.width=4}
+plotar(data=heart_disease, input = c("age", "oldpeak"), target="has_heart_disease", plot_type="boxplot")
 ```
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-boxplots)
 
+<br>
 
-```{r, fig.height=2, fig.width=4}
-plotar(data=heart_disease, str_input = c("age", "oldpeak"), str_target="has_heart_disease", plot_type="histdens")
+**Density histograms:**
+
+```{r density_histogram, fig.height=2, fig.width=4}
+plotar(data=mtcars, input = "gear", target="cyl", plot_type="histdens")
 ```
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-density-histograms)
 
 Notes:
 
-* `path_out` indicates the path directory, if it has a value the plot is exported in JPEG.
-* If `str_input` is empty, then it runs for all numeric variables (skipping the categorical).
-* `str_input` must be numeric, and target must be categoric.
+* `path_out` indicates the path directory, if it has a value the plot is exported in jpeg.
+* If `input` is empty, then it runs for all numeric variables (skipping the categorical).
+* `input` must be numeric, and target must be categoric.
+* `target` can be multi-class (not only binary).
 
 <br>
 
@@ -197,10 +198,9 @@ Notes:
 Profile a binary target based on a categorical input variable, the representativness (`perc_rows`) and the accuracy (`perc_target`) for each value of the input variable. For example, the rate of having flu per country. 
 
 ```{r}
-country_profiling = categ_analysis(data = data_country, 
-    															 input = "country", 
-																	 target = "has_flu")
+df_ca=categ_analysis(data = data_country, input = "country", target = "has_flu")
 
+head(df_ca)
 ```
     
 Note: 
@@ -236,8 +236,14 @@ Following image will illustrate how the result is, please note that variable nam
 
 ![data discretization](data_discretization_1.png)
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#data-discretization)
 
+Notes: 
+
+* This two-step procedure is tought to be used in production with new data.
+* Min and max values for each bin will be `-Inf` and `Inf` respectevely.
+* A fix in latest `funModeling` release (1.6.7) may have change the output in certain scenarios. Please check the results if you were using version 1.6.6.
+
+`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#data-discretization)
 
 
 <br>
@@ -267,6 +273,10 @@ Hmisc::describe(new_age)
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#equal-frequency-binning)
 
+Notes:
+
+* Altough `discretize_get_bins`, this functions doesn't insert `-Inf` and `Inf` as tthe extremes.
+
 <br>
 
 ### `range01`: scales variable into 0 to 1 range 
@@ -288,7 +298,7 @@ summary(age_scaled)
 
 Both functions retrieves a two-value vector indicating the thresholds for which the values are considered as outliers.
 
-Using Tukey's method:
+**Using Tukey's method:**
 
 ```{r}
 tukey_outlier(heart_disease$resting_blood_pressure)
@@ -296,8 +306,9 @@ tukey_outlier(heart_disease$resting_blood_pressure)
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-tukey-method)
 
+<br>
 
-Using Hampel's method:
+**Using Hampel's method:**
 
 ```{r}
 hampel_outlier(heart_disease$resting_blood_pressure)
@@ -311,27 +322,38 @@ Note: `tukey_outlier` and `hampel_outlier` are used internally in `prep_outliers
 
 ### `prep_outliers`: Prepare outliers in a data frame
 
-It takes a data frame, and returns the same data frame plus the transformations specified in the `str_input` parameter. It also works with a single vector.
+It takes a data frame, and returns the same data frame plus the transformations specified in the `input` parameter. It also works with a single vector.
 
 
 ```{r}
-# Checking max and min value for 'max_heart_rate' before the transformation
-sprintf("Before transformation -> Min: %s; Max: %s", min(heart_disease$max_heart_rate), max(heart_disease$max_heart_rate))
-
 # Get threshold according to Hampel's method
 hampel_outlier(heart_disease$max_heart_rate)
 
 # Apply function to stop outliers at the threshold values
-data_prep=prep_outliers(data = heart_disease,
-												str_input = c('max_heart_rate','resting_blood_pressure'),
-												method = "hampel", 
-												type='stop')
+data_prep=prep_outliers(data = heart_disease, input = c('max_heart_rate','resting_blood_pressure'), method = "hampel", type='stop')
+
+```
+
+```{r, echo=FALSE}
+# Get threshold according to Hampel's method
+hampel_outlier(heart_disease$max_heart_rate)
+```
+
+
+```{r, echo=FALSE}
+# Checking max and min value for 'max_heart_rate' before the transformation
+sprintf("Before transformation -> Min: %s; Max: %s", min(heart_disease$max_heart_rate), max(heart_disease$max_heart_rate))
+
+# Apply function to stop outliers at the threshold values
+data_prep=prep_outliers(data = heart_disease, input = c('max_heart_rate','resting_blood_pressure'), method = "hampel", type='stop')
 
 # Check the results, the maximum value is now 174.5 (the minimum remains the same).
 # Checking max and min value for 'max_heart_rate' before the transformation
 sprintf("After transformation -> Min: %s; Max: %s", min(data_prep$max_heart_rate), max(data_prep$max_heart_rate))
 
 ```
+
+The maximum value is now 174.5 (the minimum remains the same).
 
 Notes:
 
@@ -343,10 +365,30 @@ Notes:
 
 <br>
 
-## Predictive model perfomance
+## Predictive model performance
+
+### `gain_lift`: Gain and lift performance curve
+
+After computing the scores or probabilities for the class we want to predict, we pass it to `gain_lift` function. It returns a data frame with performance metrics.
+
+```{r predictive_model_performance, fig.height=3, fig.width=7}
+# Crate machine learning model and getting its scores for positive case 
+fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
+heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
+
+# Calculate performance metrics
+gain_lift(data=heart_disease, score='score', target='has_heart_disease')
+
+```
+
+`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/model-performance.html#gain_and_lift)
+
+<br>
 
 
 ---
 
-* Github `funModeling` repository: https://github.com/pablo14/funModeling
+* Github repository, (report bugs or improvements): https://github.com/pablo14/funModeling
+* Creator and mantainer: Pablo Casas https://twitter.com/pabloc_ds
+
 

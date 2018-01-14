@@ -85,3 +85,27 @@ give_me_character_vars <- function(data, target=NULL)
 	return(input)
 }
 
+#' @title Export plot to jpeg file
+#' @description
+#' Export 'object_plot' to jpeg file under the name 'file_name' in the directory 'path_out'
+#' @param object_plot Object plot to export (like ggplot2)
+#' @param path_out path directory to export the output, if it has a value the plot is saved,
+#' if the directory doesn't existis it will try to create it
+#' @param file_name output file name
+#' @return none
+#' @export
+export_plot <- function(object_plot, path_out, file_name)
+{
+	## Save plot into a jpeg file
+	dir.create(path_out, showWarnings = F)
+
+	if(dir.exists(path_out))
+	{
+		file_name_png=sprintf("%s/%s.png", path_out, file_name)
+		suppressMessages(jpeg(file_name_png, width= 12.25, height= 6.25, units="in",res=200, quality = 90))
+		plot(object_plot)
+		suppressMessages(dev.off())
+	} else {
+		warning(sprintf("Directory '%s' doesn't exist or it couldn't be created", path_out))
+	}
+}

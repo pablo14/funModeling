@@ -3,11 +3,17 @@
 #' Retrieves one plot containing all the histograms for numerical variables. NA values will not be displayed.
 #' @param data data frame
 #' @param bins number of bars (bins) to plot each histogram, 10 by default
+#' @param path_out path directory to export the output, if it has a value the plot is saved,
+#' if the directory doesn't existis it will try to create it
 #' @examples
+#' \dontrun{
 #' plot_num(mtcars)
+#' # changing the bins parameter and exporting the plot
+#' plot_num(data=mtcars, bins=5, path_out="my_folder")
+#' }
 #' @return plot containing all numerical variables
 #' @export
-plot_num <- function(data, bins=10)
+plot_num <- function(data, bins=10, path_out=NA)
 {
 	## The concept of 'wide' and 'long' is crucial to understand how to pass the correct data to ggplot.
 	# The official documentation is quite clear about it: http://seananderson.ca/2013/10/19/reshape.html
@@ -15,7 +21,14 @@ plot_num <- function(data, bins=10)
 	p=ggplot(data = wide_data, mapping = aes(x = value)) +
 		geom_histogram(bins = bins, na.rm=T) + facet_wrap(~variable, scales = 'free_x') +  aes(fill = variable) + guides(fill=FALSE)
 
-	p
+
+	## Save plot
+	if(!is.na(path_out))
+	{
+		export_plot(p, path_out, "histograms")
+	}
+
+	plot(p) # plot
 
 }
 
@@ -244,10 +257,10 @@ get_type_v <- function(x)
 
 
 #' @title Frequency table for categorical variables
-#' @description Retrieves the frequency and percentage for str_input
+#' @description Retrieves the frequency and percentage for input
 #' @param data input data containing the variable to describe
 #' @param input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
-#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality.string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
+#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality. String input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param plot flag indicating if the plot is desired, TRUE by default
 #' @param na.rm flag indicating if NA values must be included in the analysis, FALSE by default
 #' @param path_out path directory, if it has a value the plot is saved
@@ -362,7 +375,7 @@ freq_logic <- function(data, input, plot, na.rm, path_out)
 				guides(fill=F) +
 				scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.2))
 
-	## Save plot
+			## Save plot
 			if(!is.na(path_out))
 			{
 				dir.create(path_out, showWarnings = F)
