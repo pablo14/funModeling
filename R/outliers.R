@@ -13,7 +13,7 @@
 #' @param data a data frame or a single vector. If it's a data frame, the function returns a data frame, otherwise it returns a vector.
 #' @param input string input variable (if empty, it runs for all numeric variable).
 #' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality. String input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
-#' @param type can be 'stop' or 'set_na', in the first case the original variable is stopped at the desiered percentile, 'set_na'  sets NA to the same values.
+#' @param type can be 'stop' or 'set_na', in the first case all falling out of the threshold will be converted to the threshold, on the other case all of these values will be set as NA.
 #' @param method indicates the method used to flag the outliers, it can be: "bottom_top", "tukey" or "hampel".
 #' @param top_percent value from 0 to 1, represents the highest X percentage of values to treat. Valid only when method="bottom_top".
 #' @param bottom_percent value from 0 to 1, represents the lowest X percentage of values to treat. Valid only when method="bottom_top".
