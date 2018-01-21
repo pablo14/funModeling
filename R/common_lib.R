@@ -90,7 +90,7 @@ give_me_character_vars <- function(data, target=NULL)
 #' Export 'object_plot' to jpeg file under the name 'file_name' in the directory 'path_out'
 #' @param object_plot Object plot to export (like ggplot2)
 #' @param path_out path directory to export the output, if it has a value the plot is saved,
-#' if the directory doesn't existis it will try to create it
+#' if the directory doesn't existis it will try to create it. To save in current directory path must be dot: "."
 #' @param file_name output file name
 #' @return none
 #' @export

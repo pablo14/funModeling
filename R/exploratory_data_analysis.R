@@ -4,7 +4,7 @@
 #' @param data data frame
 #' @param bins number of bars (bins) to plot each histogram, 10 by default
 #' @param path_out path directory to export the output, if it has a value the plot is saved,
-#' if the directory doesn't existis it will try to create it
+#' if the directory doesn't existis it will try to create it. To save in current directory path must be dot: "."
 #' @examples
 #' \dontrun{
 #' plot_num(mtcars)

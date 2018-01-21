@@ -33,7 +33,7 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 #' @examples
 #' fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
 #' heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
-#' gain_lift(data=heart_disease,str_score='score',str_target='has_heart_disease')
+#' gain_lift(data=heart_disease, score='score', target='has_heart_disease')
 #'
 #' @return lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the
 #' positive class is set to the column "Score Point"
@@ -42,7 +42,7 @@ gain_lift <- function(data, score, target, str_score, str_target, q_segments=10)
 {
 	if(!missing(str_score))
 	{
-		input=str_input
+		score=str_score
 		.Deprecated(msg="Parameter 'str_score' will be deprecated, please use 'score' insted (only name changed, not its functionality)")
 	}
 

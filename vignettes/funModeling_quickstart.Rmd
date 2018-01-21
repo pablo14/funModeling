@@ -24,11 +24,20 @@ Some functions have in-line comments so the user can open the black-box and lear
 
 All the functions are well documented, explaining all the parameters with the help of many short examples. R documentation can be accessed by: `help("name_of_the_function")`.
 
-This quick-start is focused only on the functions. All explanations around them, and the how and when to use them, can be accessed by following the "_**Read more here.**_" links below each section, which redirect you to the book.
 
+**Important changes from latest version 1.6.7**, (relevant only if you were using previous versions):
 
+From the latest version, 1.6.7 (Jan 21-2018), the parameters `str_input`, `str_target` and `str_score` will be renamed to `input`, `target` and `score` respectively. The functionality remains the same. If you were using these parameters names on production, they will be still working until next release. this means that for now, you can use for example `str_input` or `input`.
+
+The other importat change was in `discretize_get_bins`, which is detailed later in this document.
 
 <br>
+
+### About this quick-start
+
+This quick-start is focused only on the functions. All explanations around them, and the how and when to use them, can be accessed by following the "_**Read more here.**_" links below each section, which redirect you to the book.
+
+Below there are most of the `funModeling` functions divided by category.
 
 ## Exploratory data analysis
 
@@ -58,7 +67,7 @@ plot_num(heart_disease)
 Notes:
 
 * `bins`: Sets the number of bins (10 by default).
-* `path_out` indicates the path directory; if it has a value, then the plot is exported in jpeg.
+* `path_out` indicates the path directory; if it has a value, then the plot is exported in jpeg. To save in current directory path must be dot: "."
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#plotting-numerical-variable)
 
@@ -99,7 +108,7 @@ Notes:
 * `freq` only processes `factor` and `character`, excluding non-categorical variables. 
 * It returns the distribution table as a data frame.
 * If `input` is empty, then it runs for all categorical variables.
-* `path_out` indicates the path directory; if it has a value, then the plot is exported in jpeg.
+* `path_out` indicates the path directory; if it has a value, then the plot is exported in jpeg. To save in current directory path must be dot: "."
 * `na.rm` indicates if `NA` values should be excluded (`FALSE` by default).
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#profiling-categorical-variables)
@@ -243,7 +252,7 @@ Notes:
 
 * This two-step procedure is thought to be used in production with new data.
 * Min and max values for each bin will be `-Inf` and `Inf`, respectively.
-* A fix in the latest `funModeling` release (1.6.7) may change the output in certain scenarios. Please check the results if using version 1.6.6.
+* A fix in the latest `funModeling` release (1.6.7) may change the output in certain scenarios. Please check the results if you were using version 1.6.6. More info about this change [here](https://s3.amazonaws.com/datascienceheroes.com/img/blog/changes_discretize_df.png).
 
 `r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#data-discretization)
 
@@ -392,6 +401,6 @@ gain_lift(data=heart_disease, score='score', target='has_heart_disease')
 ---
 
 * Github repository (report bugs or improvements): https://github.com/pablo14/funModeling
-* Creator and mantainer: Pablo Casas https://twitter.com/pabloc_ds
+* Creator and mantainer: Pablo Casas https://twitter.com/pabloc_ds / pcasas.biz <at> gmail.com
 
 

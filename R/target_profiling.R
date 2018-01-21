@@ -6,7 +6,7 @@
 #' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality.string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param str_target THIS PARAMETER WILL BE DEPRECATED. Please use 'target' insted. Only name changes, not functionality.
 #' @param plot_type Indicates the type of plot to retrieve, available values: "boxplot" or "histdens".
-#' @param path_out path directory, if it has a value the plot is saved
+#' @param path_out path directory, if it has a value the plot is saved. To save in current directory path must be dot: "."
 #' @examples
 #' \dontrun{
 #' ## It runs for all numeric variables automatically
