@@ -51,7 +51,7 @@ library(funModeling)
 df_status(heart_disease)
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#dataset-health-status)
+[**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#dataset-health-status)
 
 <br>
 
@@ -69,7 +69,7 @@ Notes:
 * `bins`: Sets the number of bins (10 by default).
 * `path_out` indicates the path directory; if it has a value, then the plot is exported in jpeg. To save in current directory path must be dot: "."
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#plotting-numerical-variable)
+[**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#plotting-numerical-variable)
 
 
 <br>
@@ -86,7 +86,7 @@ Note:
 
 * `plot_num` and `profiling_num` automatically exclude non-numeric variables
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#numerical-profiling-in-r)
+[**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#numerical-profiling-in-r)
 
 <br>
 
@@ -111,7 +111,7 @@ Notes:
 * `path_out` indicates the path directory; if it has a value, then the plot is exported in jpeg. To save in current directory path must be dot: "."
 * `na.rm` indicates if `NA` values should be excluded (`FALSE` by default).
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#profiling-categorical-variables)
+[**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#profiling-categorical-variables)
 
 
 <br>
@@ -131,7 +131,7 @@ Notes:
 * Only numeric variables are analyzed. Target variable must be numeric.
 * If target is categorical, then it will be converted to numeric.
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#linear-correlation)
+[**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#linear-correlation)
 
 
 <br>
@@ -147,7 +147,7 @@ var_rank_info(heart_disease, "has_heart_disease")
 Note: It analyzes numerical and categorical variables. It is also used with the numeric discretization method as before, just as `discretize_df`.
 
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#select_features_var_rank_info)
+[**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#select_features_var_rank_info)
 
 
 
@@ -162,14 +162,14 @@ Useful to explain and report if a variable is important or not.
 cross_plot(data=heart_disease, input=c("age", "oldpeak"), target="has_heart_disease")
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#profiling_target_cross_plot)
-
 Notes: 
 
 * `auto_binning`: `TRUE` by default, shows the numerical variable as categorical.
 * `path_out` indicates the path directory; if it has a value, then the plot is exported in jpeg.
 * `input` can be numeric or categoric, and `target` must be a binary (two-class) variable.
 * If `input` is empty, then it runs for all variables.
+
+[**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#profiling_target_cross_plot)
 
 <br>
 
@@ -183,7 +183,7 @@ Useful to explain and report if a variable is important or not.
 plotar(data=heart_disease, input = c("age", "oldpeak"), target="has_heart_disease", plot_type="boxplot")
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-boxplots)
+[**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-boxplots)
 
 <br>
 
@@ -193,7 +193,7 @@ plotar(data=heart_disease, input = c("age", "oldpeak"), target="has_heart_diseas
 plotar(data=mtcars, input = "gear", target="cyl", plot_type="histdens")
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-density-histograms)
+[**Read more here.**](https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-density-histograms)
 
 Notes:
 
@@ -221,7 +221,7 @@ Note:
 
 This function is used to analyze data when we need to reduce variable cardinality in predictive modeling.
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#high_cardinality_predictive_modeling)
+[**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#high_cardinality_predictive_modeling)
 
 
 
@@ -254,7 +254,7 @@ Notes:
 * Min and max values for each bin will be `-Inf` and `Inf`, respectively.
 * A fix in the latest `funModeling` release (1.6.7) may change the output in certain scenarios. Please check the results if you were using version 1.6.6. More info about this change [here](https://s3.amazonaws.com/datascienceheroes.com/img/blog/changes_discretize_df.png).
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#data-discretization)
+[**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#data-discretization)
 
 
 <br>
@@ -282,7 +282,7 @@ new_age=equal_freq(heart_disease$age, n_bins = 5)
 Hmisc::describe(new_age)
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#equal-frequency-binning)
+[**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#equal-frequency-binning)
 
 Notes:
 
@@ -317,7 +317,7 @@ The functions `tukey_outlier` and `hampel_outlier` are used internally in `prep_
 tukey_outlier(heart_disease$resting_blood_pressure)
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-tukey-method)
+[**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-tukey-method)
 
 <br>
 
@@ -327,7 +327,7 @@ tukey_outlier(heart_disease$resting_blood_pressure)
 hampel_outlier(heart_disease$resting_blood_pressure)
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-hampel-method)
+[**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-hampel-method)
 
 
 <br>
@@ -336,6 +336,7 @@ hampel_outlier(heart_disease$resting_blood_pressure)
 
 Takes a data frame and returns the same data frame plus the transformations specified in the `input` parameter. It also works with a single vector.
 
+Example considering two variables as input:
 
 ```{r}
 # Get threshold according to Hampel's method
@@ -346,11 +347,7 @@ data_prep=prep_outliers(data = heart_disease, input = c('max_heart_rate','restin
 
 ```
 
-```{r, echo=FALSE}
-# Get threshold according to Hampel's method
-hampel_outlier(heart_disease$max_heart_rate)
-```
-
+Checking the before and after for variable `max_heart_rate`:
 
 ```{r, echo=FALSE}
 # Checking max and min value for 'max_heart_rate' before the transformation
@@ -365,14 +362,14 @@ sprintf("After transformation -> Min: %s; Max: %s", min(data_prep$max_heart_rate
 
 ```
 
-The maximum value is now 174.5 (the minimum remains the same).
+The min value changed from 71 to 86.23, while the max value remained the same at 202.
 
 Notes:
 
 * `method` can be: `bottom_top`, `tukey` or `hampel`.
 * `type` can be: `stop` or `set_na`. If `stop` all values flagged as outliers will be set to the threshold. If `set_na`, then the flagged values will set to `NA`.
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#analyze-binary-outcome-vs-categorical-variable)
+[**Read more here.**](https://livebook.datascienceheroes.com/data-preparation.html#analyze-binary-outcome-vs-categorical-variable)
 
 
 <br>
@@ -393,7 +390,7 @@ gain_lift(data=heart_disease, score='score', target='has_heart_disease')
 
 ```
 
-`r emo::ji("mag_right")` [**Read more here.**](https://livebook.datascienceheroes.com/model-performance.html#gain_and_lift)
+[**Read more here.**](https://livebook.datascienceheroes.com/model-performance.html#gain_and_lift)
 
 <br>
 
