@@ -17,7 +17,7 @@ Around 10% of almost any predictive modeling project is spent in predictive mode
 
 ## Data Science Live Book (open source)
 
-<img src="https://datascienceheroes.com/img/blog/book_cover_hidef.png" alt="Data Science Live Book" width="250px">
+<img src="https://datascienceheroes.com/img/blog/data-science-live-book-cover-2.png" alt="Data Science Live Book" width="250px">
 
 An overview...
 
