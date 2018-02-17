@@ -3,8 +3,7 @@
 ![](http://cranlogs.r-pkg.org/badges/funModeling)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/funModeling?color=orange)
 
-
-![funModeling](https://datascienceheroes.com/img/blog/funModeling_cover.png")
+![funModeling](https://datascienceheroes.com/img/blog/funModeling_cover.png)
 
 ## Installing the package
 
@@ -17,6 +16,8 @@ install.packages("funModeling")
 Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book *Data Science Live Book* are intended to cover remaining 90%: data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
 
 ## Data Science Live Book (open source)
+
+<img src="https://datascienceheroes.com/img/blog/book_cover_hidef.png" alt="Data Science Live Book" width="250px">
 
 An overview...
 
