@@ -90,13 +90,13 @@ cross_plot_logic <- function(data, input, target, path_out, auto_binning, plot_t
 	  {
 		  if(!is.na(auto_binning) & auto_binning )
 		  {
-		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", input))
+		    message(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", input))
 		    varInput=suppressWarnings(equal_freq(varInput, 10))
 		  }
 
 	  	if(is.na(auto_binning) & q_unique_input_values>20)
 		  {
-		    print(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", input))
+		    message(sprintf("Plotting transformed variable '%s' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'", input))
 		    varInput=suppressWarnings(equal_freq(varInput, 10))
 		  }
 	  } else {
