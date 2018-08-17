@@ -137,9 +137,9 @@ v_compare <- function(vector_x, vector_y)
   not_in_x=merge_all[is.na(merge_all$flag_x),]
   not_in_y=merge_all[is.na(merge_all$flag_y),]
 
-  print(sprintf("Coincident in both: %s", nrow(merge_all_nona)))
-  print(sprintf("Rows not present in X: %s", nrow(not_in_x)))
-  print(sprintf("Rows not present in Y: %s", nrow(not_in_y)))
+  message(sprintf("Coincident in both: %s", nrow(merge_all_nona)))
+  message(sprintf("Rows not present in X: %s", nrow(not_in_x)))
+  message(sprintf("Rows not present in Y: %s", nrow(not_in_y)))
 
 
   list_diff=list()
@@ -476,10 +476,10 @@ compare_df <- function(dfcomp_x, dfcomp_y, keys_x, keys_y=NA, compare_values=FAL
     }
 
     #Print results
-    print(sprintf("Coincident keys: %s", nrow(merge_all_nona)))
+    message(sprintf("Coincident keys: %s", nrow(merge_all_nona)))
     if(compare_values){
-    	print(sprintf("Coincident entire rows: %s", nrow(merge_all_nona[merge_all_nona$comparedf_flag_equal == TRUE,])))
-   		print(sprintf("Coincident keys with different values: %s", nrow(merge_all_nona[merge_all_nona$comparedf_flag_equal == FALSE,])))
+    	message(sprintf("Coincident entire rows: %s", nrow(merge_all_nona[merge_all_nona$comparedf_flag_equal == TRUE,])))
+   		message(sprintf("Coincident keys with different values: %s", nrow(merge_all_nona[merge_all_nona$comparedf_flag_equal == FALSE,])))
     }
 
     #Save results into output list
@@ -501,7 +501,7 @@ compare_df <- function(dfcomp_x, dfcomp_y, keys_x, keys_y=NA, compare_values=FAL
 
   #If no key coincides
   }else{
-    print("No coincident keys")
+    message("No coincident keys")
 
     list_diff=list(
       rows_not_in_X=not_in_x,
@@ -511,8 +511,8 @@ compare_df <- function(dfcomp_x, dfcomp_y, keys_x, keys_y=NA, compare_values=FAL
   }
 
   #Print non-coincident keys
-  print(sprintf("Keys not present in X: %s", nrow(not_in_x)))
-  print(sprintf("Keys not present in Y: %s", nrow(not_in_y)))
+  message(sprintf("Keys not present in X: %s", nrow(not_in_x)))
+  message(sprintf("Keys not present in Y: %s", nrow(not_in_y)))
 
   return(list_diff)
 }

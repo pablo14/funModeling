@@ -172,7 +172,7 @@ prep_outliers <- function(data, input=NA, str_input=NA, type=NA, method=NA, bott
 		if(!is.na(warn_mess_top))
 		{
 			warning(sprintf("Skip the transformation (top value) for some variables because the threshold would have left them with 1 unique value. Variable list printed in the console."))
-			print(sprintf("Variables to adjust top threshold: %s", warn_mess_top))
+			message(sprintf("Variables to adjust top threshold: %s", warn_mess_top))
 		}
 	}
 
@@ -221,7 +221,7 @@ prep_outliers <- function(data, input=NA, str_input=NA, type=NA, method=NA, bott
 			if(!is.na(warn_mess_bott))
 			{
 				warning(sprintf("Skip the transformation (bottom value) for some variables because the threshold would have left them with 1 unique value. Variable list printed in the console."))
-				print(sprintf("Variables to adjust bottom threshold: %s", warn_mess_bott))
+				message(sprintf("Variables to adjust bottom threshold: %s", warn_mess_bott))
 			}
 		}
 	}

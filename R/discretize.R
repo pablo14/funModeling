@@ -46,7 +46,7 @@ discretize_df <- function(data, data_bins, stringsAsFactors=T)
 		data_3=data %>% mutate_at(vars(vars_num), funs(ifelse(is.na(.), "NA.", .)))
 	}
 
-	print(sprintf("Variables processed: %s", paste(vars_num, collapse = ", ")))
+	message(sprintf("Variables processed: %s", paste(vars_num, collapse = ", ")))
 
 	return(data_3)
 }
@@ -95,7 +95,7 @@ discretize_get_bins <- function(data, n_bins=5, input=NULL)
 	d_bins$cuts=as.character(d_bins$cuts)
 	rownames(d_bins)=NULL
 
-	print(sprintf("Variables processed: %s", paste(vars_num, collapse = ", ")))
+	message(sprintf("Variables processed: %s", paste(vars_num, collapse = ", ")))
 
 	return(d_bins)
 }
