@@ -2,6 +2,7 @@
 
 ![](http://cranlogs.r-pkg.org/badges/funModeling)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/funModeling?color=orange)
+[![saythanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/pablo14)
 
 ![funModeling](https://datascienceheroes.com/img/blog/funModeling_cover.png)
 
