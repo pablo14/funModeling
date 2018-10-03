@@ -16,7 +16,7 @@ A two-item vector, the first value represents the bottom threshold, while the se
 }
 \description{
 Retrieves the bottom and top boundaries to flag outliers or extreme values, according to the Hampel method. This technique takes into account the median and MAD value, which is a is a robust measure of the variability of a univariate sample of quantitative data (Wikipedia). Similar to standard deviation but less sensitve to outliers.
-This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded. More information at: /url{https://livebook.datascienceheroes.com/data-preparation.html#how_to_deal_with_outliers_in_r}.
+This function is used in 'prep_outliers' function. All `NA`s values are automatically excluded. More information at: \url{https://livebook.datascienceheroes.com/data-preparation.html#how_to_deal_with_outliers_in_r}.
 }
 \examples{
 \dontrun{

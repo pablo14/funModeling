@@ -4,12 +4,12 @@
 \alias{correlation_table}
 \title{Get correlation against target variable}
 \usage{
-correlation_table(data, str_target)
+correlation_table(data, target)
 }
 \arguments{
 \item{data}{data frame}
 
-\item{str_target}{string variable to predict}
+\item{target}{string variable to predict}
 }
 \value{
 Correlation index for all data input variable
@@ -18,5 +18,5 @@ Correlation index for all data input variable
 Obtain correlation table for all variables against target variable. Only numeric variables are analyzed (factor/character are skippted automatically).
 }
 \examples{
-correlation_table(data=heart_disease, str_target="has_heart_disease")
+correlation_table(data=heart_disease, target="has_heart_disease")
 }

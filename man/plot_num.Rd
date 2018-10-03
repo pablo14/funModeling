@@ -4,12 +4,15 @@
 \alias{plot_num}
 \title{Plotting numerical data}
 \usage{
-plot_num(data, bins = 10)
+plot_num(data, bins = 10, path_out = NA)
 }
 \arguments{
 \item{data}{data frame}
 
 \item{bins}{number of bars (bins) to plot each histogram, 10 by default}
+
+\item{path_out}{path directory to export the output, if it has a value the plot is saved,
+if the directory doesn't existis it will try to create it. To save in current directory path must be dot: "."}
 }
 \value{
 plot containing all numerical variables
@@ -18,5 +21,9 @@ plot containing all numerical variables
 Retrieves one plot containing all the histograms for numerical variables. NA values will not be displayed.
 }
 \examples{
+\dontrun{
 plot_num(mtcars)
+# changing the bins parameter and exporting the plot
+plot_num(data=mtcars, bins=5, path_out="my_folder")
+}
 }

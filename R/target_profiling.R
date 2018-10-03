@@ -3,8 +3,6 @@
 #' @param data data frame source
 #' @param input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param target string of the variable to predict, it supports binary or multinominal values.
-#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality.string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
-#' @param str_target THIS PARAMETER WILL BE DEPRECATED. Please use 'target' insted. Only name changes, not functionality.
 #' @param plot_type Indicates the type of plot to retrieve, available values: "boxplot" or "histdens".
 #' @param path_out path directory, if it has a value the plot is saved. To save in current directory path must be dot: "."
 #' @examples
@@ -16,20 +14,8 @@
 #' }
 #' @return Single or multiple plots specified by 'plot_type' parameter
 #' @export
-plotar <- function(data, input, target, str_input, str_target, plot_type, path_out)
+plotar <- function(data, input, target, plot_type, path_out)
 {
-	if(!missing(str_input))
-	{
-		input=str_input
-		.Deprecated(msg="Parameter 'str_input' will be deprecated, please use 'input' insted (only name changed, not its functionality)")
-	}
-
-	if(!missing(str_target))
-	{
-		target=str_target
-		.Deprecated(msg = "Parameter 'str_target' will be deprecated, please use 'target' insted (only name changed, not its functionality)")
-	}
-
 	data=as.data.frame(data)
 
 	## Parameters & Error handlers

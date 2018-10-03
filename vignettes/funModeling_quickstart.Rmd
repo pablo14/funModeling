@@ -6,7 +6,7 @@ date: "`r Sys.Date()`"
 vignette: >
   %\VignetteIndexEntry{funModeling quick-start}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\usepackage[utf8]{inputenc}
 ---
 
 
@@ -16,7 +16,7 @@ This package contains a set of functions related to exploratory data analysis, d
 
 `funModeling` is intimately related to the _Data Science Live Book_ -Open Source- (2017) in the sense that most of its functionality is used to explain different topics addressed by the book.
 
-![Data Science Live Book](data-science-live-book.png)
+![Data Science Live Book](dslb.png)
 
 ## Opening the black-box 
 
@@ -92,7 +92,7 @@ Note:
 
 ### `freq`: Getting frequency distributions for categoric variables 
 
-```{r distribution_categorical_variable, message=FALSE, fig.height=3, fig.width=5, warning=FALSE}
+```{r distribution1, message=FALSE, fig.height=3, fig.width=5, warning=FALSE}
 library(dplyr)
 
 # Select only two variables for this example
@@ -158,7 +158,7 @@ Note: It analyzes numerical and categorical variables. It is also used with the 
 Retrieves the relative and absolute distribution between an input and target variable. 
 Useful to explain and report if a variable is important or not.
 
-```{r profiling_variable_predictive_modeling, fig.height=4, fig.width=8}
+```{r profiling1, fig.height=4, fig.width=8}
 cross_plot(data=heart_disease, input=c("age", "oldpeak"), target="has_heart_disease")
 ```
 
@@ -245,7 +245,7 @@ heart_disease_discretized=discretize_df(data=heart_disease, data_bins=d_bins, st
 
 The following image illustrates the result. Please note that the variable name remains the same.
 
-![data discretization](data_discretization_1.png)
+![data discretization](discre1.png)
 
 
 Notes: 
@@ -380,7 +380,7 @@ Notes:
 
 After computing the scores or probabilities for the class we want to predict, we pass it to the `gain_lift` function, which returns a data frame with performance metrics.
 
-```{r predictive_model_performance, fig.height=3, fig.width=7}
+```{r performance, fig.height=3, fig.width=7}
 # Create machine learning model and get its scores for positive case 
 fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
 heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
@@ -398,6 +398,6 @@ gain_lift(data=heart_disease, score='score', target='has_heart_disease')
 ---
 
 * Github repository (report bugs or improvements): https://github.com/pablo14/funModeling
-* Creator and mantainer: Pablo Casas https://twitter.com/pabloc_ds / pcasas.biz <at> gmail.com
+* Creator and maintainer: Pablo Casas https://twitter.com/pabloc_ds | pcasas.biz [at] gmail.com
 
 

@@ -16,4 +16,22 @@ b=freq(a)
 ### no vars -> all
 freq(heart_disease)
 
+##
+a=c(NA,NA,NA)
+b=factor(c("aa","vv","vv"))
+tt=data.frame(a,b)
+
+# factor var
+funModeling::freq(tt$b)
+
+# factor var
+funModeling::freq(b)
+
+# all NA
+funModeling::freq(a)
+
+# all numerical
+funModeling::freq(mtcars)
+
+
 

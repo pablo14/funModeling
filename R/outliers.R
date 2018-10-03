@@ -12,7 +12,6 @@
 #'
 #' @param data a data frame or a single vector. If it's a data frame, the function returns a data frame, otherwise it returns a vector.
 #' @param input string input variable (if empty, it runs for all numeric variable).
-#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality. String input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param type can be 'stop' or 'set_na', in the first case all falling out of the threshold will be converted to the threshold, on the other case all of these values will be set as NA.
 #' @param method indicates the method used to flag the outliers, it can be: "bottom_top", "tukey" or "hampel".
 #' @param top_percent value from 0 to 1, represents the highest X percentage of values to treat. Valid only when method="bottom_top".
@@ -74,14 +73,8 @@
 #' }
 #' @return A data frame with the desired outlier transformation
 #' @export
-prep_outliers <- function(data, input=NA, str_input=NA, type=NA, method=NA, bottom_percent=NA, top_percent=NA)
+prep_outliers <- function(data, input=NA, type=NA, method=NA, bottom_percent=NA, top_percent=NA)
 {
-	if(!missing(str_input))
-	{
-		input=str_input
-		.Deprecated(msg="Parameter 'str_input' will be deprecated, please use 'input' insted (only name changed, not its functionality)")
-	}
-
 	if(!(type %in% c('stop', 'set_na')))
 		stop("Parameter 'type' must be one of the following 'stop' or 'set_na'")
 

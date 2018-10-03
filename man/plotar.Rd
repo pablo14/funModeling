@@ -4,18 +4,18 @@
 \alias{plotar}
 \title{Correlation plots}
 \usage{
-plotar(data, str_input, str_target, plot_type, path_out)
+plotar(data, input, target, plot_type, path_out)
 }
 \arguments{
 \item{data}{data frame source}
 
-\item{str_input}{string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
+\item{input}{string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
 
-\item{str_target}{string of the variable to predict, it supports binary or multinominal values.}
+\item{target}{string of the variable to predict, it supports binary or multinominal values.}
 
 \item{plot_type}{Indicates the type of plot to retrieve, available values: "boxplot" or "histdens".}
 
-\item{path_out}{path directory, if it has a value the plot is saved}
+\item{path_out}{path directory, if it has a value the plot is saved. To save in current directory path must be dot: "."}
 }
 \value{
 Single or multiple plots specified by 'plot_type' parameter
@@ -25,9 +25,9 @@ Visual correlation analysis. Plot different graphs in order to expose the inner 
 }
 \examples{
 \dontrun{
-## Run for all numeric variables
-plotar(data=heart_disease, str_target="has_heart_disease",
-	plot_type="histdens")
-plotar(heart_disease, str_input = 'age', str_target = 'chest_pain', plot_type = "boxplot")
+## It runs for all numeric variables automatically
+plotar(data=heart_disease, target="has_heart_disease", plot_type="histdens")
+
+plotar(heart_disease, input = 'age', target = 'chest_pain', plot_type = "boxplot")
 }
 }

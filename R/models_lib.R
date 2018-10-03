@@ -27,9 +27,7 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 #' @param data input data source
 #' @param score the variable which contains the score number, or likelihood of being positive class
 #' @param target target binary variable indicating class label
-#' @param str_score THIS PARAMETER WILL BE DEPRECATED. Please use 'score' insted. Only name changes, not functionality.
-#' @param str_target THIS PARAMETER WILL BE DEPRECATED. Please use 'target' insted. Only name changes, not functionality.
-#' @param q_segments quantity of segments to split str_score, valid values: 5, 10 or 20
+#' @param q_segments quantity of segments to split score variable, valid values: 5, 10 or 20
 #' @examples
 #' fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
 #' heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
@@ -38,20 +36,8 @@ get_sample <- function(data, percentage_tr_rows=0.8, seed=987)
 #' @return lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the
 #' positive class is set to the column "Score Point"
 #' @export
-gain_lift <- function(data, score, target, str_score, str_target, q_segments=10)
+gain_lift <- function(data, score, target, q_segments=10)
 {
-	if(!missing(str_score))
-	{
-		score=str_score
-		.Deprecated(msg="Parameter 'str_score' will be deprecated, please use 'score' insted (only name changed, not its functionality)")
-	}
-
-	if(!missing(str_target))
-	{
-		target=str_target
-		.Deprecated(msg = "Parameter 'str_target' will be deprecated, please use 'target' insted (only name changed, not its functionality)")
-	}
-
 	options(scipen = 999)
 	data=data.frame(data)
 	# The negative score produces that the highest score are at the top

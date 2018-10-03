@@ -4,19 +4,18 @@
 \alias{cross_plot}
 \title{Cross-plotting input variable vs. target variable}
 \usage{
-cross_plot(data, str_input, str_target, path_out, auto_binning,
-  plot_type = "both")
+cross_plot(data, input, target, path_out, auto_binning, plot_type = "both")
 }
 \arguments{
 \item{data}{data frame source}
 
-\item{str_input}{string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
+\item{input}{input variable name (if empty, it runs for all numeric variable), it can take a single character value or a character vector.}
 
-\item{str_target}{string of the variable to predict}
+\item{target}{variable name to predict}
 
 \item{path_out}{path directory, if it has a value the plot is saved}
 
-\item{auto_binning}{indicates the automatic binning of str_input variable based on equal frequency (function 'equal_freq'), default value=TRUE}
+\item{auto_binning}{indicates the automatic binning of input variable based on equal frequency (function 'equal_freq'), default value=TRUE}
 
 \item{plot_type}{indicates if the output is the 'percentual' plot, the 'quantity' or 'both' (default).}
 }
@@ -29,18 +28,18 @@ The cross_plot shows how the input variable is correlated with the target variab
 \examples{
 \dontrun{
 ## Example 1:
-cross_plot(data=heart_disease, str_input="chest_pain", str_target="has_heart_disease")
+cross_plot(data=heart_disease, input="chest_pain", target="has_heart_disease")
 
 ## Example 2: Disabling auto_binning:
-cross_plot(data=heart_disease, str_input="oldpeak",
-		str_target="has_heart_disease", auto_binning=FALSE)
+cross_plot(data=heart_disease, input="oldpeak",
+		target="has_heart_disease", auto_binning=FALSE)
 
 ## Example 3: Saving the plot into a folder:
-cross_plot(data=heart_disease, str_input="oldpeak",
-		str_target="has_heart_disease", path_out = "my_folder")
+cross_plot(data=heart_disease, input="oldpeak",
+		target="has_heart_disease", path_out = "my_folder")
 
 ## Example 4: Running with multiple input variables at the same time:
-cross_plot(data=heart_disease, str_input=c("age", "oldpeak", "max_heart_rate"),
-		str_target="has_heart_disease")
+cross_plot(data=heart_disease, input=c("age", "oldpeak", "max_heart_rate"),
+		target="has_heart_disease")
 }
 }

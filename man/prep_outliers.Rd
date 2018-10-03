@@ -4,15 +4,15 @@
 \alias{prep_outliers}
 \title{Outliers Data Preparation}
 \usage{
-prep_outliers(data, str_input = NA, type = NA, method = NA,
+prep_outliers(data, input = NA, type = NA, method = NA,
   bottom_percent = NA, top_percent = NA)
 }
 \arguments{
 \item{data}{a data frame or a single vector. If it's a data frame, the function returns a data frame, otherwise it returns a vector.}
 
-\item{str_input}{string input variable (if empty, it runs for all numeric variable).}
+\item{input}{string input variable (if empty, it runs for all numeric variable).}
 
-\item{type}{can be 'stop' or 'set_na', in the first case the original variable is stopped at the desiered percentile, 'set_na'  sets NA to the same values.}
+\item{type}{can be 'stop' or 'set_na', in the first case all falling out of the threshold will be converted to the threshold, on the other case all of these values will be set as NA.}
 
 \item{method}{indicates the method used to flag the outliers, it can be: "bottom_top", "tukey" or "hampel".}
 
@@ -28,11 +28,11 @@ Deal with outliers by setting an 'NA value' or by 'stopping' them at a certain.
 There are three supported methods to flag the values as outliers: "bottom_top", "tukey" and "hampel".
 The parameters: 'top_percent' and/or 'bottom_percent' are used only when method="bottom_top".
 
-For a full reference please check the official documentation at: /url{https://livebook.datascienceheroes.com/data-preparation.html#treatment_outliers}>
+For a full reference please check the official documentation at: \url{https://livebook.datascienceheroes.com/data-preparation.html#treatment_outliers}>
 Setting NA is recommended when doing statistical analysis, parameter: type='set_na'.
 Stopping is recommended when creating a predictive model without biasing the result due to outliers, parameter: type='stop'.
 
-The function can take a data frame, and returns the same data plus the transformations specified in the str_input parameter. Or it can take a single vector (in the same 'data' parameter), and it returns a vector.
+The function can take a data frame, and returns the same data plus the transformations specified in the input parameter. Or it can take a single vector (in the same 'data' parameter), and it returns a vector.
 }
 \examples{
 \dontrun{
@@ -63,7 +63,7 @@ summary(var1_treated)
 
 #### EXAMPLE 2: Removing top and bottom 1\% for the specified input variables.
 vars_to_process=c('var1', 'var2')
-df_treated3=prep_outliers(data = df, str_input = vars_to_process, type='set_na',
+df_treated3=prep_outliers(data = df, input = vars_to_process, type='set_na',
  bottom_percent = 0.01, top_percent  = 0.01, method = "bottom_top")
 summary(df_treated3)
 
@@ -72,7 +72,7 @@ summary(df_treated3)
 ########################################################
 
 data_prep_h=funModeling::prep_outliers(data = heart_disease,
-str_input = c('age','resting_blood_pressure'),
+input = c('age','resting_blood_pressure'),
  method = "hampel",  type='stop')
 
 # Using Hampel method to flag outliers:
@@ -81,7 +81,7 @@ summary(heart_disease$age);summary(data_prep_h$age)
 hampel_outlier(heart_disease$age) # checking the thresholds
 
 data_prep_a=funModeling::prep_outliers(data = heart_disease,
-str_input = c('age','resting_blood_pressure'),
+input = c('age','resting_blood_pressure'),
  method = "tukey",  type='stop')
 
 max(heart_disease$age);max(data_prep_a$age)

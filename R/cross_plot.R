@@ -3,8 +3,6 @@
 #' @param data data frame source
 #' @param input input variable name (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param target variable name to predict
-#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality.string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
-#' @param str_target THIS PARAMETER WILL BE DEPRECATED. Please use 'target' insted. Only name changes, not functionality.
 #' @param path_out path directory, if it has a value the plot is saved
 #' @param auto_binning indicates the automatic binning of input variable based on equal frequency (function 'equal_freq'), default value=TRUE
 #' @param plot_type indicates if the output is the 'percentual' plot, the 'quantity' or 'both' (default).
@@ -27,20 +25,8 @@
 #'}
 #' @return cross plot
 #' @export
-cross_plot <- function(data, input, target, str_input, str_target, path_out, auto_binning, plot_type='both')
+cross_plot <- function(data, input, target, path_out, auto_binning, plot_type='both')
 {
-	if(!missing(str_input))
-	{
-		input=str_input
-		.Deprecated(msg="Parameter 'str_input' will be deprecated, please use 'input' insted (only name changed, not its functionality)")
-	}
-
-	if(!missing(str_target))
-	{
-		target=str_target
-		.Deprecated(msg = "Parameter 'str_target' will be deprecated, please use 'target' insted (only name changed, not its functionality)")
-	}
-
 	data=as.data.frame(data)
 
 	## Handling missing parameters

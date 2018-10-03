@@ -4,16 +4,16 @@
 \alias{gain_lift}
 \title{Generates lift and cumulative gain performance table and plot}
 \usage{
-gain_lift(data, str_score, str_target, q_segments = 10)
+gain_lift(data, score, target, q_segments = 10)
 }
 \arguments{
 \item{data}{input data source}
 
-\item{str_score}{the variable which contains the score number, or likelihood of being positive class}
+\item{score}{the variable which contains the score number, or likelihood of being positive class}
 
-\item{str_target}{target binary variable indicating class label}
+\item{target}{target binary variable indicating class label}
 
-\item{q_segments}{quantity of segments to split str_score, valid values: 5, 10 or 20}
+\item{q_segments}{quantity of segments to split score variable, valid values: 5, 10 or 20}
 }
 \value{
 lift/gain table, column: gain implies how much positive cases are catched if the cut point to define the
@@ -28,6 +28,6 @@ Higher values at the beginning of the population implies a better model. More in
 \examples{
 fit_glm=glm(has_heart_disease ~ age + oldpeak, data=heart_disease, family = binomial)
 heart_disease$score=predict(fit_glm, newdata=heart_disease, type='response')
-gain_lift(data=heart_disease,str_score='score',str_target='has_heart_disease')
+gain_lift(data=heart_disease, score='score', target='has_heart_disease')
 
 }

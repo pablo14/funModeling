@@ -157,19 +157,12 @@ v_compare <- function(vector_x, vector_y)
 #' @description Obtain correlation table for all variables against target variable. Only numeric variables are analyzed (factor/character are skippted automatically).
 #' @param data data frame
 #' @param target string variable to predict
-#' @param str_target THIS PARAMETER WILL BE DEPRECATED. Please use 'target' insted. Only name changes, not functionality.
 #' @examples
 #' correlation_table(data=heart_disease, target="has_heart_disease")
 #' @return Correlation index for all data input variable
 #' @export
-correlation_table <- function(data, target, str_target)
+correlation_table <- function(data, target)
 {
-	if(!missing(str_target))
-	{
-		target=str_target
-		.Deprecated(msg="Parameter 'str_target' will be deprecated, please use 'target' insted (only name changed, not its functionality)")
-	}
-
 	data=as.data.frame(data)
 
 	data[[target]]=as.numeric(data[[target]])
@@ -256,11 +249,12 @@ get_type_v <- function(x)
 }
 
 
+
+
 #' @title Frequency table for categorical variables
 #' @description Retrieves the frequency and percentage for input
 #' @param data input data containing the variable to describe
 #' @param input string input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
-#' @param str_input THIS PARAMETER WILL BE DEPRECATED. Please use 'input' insted. Only name changes, not functionality. String input variable (if empty, it runs for all numeric variable), it can take a single character value or a character vector.
 #' @param plot flag indicating if the plot is desired, TRUE by default
 #' @param na.rm flag indicating if NA values must be included in the analysis, FALSE by default
 #' @param path_out path directory, if it has a value the plot is saved
@@ -269,31 +263,36 @@ get_type_v <- function(x)
 #' freq(data=heart_disease, input = c('thal','chest_pain'))
 #' @return vector with the values scaled into the 0 to 1 range
 #' @export
-freq <- function(data, input=NA, str_input=NA, plot=TRUE, na.rm=FALSE, path_out)
+freq <- function(data, input=NA, plot=TRUE, na.rm=FALSE, path_out)
 {
-	if(!missing(str_input))
-	{
-		input=str_input
-		.Deprecated(msg="Parameter 'str_input' will be deprecated, please use 'input' insted (only name changed, not its functionality)")
-	}
-
 	if(missing(path_out)) path_out=NA
 
   ## If input is NA then it runs for all variables in case it is not a single vector
 	if(sum(is.na(input)>0))
 	{
   	# True if it is a single vector
-  	if(mode(data) %in% c("logical","numeric","complex","character"))
+		v_mode=mode(data)
+  	if(v_mode %in% c("logical","numeric","complex","character", "factor"))
   	{
-  		data=data.frame(var=data)
-  		input="var"
+  		if(v_mode=="logical" & all(is.na(c(NA, NaN))))
+  		{
+  			# mode=numeric in this case,
+  			warning("All input values are NA.")
+  			return(NULL)
+  		} else {
+  			data=data.frame(var=data)
+  			input="var"
+  		}
   	} else {
 			## Keeping all categorical variables
   		data=data.frame(data)
 			status=df_status(data, print_results = F)
 			input=status[status$type %in% c("factor", "character"), 'variable']
 			if(length(input)==0)
-				stop("None of the input variables are factor nor character")
+			{
+				warning("None of the input variables are factor nor character")
+				return(NULL)
+			}
 
   	}
 	}
@@ -355,7 +354,7 @@ freq_logic <- function(data, input, plot, na.rm, path_out)
 		tbl_plot$category=factor(tbl_plot$category, levels =  tbl_plot$category[order(tbl_plot$percentage)])
 
 
-		if(nrow(tbl_plot)<200)
+		if(nrow(tbl_plot)<100)
 		{
 			p=ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
 				geom_bar(stat='identity') + coord_flip() +	theme_bw() +
@@ -394,7 +393,7 @@ freq_logic <- function(data, input, plot, na.rm, path_out)
 			}
 
 		} else {
-			message_high_card=sprintf("Skipping plot for variable '%s' (more than 200 categories)", input)
+			message_high_card=sprintf("Skipping plot for variable '%s' (more than 100 categories)", input)
 		}
 
 	}

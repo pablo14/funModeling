@@ -34,7 +34,7 @@ d_bins=discretize_get_bins(data=heart_disease,
                            n_bins=5)
 
 # Now it can be applied on the same data frame, or in a new one (for example in a predictive model
-that change data over time)
+# that change data over time)
  heart_disease_discretized=discretize_df(data=heart_disease, data_bins=d_bins, stringsAsFactors=T)
 
 # Checking results
