@@ -225,3 +225,103 @@ concatenate_n_vars <- function(data, vars)
 	return(new_col)
 }
 
+binary_gain_ratio <- function(input, target, test_points)
+{
+	input_bin=cut2(input, cuts = test_points)
+	if(length(levels(input_bin))==1) return(0)
+
+	gr=gain_ratio(input_bin,  target)
+
+	return(gr)
+}
+
+
+
+recursive_gr_cuts_aux <- function(input, target, fpoints, max_depth, min_n)
+{
+	# seq(0.01, 0.99, by=0.01)
+	points=unique(quantile(input, probs = seq(0.2, 0.8, by=0.2)))
+	if(length(points)==1 | length(fpoints)>=max_depth) return(fpoints)
+
+	r=c()
+	for(p in points)
+	{
+		gr=binary_gain_ratio(input, target, test_points = p)
+
+		# check sample size against the total
+		total_left=sum(input<p)
+		total_right=sum(input>=p)
+		gr=if(total_left < min_n | total_right < min_n) 0 else gr
+
+		#
+		r=c(r, gr)
+	}
+
+	# Quality stopping criteria
+	#if(max(r) < 0.0099) return(fpoints)
+
+	position_max=which(max(r)==r)[1]
+	max_point=points[position_max];
+
+	input_left=input[input<max_point]
+	input_right=input[input>=max_point]
+	target_left=target[input<max_point]
+	target_right=target[input>=max_point]
+
+	if(length(input_left)>min_n & length(input_right)>min_n & length(fpoints)<=max_depth)
+	{
+		fpoints=c(fpoints, max_point);
+		fpoints_left= recursive_gr_cuts_aux(input=input_left,  target=target_left, fpoints,max_depth, min_n)
+		fpoints_right=recursive_gr_cuts_aux(input=input_right, target=target_right, fpoints,max_depth, min_n)
+		fpoints=unique(c(fpoints_right,fpoints_left))
+
+		#message(paste(fpoints,collapse = ", "))
+	}
+
+	return(fpoints)
+}
+
+
+
+
+#' @title Variable discretization by gain ratio maximization
+#' @description Discretize numeric variable by maximizing the information gain
+#' between each bucket and the target variable. Each cut point is recusivelly selected based on
+#'
+#' @param input numeric input vector to discretize
+#' @param target character or factor multi-calss target variable
+#' @param min_perc_bins minimum percetange of rows for each split or segment (controls the sample size), 0,1 (or 10 percent) as default
+#' @param max_n_bins maximum number of bins or segments to split the input variable, 5 bins as default
+#' @examples
+#' \dontrun{
+#' library(funModeling)
+#' data=heart_disease
+#' input=data$oldpeak
+#' target=as.character(data$has_heart_disease)
+#'
+#' input2=discretize_rgr(input, target)
+#'
+#' # checking:
+#' summary(input2)
+#' }
+#' @return discretized variable (factor)
+#' @export
+discretize_rgr <- function(input, target, min_perc_bins=0.1, max_n_bins=5)
+{
+	fpoints=c()
+	max_depth=20
+	min_n=round(min_perc_bins*length(input))
+
+	all_cuts=recursive_gr_cuts_aux(input, target, fpoints, max_depth, min_n)
+
+	#
+	max_n_bins=max_n_bins-1
+	fpoints_top=all_cuts[1:min(max_n_bins,length(all_cuts))]
+	fpoints_top_ord=fpoints_top[order(fpoints_top)]
+
+	input_bin=Hmisc::cut2(input, cuts = c(fpoints_top_ord, max(input)))
+
+	return(input_bin)
+}
+
+
