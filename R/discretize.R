@@ -285,8 +285,8 @@ recursive_gr_cuts_aux <- function(input, target, fpoints, max_depth, min_n)
 
 
 #' @title Variable discretization by gain ratio maximization
-#' @description Discretize numeric variable by maximizing the information gain
-#' between each bucket and the target variable. Each cut point is recusivelly selected based on
+#' @description Discretize numeric variable by maximizing the gain ratio
+#' between each bucket and the target variable.
 #'
 #' @param input numeric input vector to discretize
 #' @param target character or factor multi-calss target variable
@@ -310,6 +310,7 @@ discretize_rgr <- function(input, target, min_perc_bins=0.1, max_n_bins=5)
 {
 	fpoints=c()
 	max_depth=20
+	target=as.character(target)
 	min_n=round(min_perc_bins*length(input))
 
 	all_cuts=recursive_gr_cuts_aux(input, target, fpoints, max_depth, min_n)

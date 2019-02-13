@@ -290,6 +290,23 @@ Notes:
 
 <br>
 
+### `discretize_rgr`: Variable discretization based on gain ratio maximization
+
+```{r}
+
+input=heart_disease$oldpeak
+target=heart_disease$has_heart_disease
+
+input2=discretize_rgr(input, target)
+
+# checking:
+summary(input2)
+```
+
+Adjust max number of bins with: `max_n_bins`; `5` as default.
+Control minimum sample size per bin with `min_perc_bins`; `0.1` (or 10%) as default)
+
+
 ### `range01`: Scales variable into the 0 to 1 range 
 
 Convert a numeric vector into a scale from 0 to 1 with 0 as the minimum and 1 as the maximum.
