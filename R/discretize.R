@@ -81,14 +81,31 @@ discretize_df <- function(data, data_bins, stringsAsFactors=T)
 #' @export
 discretize_get_bins <- function(data, n_bins=5, input=NULL)
 {
-	vars_num=df_status(data, print_results = F) %>% filter(type %in% c("integer","numeric"), unique>n_bins) %>% .$variable
+	#vars_num=df_status(data, print_results = F) %>% filter(type %in% c("integer","numeric"), unique>n_bins) %>% .$variable
+	status=df_status(data, print_results = F)
+	vars_num = status %>% filter(type %in% c("integer","numeric"), unique>n_bins) %>% pull(variable)
 
 	## If input then runs for all variables
 	if(!missing(input))
 	{
 		vars_num=vars_num[vars_num %in% input]
+
+		# Check number of unique values
+		vars_not_to_process = status %>% filter(variable %in% input, unique<=n_bins) %>% pull(variable)
+		if(length(vars_not_to_process) > 0)
+		{
+			message(sprintf("Skipping variables to discretize (unique values <= than n_bins): '%s'",
+											paste(vars_not_to_process,collapse = ', ')))
+		}
 	}
 
+	if(length(vars_num)==0)
+	{
+		message("No variables to discretize")
+		return()
+	}
+
+	## Begin
 	d_bins=sapply(select(data, one_of(vars_num)), function(x) dis_bins(x, n_bins)) %>% as.data.frame(.)
 	d_bins$variable=as.character(rownames(d_bins))
 	d_bins=rename(d_bins, cuts='.') %>% select(variable, cuts)
@@ -192,7 +209,7 @@ conv_factor <- function(x)
 convert_df_to_categoric <- function(data, n_bins)
 {
 	# Discretizing numerical variables
-	d_cuts=discretize_get_bins(data = data, n_bins = n_bins)
+	d_cuts=suppressMessages(discretize_get_bins(data = data, n_bins = n_bins))
 	data_cat=discretize_df(data = data, data_bins = d_cuts, stringsAsFactors = F)
 
 	# Converting remaining variables

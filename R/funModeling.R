@@ -30,6 +30,7 @@
 #' @importFrom utils head tail
 #' @importFrom moments skewness kurtosis
 #' @importFrom entropy entropy
+#' @importFrom caret dummyVars contr.ltfr
 "_PACKAGE"
 
 utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","variable","geom_bar","geom_text","position",
