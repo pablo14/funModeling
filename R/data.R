@@ -28,3 +28,11 @@
 #' @format A data frame with 14 rows and 3 variables
 #'
 "data_golf"
+
+#' Metadata models data integrity
+#'
+#'
+#'
+#' @format Tibble
+#'
+"metadata_models"
