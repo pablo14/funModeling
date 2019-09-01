@@ -16,6 +16,7 @@
 #' @param method indicates the method used to flag the outliers, it can be: "bottom_top", "tukey" or "hampel".
 #' @param top_percent value from 0 to 1, represents the highest X percentage of values to treat. Valid only when method="bottom_top".
 #' @param bottom_percent value from 0 to 1, represents the lowest X percentage of values to treat. Valid only when method="bottom_top".
+#' @param k_mad_value only used when method='hampel', 3 by default, might seem quite restrictive. Set a higher number to spot less outliers.
 #' @examples
 #' \dontrun{
 #' # Creating data frame with outliers
@@ -73,7 +74,7 @@
 #' }
 #' @return A data frame with the desired outlier transformation
 #' @export
-prep_outliers <- function(data, input=NA, type=NA, method=NA, bottom_percent=NA, top_percent=NA)
+prep_outliers <- function(data, input=NA, type=NA, method=NA, bottom_percent=NA, top_percent=NA, k_mad_value=NA)
 {
 	if(!(type %in% c('stop', 'set_na')))
 		stop("Parameter 'type' must be one of the following 'stop' or 'set_na'")
@@ -83,6 +84,7 @@ prep_outliers <- function(data, input=NA, type=NA, method=NA, bottom_percent=NA,
 
 	if(method !="bottom_top" & (!missing(top_percent) | !missing(bottom_percent)))
 		warning("Parameters 'bottom_percent' and/or 'top_percent' will be ignored. Only valid when method='bottom_top'")
+
 
 	## If input is NA then ask for a single vector. True if it is a single vector
 	if(sum(is.na(input)>0) & mode(data) %in% c("logical","numeric","complex","character"))
@@ -138,7 +140,7 @@ prep_outliers <- function(data, input=NA, type=NA, method=NA, bottom_percent=NA,
 				top_value=tukey_outlier(x)[2]
 			} else if(method=="hampel")
 			{
-				top_value=hampel_outlier(x)[2]
+				top_value=hampel_outlier(x, k_mad_value)[2]
 			}
 
 
@@ -188,7 +190,7 @@ prep_outliers <- function(data, input=NA, type=NA, method=NA, bottom_percent=NA,
 				bottom_value=tukey_outlier(x)[1]
 			} else if(method=="hampel")
 			{
-				bottom_value=hampel_outlier(x)[1]
+				bottom_value=hampel_outlier(x, k_mad_value)[1]
 			} else {
 				stop(sprintf("Method '%s' is not implemented.", method))
 			}

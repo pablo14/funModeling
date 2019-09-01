@@ -4,7 +4,7 @@ o2=data_integrity_model(data, 'randomForest');print(o2)
 
 o3=data_integrity_model(data, 'no_na');print(o3)
 
-
+data_models
 o1$model_selected
 o1$checked
 

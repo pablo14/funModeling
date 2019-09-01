@@ -56,7 +56,7 @@ profiling_num <- function(data, print_results=T, digits=2)
 	}
 
 	## Keeping all non factor nor char variables
-	status=df_status(data, print_results = F)
+	status=status(data)
 	vars_num=filter(status, type %in% c("numeric", "integer", "logical")) %>% .$variable
 
 	if(length(vars_num)==0)
@@ -99,8 +99,8 @@ profiling_num <- function(data, print_results=T, digits=2)
 	# reordering columns
 	df_res=select(df_res, variable, mean, std_dev, variation_coef, everything(), iqr, skewness, kurtosis)
 
-	## Print or return results
-	if(print_results) print(df_res) else return(df_res)
+	## Return results
+	return(df_res)
 }
 
 
@@ -194,6 +194,8 @@ correlation_table <- function(data, target)
 #' @export
 df_status <- function(data, print_results)
 {
+	.Deprecated("status")
+
 	## If input is NA then ask for a single vector. True if it is a single vector
 	if(mode(data) %in% c("logical","numeric","complex","character"))
 	{
@@ -225,6 +227,8 @@ df_status <- function(data, print_results)
 
 	## Print or return results
 	if(print_results) print(df_status_res) else return(df_status_res)
+
+	message("'df_status' will be deprecated. Please use 'status' instead. It provides the same functionality but now it shows all the numbers with decimal points by default (without multiplying by '100').")
 }
 
 is.POSIXct <- function(x) inherits(x, "POSIXct")

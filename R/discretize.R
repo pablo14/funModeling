@@ -82,8 +82,8 @@ discretize_df <- function(data, data_bins, stringsAsFactors=T)
 discretize_get_bins <- function(data, n_bins=5, input=NULL)
 {
 	#vars_num=df_status(data, print_results = F) %>% filter(type %in% c("integer","numeric"), unique>n_bins) %>% .$variable
-	status=df_status(data, print_results = F)
-	vars_num = status %>% filter(type %in% c("integer","numeric"), unique>n_bins) %>% pull(variable)
+	stat=status(data)
+	vars_num = stat %>% filter(type %in% c("integer","numeric"), unique>n_bins) %>% pull(variable)
 
 	## If input then runs for all variables
 	if(!missing(input))
@@ -91,7 +91,7 @@ discretize_get_bins <- function(data, n_bins=5, input=NULL)
 		vars_num=vars_num[vars_num %in% input]
 
 		# Check number of unique values
-		vars_not_to_process = status %>% filter(variable %in% input, unique<=n_bins) %>% pull(variable)
+		vars_not_to_process = stat %>% filter(variable %in% input, unique<=n_bins) %>% pull(variable)
 		if(length(vars_not_to_process) > 0)
 		{
 			message(sprintf("Skipping variables to discretize (unique values <= than n_bins): '%s'",

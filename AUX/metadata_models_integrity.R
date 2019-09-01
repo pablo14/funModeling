@@ -1,6 +1,6 @@
 #library(datapasta)
 # tribble_paste
-metadata_models=tibble::tribble(
+d_models=tibble::tribble(
 ~name, ~allow_NA, ~max_unique, ~allow_factor, ~allow_character, ~only_numeric,
 "randomForest",     FALSE,          53,          TRUE,            FALSE,         FALSE,
 "xgboost",      TRUE,         Inf,         FALSE,            FALSE,          TRUE,

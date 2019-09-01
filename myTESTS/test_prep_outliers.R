@@ -23,7 +23,7 @@ tail(b[order(b)], 10) # now the max is 71 (not 77), and the result is a vector
 df_res=prep_outliers(data = heart_disease, input = c('age', 'max_heart_rate'), top_percent  = 0.01,  type='set_na', method = "bottom_top")
 
 describe(select(heart_disease, age, max_heart_rate));describe(select(df_res, age, max_heart_rate)) ## returns a data frame,
-df_status(select(heart_disease, age, max_heart_rate));df_status(select(df_res, age, max_heart_rate)) ## and it has NAs
+status(select(heart_disease, age, max_heart_rate));status(select(df_res, age, max_heart_rate)) ## and it has NAs
 
 ## testing with an skewed variable ############################
 set.seed(10)

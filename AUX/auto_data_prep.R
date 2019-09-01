@@ -32,10 +32,10 @@ data_to_num <- function(data, target=NULL, fullRank=F)
 		df_to_prep=data
 	}
 
-	status=df_status(df_to_prep, print_results = F)
+	stat=status(df_to_prep)
 
 	## NA treatment
-	var_num_NA=filter(status, q_na>0, type %in% c("numeric", "integer")) %>% pull(variable)
+	var_num_NA=filter(stat, q_na>0, type %in% c("numeric", "integer")) %>% pull(variable)
 
 	if(length(var_num_NA)>0)
 	{

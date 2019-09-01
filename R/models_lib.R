@@ -136,8 +136,8 @@ gain_lift <- function(data, score, target, q_segments=10)
 desc_groups <- function(data, group_var, group_func=mean, add_all_data_row=T)
 {
 	## calculate only for numeric variables
-	status=df_status(data, print_results = F)
-	vars_to_keep=status[status$type %in% c("integer", "numeric") & status$variable != group_var, "variable"]
+	stat=status(data)
+	vars_to_keep=stat[stat$type %in% c("integer", "numeric") & stat$variable != group_var, "variable"]
 
 	grp_mean=data %>% group_by_(group_var) %>% summarise_each_(funs(group_func), vars_to_keep) %>% mutate_each_(funs(round(.,2)), vars_to_keep)
 	grp_mean=data.frame(grp_mean)
