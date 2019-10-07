@@ -38,16 +38,12 @@ plot_num <- function(data, bins=10, path_out=NA)
 #' Get a metric table with many indicators for all numerical variables, automatically skipping the non-numerical variables. Current metrics are:
 #' mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewness, kurtosis, iqr: inter quartile range, variation_coef: the ratio of sd/mean, range_98 is the limit for which the 98% of fall, range_80 similar to range_98 but with 80%. All NA values will be skipped from calculations.
 #' @param data data frame
-#' @param print_results prints the result, TRUE by default.
-#' @param digits the number of digits to show the result, 2 by default.
 #' @examples
 #' profiling_num(mtcars)
 #' @return metrics table
 #' @export
-profiling_num <- function(data, print_results=T, digits=2)
+profiling_num <- function(data)
 {
-	options(digits=digits)
-
 	if(mode(data) %in% c("logical","numeric","complex","character"))
 	{
 		# creates a ficticious variable called 'var'
@@ -56,17 +52,16 @@ profiling_num <- function(data, print_results=T, digits=2)
 	}
 
 	## Keeping all non factor nor char variables
-	status=status(data)
-	vars_num=filter(status, type %in% c("numeric", "integer", "logical")) %>% .$variable
+	di=data_integrity(data)
+
+	stat=di$status_now
+
+	vars_num=filter(stat, type %in% c("numeric", "integer", "logical")) %>% .$variable
 
 	if(length(vars_num)==0)
 		stop("None of the input variables are numeric, integer nor logical")
 
 	data_num=select(data, one_of(vars_num))
-
-	if(missing(print_results))
-		print_results=T
-
 
 	df_res=data.frame(
 		mean=sapply(data_num, function(x) mean(x, na.rm=T)),
@@ -87,8 +82,8 @@ profiling_num <- function(data, print_results=T, digits=2)
 	)
 
 	df_res$variation_coef=df_res$std_dev/df_res$mean
-	df_res$range_98=sprintf("[%s, %s]", round(df_res$p_01, digits), round(df_res$p_99, digits))
-	df_res$range_80=sprintf("[%s, %s]", round(df_res$p_10, digits), round(df_res$p_90, digits))
+	df_res$range_98=sprintf("[%s, %s]", df_res$p_01, df_res$p_99)
+	df_res$range_80=sprintf("[%s, %s]", df_res$p_10, df_res$p_90)
 
 	df_res=select(df_res, -p_10, -p_90)
 
@@ -194,8 +189,6 @@ correlation_table <- function(data, target)
 #' @export
 df_status <- function(data, print_results)
 {
-	.Deprecated("status")
-
 	## If input is NA then ask for a single vector. True if it is a single vector
 	if(mode(data) %in% c("logical","numeric","complex","character"))
 	{
@@ -228,7 +221,6 @@ df_status <- function(data, print_results)
 	## Print or return results
 	if(print_results) print(df_status_res) else return(df_status_res)
 
-	message("'df_status' will be deprecated. Please use 'status' instead. It provides the same functionality but now it shows all the numbers with decimal points by default (without multiplying by '100').")
 }
 
 is.POSIXct <- function(x) inherits(x, "POSIXct")
@@ -290,8 +282,8 @@ freq <- function(data, input=NA, plot=TRUE, na.rm=FALSE, path_out)
   	} else {
 			## Keeping all categorical variables
   		data=data.frame(data)
-			status=df_status(data, print_results = F)
-			input=status[status$type %in% c("factor", "character"), 'variable']
+			stat=status(data)
+			input=stat[stat$type %in% c("factor", "character"), 'variable']
 			if(length(input)==0)
 			{
 				warning("None of the input variables are factor nor character")

@@ -39,7 +39,7 @@ status <- function (data)
 #' @title Data integrity
 #' @description A handy function to return different vectors of variable names aimed to quickly filter NA, categorical (factor / character), numerical and other types (boolean, date, posix).
 #' It also returns a vector of variables which have high cardinality.
-#' It returns an 'integrity' object, which has: 'status_now' (comes from status function), and 'resutls' list, following elements can be found:
+#' It returns an 'integrity' object, which has: 'status_now' (comes from status function), and 'results' list, following elements can be found:
 #'
 #' vars_cat: Vector containing the categorical variables names (factor or character)
 #'

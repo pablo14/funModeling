@@ -51,10 +51,41 @@ library(funModeling)
 df_status(heart_disease)
 ```
 
+Note: `df_status` will be deprecated, please use `status` instead.
+
 [**Read more here.**](https://livebook.datascienceheroes.com/exploratory-data-analysis.html#dataset-health-status)
 
 <br>
 
+### `status`: Dataset health status (2nd version)
+
+Similar to `df_status`, but it returns all percentages in the 0 to 1 range (not 1 to 100). 
+
+```{r, message=FALSE, warning=FALSE}
+library(funModeling)
+
+status(heart_disease)
+```
+
+### `data_integrity`: Dataset health status (2nd version)
+
+A handy function to return different vectors of variable names aimed to quickly filter NA, categorical (factor / character), numerical and other types (boolean, date, posix). 
+
+It also returns a vector of variables which have high cardinality. 
+
+It returns an 'integrity' object, which has: 'status_now' (comes from status function), and 'results' list, following elements can be found: vars_cat, vars_num, vars_num_with_NA, etc. Explore the object for more.
+
+```{r, message=FALSE, warning=FALSE}
+library(funModeling)
+
+di=data_integrity(heart_disease)
+
+# returns a summary
+summary(di)
+
+# print all the metadata information
+print(di)
+```
 
 ### `plot_num`: Plotting distributions for numerical variables
 

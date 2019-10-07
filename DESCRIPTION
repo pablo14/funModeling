@@ -1,14 +1,14 @@
 Package: funModeling
 Type: Package
-Title: Exploratory Data Analysis and Data Preparation Tool-Box Book
-Description: Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book Data Science Live Book (<http://livebook.datascienceheroes.com/>) are intended to cover remaining 90%: data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
-Version: 1.7
-Date: 2019-02-13
+Title: Exploratory Data Analysis and Data Preparation Tool-Box
+Description: Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book Data Science Live Book (<https://livebook.datascienceheroes.com/>) are intended to cover remaining 90%: data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
+Version: 1.9.2
+Date: 2019-09-09
 Authors@R: person("Pablo", "Casas", role = c("aut", "cre"), email = "pcasas.biz@gmail.com")
 Maintainer: Pablo Casas <pcasas.biz@gmail.com>
 License: GPL-2
 BugReports: https://github.com/pablo14/funModeling/issues
-URL: livebook.datascienceheroes.com
+URL: https://livebook.datascienceheroes.com
 LazyData: true
 Imports:
     ROCR,
@@ -22,10 +22,12 @@ Imports:
     utils,
     RColorBrewer,
     moments,
-    entropy
+    entropy,
+    cli,
+    stringr
 Depends:
-    R (>= 3.2.1),
+    R (>= 3.4.0),
     Hmisc (>= 3.17.1)
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

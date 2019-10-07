@@ -58,10 +58,11 @@ check_target_existence <- function(data, target)
 give_me_num_vars <- function(data, target=NULL)
 {
 	##
-	stat=status(data, print_results = F)
+	stat=status(data)
+	di=data_integrity(data)
 
-	## Excluding not numeric variables
-	input=stat[!(stat$type %in% "factor" | stat$type %in% "character"), 'variable']
+	## keeping numeric variables
+	input=di$results$vars_num
 
 	## Excluding variables with less than two unique value
 	ex_variables=stat[stat$unique<=2, 'variable']

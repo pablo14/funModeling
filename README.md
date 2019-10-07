@@ -16,9 +16,17 @@ install.packages("funModeling")
 
 Around 10% of almost any predictive modeling project is spent in predictive modeling, 'funModeling' and the book *Data Science Live Book* are intended to cover remaining 90%: data preparation, profiling, selecting best variables 'dataViz', assessing model performance and other functions.
 
+## funModeling quick-start!
+
+Check the [vignette](https://cran.r-project.org/web/packages/funModeling/vignettes/funModeling_quickstart.html)	
+
 ## Data Science Live Book (open source)
 
 <img src="https://datascienceheroes.com/img/blog/data-science-live-book-cover-2.png" alt="Data Science Live Book" width="250px">
+
+
+
+`funModeling` was the seed of this book.
 
 An overview...
 

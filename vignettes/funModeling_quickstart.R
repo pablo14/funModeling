@@ -3,6 +3,22 @@ library(funModeling)
 
 df_status(heart_disease)
 
+## ---- message=FALSE, warning=FALSE---------------------------------------
+library(funModeling)
+
+status(heart_disease)
+
+## ---- message=FALSE, warning=FALSE---------------------------------------
+library(funModeling)
+
+di=data_integrity(heart_disease)
+
+# returns a summary
+summary(di)
+
+# print all the metadata information
+print(di)
+
 ## ---- fig.height=3, fig.width=5------------------------------------------
 plot_num(heart_disease)
 
@@ -56,6 +72,16 @@ new_age=equal_freq(heart_disease$age, n_bins = 5)
 
 # checking results
 Hmisc::describe(new_age)
+
+## ------------------------------------------------------------------------
+
+input=heart_disease$oldpeak
+target=heart_disease$has_heart_disease
+
+input2=discretize_rgr(input, target)
+
+# checking:
+summary(input2)
 
 ## ------------------------------------------------------------------------
 age_scaled=range01(heart_disease$oldpeak)

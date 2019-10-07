@@ -4,10 +4,15 @@ data$has_heart_disease2=ifelse(data$has_heart_disease==1,T, F)
 data$fecha=Sys.Date()
 data$fecha2=as.POSIXct(Sys.Date())
 data$gender=as.character(data$gender)
+data$gender[1]=NA
 data$fecha[1]=Sys.Date()+1
 data$fecha2[2]=as.POSIXct(Sys.Date())+1
 data$max_heart_rate=as.character(data$max_heart_rate)
 data$constant=999
+data$id=as.character(seq(1:nrow(data)))
+
+write_delim(data, "messy_data.txt", delim = ';')
+
 #
 #library(stringr)
 
