@@ -193,4 +193,114 @@ summary.integrity <- function(object, ...) {
 	cat(final_msg)
 }
 
+#' @title Check data integrity model
+#' @description Given a data frame, we need to create models (xgboost, random forest, regression, etc). Each one of them has its constraints regarding data types. Many errors appear when we are creating models just because of data format.
+#' This function returns, given a certain model, which are the constraints that the data is not satisfying. This way we can anticipate and correct errors before we call for model creation. This function is quite related to \code{\link{data_integrity}}.
+#' @param data data frame or a single vector
+#' @param model_name model name, you can check all the available models by printing `metadata_models` data frame.
+#' @param MAX_UNIQUE max unique threshold to flag a categorical variable as a high cardinality one. Normally above 35 values it is needed to reduce the number of different values.
+#' # Example 1:
+#' data_integrity_model(data=heart_disease, model_name="pca")
+#' # Example 2:
+#' # changing the default minimum threshold to flag a variable as high cardiniality
+#' data_integrity_model(data=iris, model_name="xgboost", MAX_UNIQUE=50)
+#' @return an `integritymodel` object
+#' @export
+data_integrity_model <- function(data, model_name, MAX_UNIQUE=35)
+{
+	model_selected=metadata_models %>% dplyr::filter(name==model_name)
+
+	if(nrow(model_selected)==0) {
+		stop("Configuration not available. Print `metadata_models` to see all available models")
+	}
+
+	l_err_msgs=list()
+
+	# Run the data_integrity with custom max unique due to random forest
+	if(model_selected$max_unique != "Inf") {
+		MAX_UNIQUE = model_selected$max_unique
+	}
+
+	san=data_integrity(data, MAX_UNIQUE = MAX_UNIQUE)
+
+	# Check NA in both: numerical or categorical variables
+	if(!model_selected$allow_NA & (nrow(san$results$vars_num_with_NA)>0 | nrow(san$results$vars_cat_with_NA)>0))
+	{
+		vars_NA=c(san$results$vars_num_with_NA$variable, san$results$vars_cat_with_NA$variable)
+		vars_NA=paste(vars_NA, collapse = ", ")
+		err_msg_NA=sprintf("{NA detected} %s", vars_NA)
+		l_err_msgs=c(l_err_msgs, msg=err_msg_NA)
+	}
+
+	# Check if only numeric (categorical and other are not allow)
+	if(model_selected$only_numeric & (length(san$results$vars_cat)>0 | length(san$results$vars_other)>0))
+	{
+		vars_non_num=c(san$results$vars_cat, san$results$vars_other)
+		vars_non_num=paste(vars_non_num, collapse = ", ")
+		err_msg_non_num=sprintf("{Non-numeric detected} %s", vars_non_num)
+		l_err_msgs=c(l_err_msgs, msg=err_msg_non_num)
+	}
+
+	# Check if character are not allowed
+	if(!model_selected$allow_character & length(san$results$vars_char))
+	{
+		vars_char=paste(san$results$vars_char, collapse = ", ")
+		err_msg_char=sprintf("{Character detected} %s", vars_char)
+		l_err_msgs=c(l_err_msgs, msg=err_msg_char)
+	}
+
+	# Check categorical variables with high cardinality
+	if(nrow(san$results$vars_cat_high_card)>0)
+	{
+		vars_high_card=paste(san$results$vars_cat_high_card$variable, collapse = ", ")
+		err_msg_high_card=sprintf("{High cardinality detected (MAX_UNIQUE > %s)} %s", MAX_UNIQUE, vars_high_card)
+		l_err_msgs=c(l_err_msgs, msg=err_msg_high_card)
+	}
+
+	if(length(san$results$vars_one_value)>0)
+	{
+		vars_one_value=paste(san$res$vars_one_value, collapse = ", ")
+		err_msg_one_value=str_c(sprintf("{One unique value} %s",  vars_one_value), sep=" ")
+
+		l_err_msgs=c(l_err_msgs, msg=err_msg_one_value)
+	}
+
+
+	final_msg=""
+	if(length(l_err_msgs)>0)
+	{
+		for(i in 1:length(l_err_msgs))
+		{
+
+			if(str_detect(l_err_msgs[[i]], "High cardinality")) {
+				emoji_mark=ifelse(model_selected$max_unique != Inf, cli::symbol$cross, cli::symbol$warning)
+			} else {
+				emoji_mark=cli::symbol$cross
+			}
+
+			final_msg=str_c(final_msg, str_c(emoji_mark, l_err_msgs[[i]], sep=" "), sep = "\n")
+			data_ok=F
+		}
+
+	} else {
+		final_msg=str_c(str_c(cli::symbol$tick, "Data model integrity ok!", sep=" "), sep = "\n")
+		data_ok=T
+	}
+
+	# Creating S3 object
+	obj_chk=list(final_msg=final_msg, data_ok=data_ok, model_selected=model_selected, checked=san)
+	class(obj_chk)="integritymodel"
+
+	return(obj_chk)
+
+}
+
+
+#' @export
+print.integritymodel <- function(x, ...) {
+	cat(x$final_msg)
+}
+
+
+
 

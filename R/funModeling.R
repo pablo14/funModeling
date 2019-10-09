@@ -31,7 +31,7 @@
 #' @importFrom utils head tail
 #' @importFrom moments skewness kurtosis
 #' @importFrom entropy entropy
-#' @importFrom stringr str_c
+#' @importFrom stringr str_c str_detect
 
 "_PACKAGE"
 
@@ -41,4 +41,4 @@ utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","vari
 															 "scale_colour_continuous",'Var1','label','coord_flip','ylab','xlab','geom_label','unit','Population','Gain',
 															 'Score.Point','geom_line','geom_point','xlim','geom_segment','Lift', 'Freq', 'sum_pos', 'likelih','.','one_of',
 															 'grp_mean', 'mean_target',"'colorRampPalette","head","tail","rbeta","p_10","p_90","sd" ,"std_dev","variation_coef",
-															 "iqr", "type","gr","discretize_bins", "cuts",  "p_na", "q_na", "str_c"), package = "funModeling", add = F)
+															 "iqr", "type","gr","discretize_bins", "cuts",  "p_na", "q_na", "str_c","metadata_models","name"), package = "funModeling", add = F)
