@@ -93,6 +93,9 @@ mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewne
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/README.html">funModeling quick-start</a>
+    </li>
+    <li>
       <a href="../articles/funModeling_quickstart.html">funModeling quick-start</a>
     </li>
   </ul>
@@ -123,7 +126,7 @@ mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewne
 mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewness, kurtosis, iqr: inter quartile range, variation_coef: the ratio of sd/mean, range_98 is the limit for which the 98<!-- % of fall, range_80 similar to range_98 but with 80%. All NA values will be skipped from calculations. --></p>
     </div>
 
-    <pre class="usage"><span class='fu'>profiling_num</span>(<span class='no'>data</span>, <span class='kw'>print_results</span> <span class='kw'>=</span> <span class='no'>T</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+    <pre class="usage"><span class='fu'>profiling_num</span>(<span class='no'>data</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,14 +134,6 @@ mean, std_dev: standard deviation, all the p_XX: percentile at XX number, skewne
     <tr>
       <th>data</th>
       <td><p>data frame</p></td>
-    </tr>
-    <tr>
-      <th>print_results</th>
-      <td><p>prints the result, TRUE by default.</p></td>
-    </tr>
-    <tr>
-      <th>digits</th>
-      <td><p>the number of digits to show the result, 2 by default.</p></td>
     </tr>
     </table>
 

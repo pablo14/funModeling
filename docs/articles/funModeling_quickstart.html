@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/README.html">funModeling quick-start</a>
+    </li>
+    <li>
       <a href="../articles/funModeling_quickstart.html">funModeling quick-start</a>
     </li>
   </ul>
@@ -75,7 +78,7 @@
       <h1>funModeling quick-start</h1>
                         <h4 class="author">Pablo Casas</h4>
             
-            <h4 class="date">2020-03-11</h4>
+            <h4 class="date">2020-04-06</h4>
       
       
       <div class="hidden name"><code>funModeling_quickstart.Rmd</code></div>
@@ -87,6 +90,9 @@
 <div id="quick_start" class="section level1">
 <h1 class="hasAnchor">
 <a href="#quick_start" class="anchor"></a>funModeling quick-start</h1>
+<div class="figure">
+<img src="https://s3.amazonaws.com/datascienceheroes.com/img/funmodeling_logo_wh.png" alt="funModeling"><p class="caption">funModeling</p>
+</div>
 <p>This package contains a set of functions related to exploratory data analysis, data preparation, and model performance. It is used by people coming from business, research, and teaching (professors and students).</p>
 <p><code>funModeling</code> is intimately related to the <em>Data Science Live Book</em> -Open Source- (2017) in the sense that most of its functionality is used to explain different topics addressed by the book.</p>
 <div class="figure">
@@ -97,9 +103,6 @@
 <a href="#opening-the-black-box" class="anchor"></a>Opening the black-box</h2>
 <p>Some functions have in-line comments so the user can open the black-box and learn how it was developed, or to tune or improve any of them.</p>
 <p>All the functions are well documented, explaining all the parameters with the help of many short examples. R documentation can be accessed by: <code><a href="https://rdrr.io/r/utils/help.html">help("name_of_the_function")</a></code>.</p>
-<p><strong>Important changes from latest version 1.6.7</strong>, (relevant only if you were using previous versions):</p>
-<p>From the latest version, 1.6.7 (Jan 21-2018), the parameters <code>str_input</code>, <code>str_target</code> and <code>str_score</code> will be renamed to <code>input</code>, <code>target</code> and <code>score</code> respectively. The functionality remains the same. If you were using these parameters names on production, they will be still working until next release. this means that for now, you can use for example <code>str_input</code> or <code>input</code>.</p>
-<p>The other importat change was in <code>discretize_get_bins</code>, which is detailed later in this document.</p>
 <p><br></p>
 <div id="about-this-quick-start" class="section level3">
 <h3 class="hasAnchor">
@@ -111,41 +114,13 @@
 <div id="exploratory-data-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#exploratory-data-analysis" class="anchor"></a>Exploratory data analysis</h2>
-<div id="df_status-dataset-health-status" class="section level3">
-<h3 class="hasAnchor">
-<a href="#df_status-dataset-health-status" class="anchor"></a><code>df_status</code>: Dataset health status</h3>
-<p>Use case: analyze the zeros, missing values (<code>NA</code>), infinity, data type, and number of unique values for a given dataset.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(funModeling)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="../reference/df_status.html">df_status</a></span>(heart_disease)</a></code></pre></div>
-<pre><code>##                  variable q_zeros p_zeros q_na p_na q_inf p_inf    type unique
-## 1                     age       0    0.00    0 0.00     0     0 integer     41
-## 2                  gender       0    0.00    0 0.00     0     0  factor      2
-## 3              chest_pain       0    0.00    0 0.00     0     0  factor      4
-## 4  resting_blood_pressure       0    0.00    0 0.00     0     0 integer     50
-## 5       serum_cholestoral       0    0.00    0 0.00     0     0 integer    152
-## 6     fasting_blood_sugar     258   85.15    0 0.00     0     0  factor      2
-## 7         resting_electro     151   49.83    0 0.00     0     0  factor      3
-## 8          max_heart_rate       0    0.00    0 0.00     0     0 integer     91
-## 9             exer_angina     204   67.33    0 0.00     0     0 integer      2
-## 10                oldpeak      99   32.67    0 0.00     0     0 numeric     40
-## 11                  slope       0    0.00    0 0.00     0     0 integer      3
-## 12      num_vessels_flour     176   58.09    4 1.32     0     0 integer      4
-## 13                   thal       0    0.00    2 0.66     0     0  factor      3
-## 14 heart_disease_severity     164   54.13    0 0.00     0     0 integer      5
-## 15           exter_angina     204   67.33    0 0.00     0     0  factor      2
-## 16      has_heart_disease       0    0.00    0 0.00     0     0  factor      2</code></pre>
-<p>Note: <code>df_status</code> will be deprecated, please use <code>status</code> instead.</p>
-<p><a href="https://livebook.datascienceheroes.com/exploratory-data-analysis.html#dataset-health-status"><strong>Read more here.</strong></a></p>
-<p><br></p>
-</div>
 <div id="status-dataset-health-status-2nd-version" class="section level3">
 <h3 class="hasAnchor">
 <a href="#status-dataset-health-status-2nd-version" class="anchor"></a><code>status</code>: Dataset health status (2nd version)</h3>
 <p>Similar to <code>df_status</code>, but it returns all percentages in the 0 to 1 range (not 1 to 100).</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(funModeling)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw">status</span>(heart_disease)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(funModeling)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="../reference/status.html">status</a></span>(heart_disease)</a></code></pre></div>
 <pre><code>##                  variable q_zeros   p_zeros q_na       p_na q_inf p_inf    type
 ## 1                     age       0 0.0000000    0 0.00000000     0     0 integer
 ## 2                  gender       0 0.0000000    0 0.00000000     0     0  factor
@@ -180,6 +155,7 @@
 ## 14      5
 ## 15      2
 ## 16      2</code></pre>
+<p>Note: <code>df_status</code> will be deprecated, please use <code>status</code> instead.</p>
 </div>
 <div id="data_integrity-dataset-health-status-2nd-version" class="section level3">
 <h3 class="hasAnchor">
@@ -187,17 +163,17 @@
 <p>A handy function to return different vectors of variable names aimed to quickly filter NA, categorical (factor / character), numerical and other types (boolean, date, posix).</p>
 <p>It also returns a vector of variables which have high cardinality.</p>
 <p>It returns an ‘integrity’ object, which has: ‘status_now’ (comes from status function), and ‘results’ list, following elements can be found: vars_cat, vars_num, vars_num_with_NA, etc. Explore the object for more.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(funModeling)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">di=<span class="kw">data_integrity</span>(heart_disease)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co"># returns a summary</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(di)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(funModeling)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">di=<span class="kw"><a href="../reference/data_integrity.html">data_integrity</a></span>(heart_disease)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co"># returns a summary</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(di)</a></code></pre></div>
 <pre><code>## 
 ## ◌ {Numerical with NA} num_vessels_flour
 ## ◌ {Categorical with NA} thal</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># print all the metadata information</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(di)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># print all the metadata information</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(di)</a></code></pre></div>
 <pre><code>## $vars_num_with_NA
 ##            variable q_na       p_na
 ## 1 num_vessels_flour    4 0.01320132
@@ -241,8 +217,8 @@
 <h3 class="hasAnchor">
 <a href="#plot_num-plotting-distributions-for-numerical-variables" class="anchor"></a><code>plot_num</code>: Plotting distributions for numerical variables</h3>
 <p>Plots only numeric variables.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="../reference/plot_num.html">plot_num</a></span>(heart_disease)</a></code></pre></div>
-<p><img src="funModeling_quickstart_files/figure-html/unnamed-chunk-4-1.png" width="480"></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/plot_num.html">plot_num</a></span>(heart_disease)</a></code></pre></div>
+<p><img src="funModeling_quickstart_files/figure-html/unnamed-chunk-3-1.png" width="480"></p>
 <p>Notes:</p>
 <ul>
 <li>
@@ -257,7 +233,7 @@
 <h3 class="hasAnchor">
 <a href="#profiling_num-calculating-several-statistics-for-numerical-variables" class="anchor"></a><code>profiling_num</code>: Calculating several statistics for numerical variables</h3>
 <p>Retrieves several statistics for numerical variables.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../reference/profiling_num.html">profiling_num</a></span>(heart_disease)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="../reference/profiling_num.html">profiling_num</a></span>(heart_disease)</a></code></pre></div>
 <pre><code>##                 variable        mean    std_dev variation_coef   p_01  p_05
 ## 1                    age  54.4389439  9.0386624      0.1660330  35.00  40.0
 ## 2 resting_blood_pressure 131.6897690 17.5997477      0.1336455 100.00 108.0
@@ -299,13 +275,13 @@
 <div id="freq-getting-frequency-distributions-for-categoric-variables" class="section level3">
 <h3 class="hasAnchor">
 <a href="#freq-getting-frequency-distributions-for-categoric-variables" class="anchor"></a><code>freq</code>: Getting frequency distributions for categoric variables</h3>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co"># Select only two variables for this example</span></a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">heart_disease_<span class="dv">2</span>=heart_disease <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(chest_pain, thal)</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co"># Frequency distribution</span></a>
-<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="kw"><a href="../reference/freq.html">freq</a></span>(heart_disease_<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co"># Select only two variables for this example</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">heart_disease_<span class="dv">2</span>=heart_disease <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(chest_pain, thal)</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co"># Frequency distribution</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="kw"><a href="../reference/freq.html">freq</a></span>(heart_disease_<span class="dv">2</span>)</a></code></pre></div>
 <p><img src="funModeling_quickstart_files/figure-html/distribution1-1.png" width="480"></p>
 <pre><code>##   chest_pain frequency percentage cumulative_perc
 ## 1          4       144      47.52           47.52
@@ -341,7 +317,7 @@
 <h3 class="hasAnchor">
 <a href="#correlation_table-calculates-r-statistic" class="anchor"></a><code>correlation_table</code>: Calculates R statistic</h3>
 <p>Retrieves R metric (or Pearson coefficient) for all numeric variables, skipping the categoric ones.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="../reference/correlation_table.html">correlation_table</a></span>(heart_disease, <span class="st">"has_heart_disease"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="../reference/correlation_table.html">correlation_table</a></span>(heart_disease, <span class="st">"has_heart_disease"</span>)</a></code></pre></div>
 <pre><code>##                 Variable has_heart_disease
 ## 1      has_heart_disease              1.00
 ## 2 heart_disease_severity              0.83
@@ -364,7 +340,7 @@
 <h3 class="hasAnchor">
 <a href="#var_rank_info-correlation-based-on-information-theory" class="anchor"></a><code>var_rank_info</code>: Correlation based on information theory</h3>
 <p>Calculates correlation based on several information theory metrics between all variables in a data frame and a target variable.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="../reference/var_rank_info.html">var_rank_info</a></span>(heart_disease, <span class="st">"has_heart_disease"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="../reference/var_rank_info.html">var_rank_info</a></span>(heart_disease, <span class="st">"has_heart_disease"</span>)</a></code></pre></div>
 <pre><code>##                       var    en    mi           ig           gr
 ## 1  heart_disease_severity 1.846 0.995 0.9950837595 0.5390655068
 ## 2                    thal 2.032 0.209 0.2094550580 0.1680456709
@@ -389,7 +365,7 @@
 <h3 class="hasAnchor">
 <a href="#cross_plot-distribution-plot-between-input-and-target-variable" class="anchor"></a><code>cross_plot</code>: Distribution plot between input and target variable</h3>
 <p>Retrieves the relative and absolute distribution between an input and target variable. Useful to explain and report if a variable is important or not.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw"><a href="../reference/cross_plot.html">cross_plot</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">input=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"age"</span>, <span class="st">"oldpeak"</span>), <span class="dt">target=</span><span class="st">"has_heart_disease"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="../reference/cross_plot.html">cross_plot</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">input=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"age"</span>, <span class="st">"oldpeak"</span>), <span class="dt">target=</span><span class="st">"has_heart_disease"</span>)</a></code></pre></div>
 <pre><code>## Plotting transformed variable 'age' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'</code></pre>
 <pre><code>## Plotting transformed variable 'oldpeak' with 'equal_freq', (too many values). Disable with 'auto_binning=FALSE'</code></pre>
 <p><img src="funModeling_quickstart_files/figure-html/profiling1-1.png" width="768"><img src="funModeling_quickstart_files/figure-html/profiling1-2.png" width="768"></p>
@@ -411,12 +387,12 @@
 <a href="#plotar-boxplot-and-density-histogram-between-input-and-target-variables" class="anchor"></a><code>plotar</code>: Boxplot and density histogram between input and target variables</h3>
 <p>Useful to explain and report if a variable is important or not.</p>
 <p><strong>Boxplot:</strong></p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="../reference/plotar.html">plotar</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">input =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"age"</span>, <span class="st">"oldpeak"</span>), <span class="dt">target=</span><span class="st">"has_heart_disease"</span>, <span class="dt">plot_type=</span><span class="st">"boxplot"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw"><a href="../reference/plotar.html">plotar</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">input =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"age"</span>, <span class="st">"oldpeak"</span>), <span class="dt">target=</span><span class="st">"has_heart_disease"</span>, <span class="dt">plot_type=</span><span class="st">"boxplot"</span>)</a></code></pre></div>
 <p><img src="funModeling_quickstart_files/figure-html/boxplot_analysis-1.png" width="384"><img src="funModeling_quickstart_files/figure-html/boxplot_analysis-2.png" width="384"></p>
 <p><a href="https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-boxplots"><strong>Read more here.</strong></a></p>
 <p><br></p>
 <p><strong>Density histograms:</strong></p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="../reference/plotar.html">plotar</a></span>(<span class="dt">data=</span>mtcars, <span class="dt">input =</span> <span class="st">"gear"</span>, <span class="dt">target=</span><span class="st">"cyl"</span>, <span class="dt">plot_type=</span><span class="st">"histdens"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="../reference/plotar.html">plotar</a></span>(<span class="dt">data=</span>mtcars, <span class="dt">input =</span> <span class="st">"gear"</span>, <span class="dt">target=</span><span class="st">"cyl"</span>, <span class="dt">plot_type=</span><span class="st">"histdens"</span>)</a></code></pre></div>
 <p><img src="funModeling_quickstart_files/figure-html/density_histogram-1.png" width="384"></p>
 <p><a href="https://livebook.datascienceheroes.com/selecting-best-variables.html#target-profiling-using-density-histograms"><strong>Read more here.</strong></a></p>
 <p>Notes:</p>
@@ -435,9 +411,9 @@
 <h3 class="hasAnchor">
 <a href="#categ_analysis-quantitative-analysis-for-binary-outcome" class="anchor"></a><code>categ_analysis</code>: Quantitative analysis for binary outcome</h3>
 <p>Profile a binary target based on a categorical input variable, the representativeness (<code>perc_rows</code>) and the accuracy (<code>perc_target</code>) for each value of the input variable; for example, the rate of flu infection per country.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">df_ca=<span class="kw"><a href="../reference/categ_analysis.html">categ_analysis</a></span>(<span class="dt">data =</span> data_country, <span class="dt">input =</span> <span class="st">"country"</span>, <span class="dt">target =</span> <span class="st">"has_flu"</span>)</a>
-<a class="sourceLine" id="cb25-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb25-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(df_ca)</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">df_ca=<span class="kw"><a href="../reference/categ_analysis.html">categ_analysis</a></span>(<span class="dt">data =</span> data_country, <span class="dt">input =</span> <span class="st">"country"</span>, <span class="dt">target =</span> <span class="st">"has_flu"</span>)</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(df_ca)</a></code></pre></div>
 <pre><code>##          country mean_target sum_target perc_target q_rows perc_rows
 ## 1       Malaysia       1.000          1       0.012      1     0.001
 ## 2         Mexico       0.667          2       0.024      3     0.003
@@ -467,11 +443,11 @@
 <a href="#discretize_get_bins-discretize_df-convert-numeric-variables-to-categoric" class="anchor"></a><code>discretize_get_bins</code> + <code>discretize_df</code>: Convert numeric variables to categoric</h4>
 <p>We need two functions: <code>discretize_get_bins</code>, which returns the thresholds for each variable, and then <code>discretize_df</code>, which takes the result from the first function and converts the desired variables. The binning criterion is equal frequency.</p>
 <p>Example converting only two variables from a dataset.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co"># Step 1: Getting the thresholds for the desired variables: "max_heart_rate" and "oldpeak"</span></a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">d_bins=<span class="kw"><a href="../reference/discretize_get_bins.html">discretize_get_bins</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">input=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"max_heart_rate"</span>, <span class="st">"oldpeak"</span>), <span class="dt">n_bins=</span><span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co"># Step 1: Getting the thresholds for the desired variables: "max_heart_rate" and "oldpeak"</span></a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">d_bins=<span class="kw"><a href="../reference/discretize_get_bins.html">discretize_get_bins</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">input=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"max_heart_rate"</span>, <span class="st">"oldpeak"</span>), <span class="dt">n_bins=</span><span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## Variables processed: max_heart_rate, oldpeak</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co"># Step 2: Applying the threshold to get the final processed data frame</span></a>
-<a class="sourceLine" id="cb29-2" data-line-number="2">heart_disease_discretized=<span class="kw"><a href="../reference/discretize_df.html">discretize_df</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">data_bins=</span>d_bins, <span class="dt">stringsAsFactors=</span>T)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co"># Step 2: Applying the threshold to get the final processed data frame</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">heart_disease_discretized=<span class="kw"><a href="../reference/discretize_df.html">discretize_df</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">data_bins=</span>d_bins, <span class="dt">stringsAsFactors=</span>T)</a></code></pre></div>
 <pre><code>## Variables processed: max_heart_rate, oldpeak</code></pre>
 <p>The following image illustrates the result. Please note that the variable name remains the same.</p>
 <div class="figure">
@@ -487,30 +463,14 @@
 <p><br></p>
 </div>
 </div>
-<div id="convert_df_to_categoric-convert-every-column-in-a-data-frame-to-character-variables" class="section level3">
-<h3 class="hasAnchor">
-<a href="#convert_df_to_categoric-convert-every-column-in-a-data-frame-to-character-variables" class="anchor"></a><code>convert_df_to_categoric</code>: Convert every column in a data frame to character variables</h3>
-<p>Binning, or discretization criterion for any numerical variable is equal frequency. Factor variables are directly converted to character variables.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">iris_char=<span class="kw"><a href="../reference/convert_df_to_categoric.html">convert_df_to_categoric</a></span>(<span class="dt">data =</span> iris, <span class="dt">n_bins =</span> <span class="dv">5</span>)</a></code></pre></div>
-<pre><code>## Variables processed: Sepal.Length, Sepal.Width, Petal.Length, Petal.Width</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co"># checking first rows</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(iris_char)</a></code></pre></div>
-<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
-## 1  [ 5.1, 5.7) [ 3.5, Inf]  [-Inf, 1.6) [-Inf, 0.3)  setosa
-## 2  [-Inf, 5.1) [ 2.8, 3.1)  [-Inf, 1.6) [-Inf, 0.3)  setosa
-## 3  [-Inf, 5.1) [ 3.2, 3.5)  [-Inf, 1.6) [-Inf, 0.3)  setosa
-## 4  [-Inf, 5.1) [ 3.1, 3.2)  [-Inf, 1.6) [-Inf, 0.3)  setosa
-## 5  [-Inf, 5.1) [ 3.5, Inf]  [-Inf, 1.6) [-Inf, 0.3)  setosa
-## 6  [ 5.1, 5.7) [ 3.5, Inf]  [ 1.6, 4.0) [ 0.3, 1.2)  setosa</code></pre>
-</div>
 <div id="equal_freq-convert-numeric-variable-to-categoric" class="section level3">
 <h3 class="hasAnchor">
 <a href="#equal_freq-convert-numeric-variable-to-categoric" class="anchor"></a><code>equal_freq</code>: Convert numeric variable to categoric</h3>
 <p>Converts numeric vector into a factor using the equal frequency criterion.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">new_age=<span class="kw"><a href="../reference/equal_freq.html">equal_freq</a></span>(heart_disease<span class="op">$</span>age, <span class="dt">n_bins =</span> <span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb35-3" data-line-number="3"><span class="co"># checking results</span></a>
-<a class="sourceLine" id="cb35-4" data-line-number="4">Hmisc<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/Hmisc/man/describe.html">describe</a></span>(new_age)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">new_age=<span class="kw"><a href="../reference/equal_freq.html">equal_freq</a></span>(heart_disease<span class="op">$</span>age, <span class="dt">n_bins =</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="co"># checking results</span></a>
+<a class="sourceLine" id="cb29-4" data-line-number="4">Hmisc<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/Hmisc/man/describe.html">describe</a></span>(new_age)</a></code></pre></div>
 <pre><code>## new_age 
 ##        n  missing distinct 
 ##      303        0        5 
@@ -531,13 +491,14 @@
 <div id="discretize_rgr-variable-discretization-based-on-gain-ratio-maximization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#discretize_rgr-variable-discretization-based-on-gain-ratio-maximization" class="anchor"></a><code>discretize_rgr</code>: Variable discretization based on gain ratio maximization</h3>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1">input=heart_disease<span class="op">$</span>oldpeak</a>
-<a class="sourceLine" id="cb37-2" data-line-number="2">target=heart_disease<span class="op">$</span>has_heart_disease</a>
-<a class="sourceLine" id="cb37-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb37-4" data-line-number="4">input2=<span class="kw"><a href="../reference/discretize_rgr.html">discretize_rgr</a></span>(input, target)</a>
-<a class="sourceLine" id="cb37-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb37-6" data-line-number="6"><span class="co"># checking:</span></a>
-<a class="sourceLine" id="cb37-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(input2)</a></code></pre></div>
+<p>This is a new method developed in <code>funModeling</code> developed improve the binning based on a binary target variable.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">input=heart_disease<span class="op">$</span>oldpeak</a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">target=heart_disease<span class="op">$</span>has_heart_disease</a>
+<a class="sourceLine" id="cb31-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb31-4" data-line-number="4">input2=<span class="kw"><a href="../reference/discretize_rgr.html">discretize_rgr</a></span>(input, target)</a>
+<a class="sourceLine" id="cb31-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb31-6" data-line-number="6"><span class="co"># checking:</span></a>
+<a class="sourceLine" id="cb31-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(input2)</a></code></pre></div>
 <pre><code>## [0.0,0.6) [0.6,1.0) [1.0,1.4) [1.4,1.9) [1.9,6.2] 
 ##       135        31        34        39        64</code></pre>
 <p>Adjust max number of bins with: <code>max_n_bins</code>; <code>5</code> as default. Control minimum sample size per bin with <code>min_perc_bins</code>; <code>0.1</code> (or 10%) as default)</p>
@@ -546,10 +507,10 @@
 <h3 class="hasAnchor">
 <a href="#range01-scales-variable-into-the-0-to-1-range" class="anchor"></a><code>range01</code>: Scales variable into the 0 to 1 range</h3>
 <p>Convert a numeric vector into a scale from 0 to 1 with 0 as the minimum and 1 as the maximum.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">age_scaled=<span class="kw"><a href="../reference/range01.html">range01</a></span>(heart_disease<span class="op">$</span>oldpeak)</a>
-<a class="sourceLine" id="cb39-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb39-3" data-line-number="3"><span class="co"># checking results</span></a>
-<a class="sourceLine" id="cb39-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(age_scaled)</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">age_scaled=<span class="kw"><a href="../reference/range01.html">range01</a></span>(heart_disease<span class="op">$</span>oldpeak)</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb33-3" data-line-number="3"><span class="co"># checking results</span></a>
+<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(age_scaled)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##  0.0000  0.0000  0.1290  0.1677  0.2581  1.0000</code></pre>
 <p><br></p>
@@ -563,13 +524,13 @@
 <a href="#hampel_outlier-and-tukey_outlier-gets-outliers-threshold" class="anchor"></a><code>hampel_outlier</code> and <code>tukey_outlier</code>: Gets outliers threshold</h3>
 <p>Both functions retrieve a two-value vector that indicates the thresholds for which the values are considered as outliers. The functions <code>tukey_outlier</code> and <code>hampel_outlier</code> are used internally in <code>prep_outliers</code>.</p>
 <p><strong>Using Tukey’s method:</strong></p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="kw"><a href="../reference/tukey_outlier.html">tukey_outlier</a></span>(heart_disease<span class="op">$</span>resting_blood_pressure)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw"><a href="../reference/tukey_outlier.html">tukey_outlier</a></span>(heart_disease<span class="op">$</span>resting_blood_pressure)</a></code></pre></div>
 <pre><code>## bottom_threshold    top_threshold 
 ##               60              200</code></pre>
 <p><a href="https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-tukey-method"><strong>Read more here.</strong></a></p>
 <p><br></p>
 <p><strong>Using Hampel’s method:</strong></p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="kw"><a href="../reference/hampel_outlier.html">hampel_outlier</a></span>(heart_disease<span class="op">$</span>resting_blood_pressure)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw"><a href="../reference/hampel_outlier.html">hampel_outlier</a></span>(heart_disease<span class="op">$</span>resting_blood_pressure)</a></code></pre></div>
 <pre><code>## bottom_threshold    top_threshold 
 ##           85.522          174.478</code></pre>
 <p><a href="https://livebook.datascienceheroes.com/data-preparation.html#detecting-outliers-using-hampel-method"><strong>Read more here.</strong></a></p>
@@ -580,12 +541,12 @@
 <a href="#prep_outliers-prepare-outliers-in-a-data-frame" class="anchor"></a><code>prep_outliers</code>: Prepare outliers in a data frame</h3>
 <p>Takes a data frame and returns the same data frame plus the transformations specified in the <code>input</code> parameter. It also works with a single vector.</p>
 <p>Example considering two variables as input:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="co"># Get threshold according to Hampel's method</span></a>
-<a class="sourceLine" id="cb45-2" data-line-number="2"><span class="kw"><a href="../reference/hampel_outlier.html">hampel_outlier</a></span>(heart_disease<span class="op">$</span>max_heart_rate)</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># Get threshold according to Hampel's method</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2"><span class="kw"><a href="../reference/hampel_outlier.html">hampel_outlier</a></span>(heart_disease<span class="op">$</span>max_heart_rate)</a></code></pre></div>
 <pre><code>## bottom_threshold    top_threshold 
 ##           86.283          219.717</code></pre>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co"># Apply function to stop outliers at the threshold values</span></a>
-<a class="sourceLine" id="cb47-2" data-line-number="2">data_prep=<span class="kw"><a href="../reference/prep_outliers.html">prep_outliers</a></span>(<span class="dt">data =</span> heart_disease, <span class="dt">input =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'max_heart_rate'</span>,<span class="st">'resting_blood_pressure'</span>), <span class="dt">method =</span> <span class="st">"hampel"</span>, <span class="dt">type=</span><span class="st">'stop'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="co"># Apply function to stop outliers at the threshold values</span></a>
+<a class="sourceLine" id="cb41-2" data-line-number="2">data_prep=<span class="kw"><a href="../reference/prep_outliers.html">prep_outliers</a></span>(<span class="dt">data =</span> heart_disease, <span class="dt">input =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'max_heart_rate'</span>,<span class="st">'resting_blood_pressure'</span>), <span class="dt">method =</span> <span class="st">"hampel"</span>, <span class="dt">type=</span><span class="st">'stop'</span>)</a></code></pre></div>
 <p>Checking the before and after for variable <code>max_heart_rate</code>:</p>
 <pre><code>## [1] "Before transformation -&gt; Min: 71; Max: 202"</code></pre>
 <pre><code>## [1] "After transformation -&gt; Min: 71; Max: 202"</code></pre>
@@ -608,12 +569,12 @@
 <h3 class="hasAnchor">
 <a href="#gain_lift-gain-and-lift-performance-curve" class="anchor"></a><code>gain_lift</code>: Gain and lift performance curve</h3>
 <p>After computing the scores or probabilities for the class we want to predict, we pass it to the <code>gain_lift</code> function, which returns a data frame with performance metrics.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="co"># Create machine learning model and get its scores for positive case </span></a>
-<a class="sourceLine" id="cb50-2" data-line-number="2">fit_glm=<span class="kw"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(has_heart_disease <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>oldpeak, <span class="dt">data=</span>heart_disease, <span class="dt">family =</span> binomial)</a>
-<a class="sourceLine" id="cb50-3" data-line-number="3">heart_disease<span class="op">$</span>score=<span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(fit_glm, <span class="dt">newdata=</span>heart_disease, <span class="dt">type=</span><span class="st">'response'</span>)</a>
-<a class="sourceLine" id="cb50-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb50-5" data-line-number="5"><span class="co"># Calculate performance metrics</span></a>
-<a class="sourceLine" id="cb50-6" data-line-number="6"><span class="kw"><a href="../reference/gain_lift.html">gain_lift</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">score=</span><span class="st">'score'</span>, <span class="dt">target=</span><span class="st">'has_heart_disease'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="co"># Create machine learning model and get its scores for positive case </span></a>
+<a class="sourceLine" id="cb44-2" data-line-number="2">fit_glm=<span class="kw"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(has_heart_disease <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>oldpeak, <span class="dt">data=</span>heart_disease, <span class="dt">family =</span> binomial)</a>
+<a class="sourceLine" id="cb44-3" data-line-number="3">heart_disease<span class="op">$</span>score=<span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(fit_glm, <span class="dt">newdata=</span>heart_disease, <span class="dt">type=</span><span class="st">'response'</span>)</a>
+<a class="sourceLine" id="cb44-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb44-5" data-line-number="5"><span class="co"># Calculate performance metrics</span></a>
+<a class="sourceLine" id="cb44-6" data-line-number="6"><span class="kw"><a href="../reference/gain_lift.html">gain_lift</a></span>(<span class="dt">data=</span>heart_disease, <span class="dt">score=</span><span class="st">'score'</span>, <span class="dt">target=</span><span class="st">'has_heart_disease'</span>)</a></code></pre></div>
 <p><img src="funModeling_quickstart_files/figure-html/performance-1.png" width="672"></p>
 <pre><code>##    Population   Gain Lift Score.Point
 ## 1          10  20.86 2.09   0.8185793
@@ -632,7 +593,8 @@
 <ul>
 <li>Github repository (report bugs or improvements): <a href="https://github.com/pablo14/funModeling" class="uri">https://github.com/pablo14/funModeling</a>
 </li>
-<li>Creator and maintainer: Pablo Casas <a href="https://twitter.com/pabloc_ds" class="uri">https://twitter.com/pabloc_ds</a> | pcasas.biz [at] gmail.com</li>
+<li>Creator and maintainer: Pablo Casas <a href="https://twitter.com/pabloc_ds" class="uri">https://twitter.com/pabloc_ds</a>
+</li>
 </ul>
 </div>
 </div>
