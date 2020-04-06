@@ -18,7 +18,7 @@ This package contains a set of functions related to exploratory data analysis, d
 
 `funModeling` is intimately related to the _Data Science Live Book_ -Open Source- (2017) in the sense that most of its functionality is used to explain different topics addressed by the book.
 
-![Data Science Live Book](dslb.png)
+![Data Science Live Book](https://s3.amazonaws.com/datascienceheroes.com/img/dslb.png)
 
 ## Opening the black-box 
 
