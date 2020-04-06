@@ -4,14 +4,10 @@
 \alias{profiling_num}
 \title{Profiling numerical data}
 \usage{
-profiling_num(data, print_results = T, digits = 2)
+profiling_num(data)
 }
 \arguments{
 \item{data}{data frame}
-
-\item{print_results}{prints the result, TRUE by default.}
-
-\item{digits}{the number of digits to show the result, 2 by default.}
 }
 \value{
 metrics table

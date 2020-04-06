@@ -4,7 +4,9 @@
 \name{data_country}
 \alias{data_country}
 \title{People with flu data}
-\format{A data frame with 910 rows and 3 variables}
+\format{
+A data frame with 910 rows and 3 variables
+}
 \usage{
 data_country
 }

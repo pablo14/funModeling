@@ -18,7 +18,7 @@ Or you can read the Data Science Live Book, fully accessible at: \url{https://li
 \seealso{
 Useful links:
 \itemize{
-  \item \url{livebook.datascienceheroes.com}
+  \item \url{https://livebook.datascienceheroes.com}
   \item Report bugs at \url{https://github.com/pablo14/funModeling/issues}
 }
 

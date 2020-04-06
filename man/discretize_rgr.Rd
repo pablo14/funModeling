@@ -19,8 +19,8 @@ discretize_rgr(input, target, min_perc_bins = 0.1, max_n_bins = 5)
 discretized variable (factor)
 }
 \description{
-Discretize numeric variable by maximizing the information gain
-between each bucket and the target variable. Each cut point is recusivelly selected based on
+Discretize numeric variable by maximizing the gain ratio
+between each bucket and the target variable.
 }
 \examples{
 \dontrun{

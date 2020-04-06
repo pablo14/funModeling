@@ -4,8 +4,15 @@
 \alias{prep_outliers}
 \title{Outliers Data Preparation}
 \usage{
-prep_outliers(data, input = NA, type = NA, method = NA,
-  bottom_percent = NA, top_percent = NA)
+prep_outliers(
+  data,
+  input = NA,
+  type = NA,
+  method = NA,
+  bottom_percent = NA,
+  top_percent = NA,
+  k_mad_value = NA
+)
 }
 \arguments{
 \item{data}{a data frame or a single vector. If it's a data frame, the function returns a data frame, otherwise it returns a vector.}
@@ -19,6 +26,8 @@ prep_outliers(data, input = NA, type = NA, method = NA,
 \item{bottom_percent}{value from 0 to 1, represents the lowest X percentage of values to treat. Valid only when method="bottom_top".}
 
 \item{top_percent}{value from 0 to 1, represents the highest X percentage of values to treat. Valid only when method="bottom_top".}
+
+\item{k_mad_value}{only used when method='hampel', 3 by default, might seem quite restrictive. Set a higher number to spot less outliers.}
 }
 \value{
 A data frame with the desired outlier transformation

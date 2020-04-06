@@ -4,7 +4,9 @@
 \name{data_golf}
 \alias{data_golf}
 \title{Play golf}
-\format{A data frame with 14 rows and 3 variables}
+\format{
+A data frame with 14 rows and 3 variables
+}
 \usage{
 data_golf
 }

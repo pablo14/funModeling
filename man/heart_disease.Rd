@@ -4,11 +4,13 @@
 \name{heart_disease}
 \alias{heart_disease}
 \title{Heart Disease Data}
-\format{A data frame with 303 rows and 16 variables:
+\format{
+A data frame with 303 rows and 16 variables:
 \itemize{
 
    \url{https://archive.ics.uci.edu/ml/datasets/Heart+Disease}
-}}
+}
+}
 \usage{
 heart_disease
 }
