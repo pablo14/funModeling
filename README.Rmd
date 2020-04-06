@@ -9,6 +9,12 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(
+	fig.path = "man/figures/README-"
+)
+```
+
 
 # funModeling quick-start {#quick_start}
 
