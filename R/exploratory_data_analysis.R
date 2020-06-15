@@ -352,7 +352,7 @@ freq_logic <- function(data, input, plot, na.rm, path_out)
 
 		if(nrow(tbl_plot)<100)
 		{
-			p=ggplot(tbl_plot,aes(x=tbl_plot$category,y=tbl_plot$frequency,fill=tbl_plot$category, label=label)) +
+			p=ggplot(tbl_plot, aes(x=category,y=frequency,fill=category, label=label)) +
 				geom_bar(stat='identity') + coord_flip() +	theme_bw() +
 				theme(
 					panel.grid.minor=element_blank(),
@@ -368,7 +368,7 @@ freq_logic <- function(data, input, plot, na.rm, path_out)
 				) + ylab("Frequency / (Percentage %)") + xlab(input) +
 				geom_text( color="#151515", size=letter_size, hjust=-.06) +
 				guides(fill=F) +
-				scale_y_continuous(expand = c(0,0),limits = c(0, max(tbl_plot$frequency)*1.2))
+			scale_y_continuous(expand = c(0,0), limits = c(0, max(tbl_plot$frequency)*1.5))
 
 			## Save plot
 			if(!is.na(path_out))

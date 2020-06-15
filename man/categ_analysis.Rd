@@ -17,7 +17,7 @@ categ_analysis(data, input, target)
 if input has 1 variable, it retrurns a data frame indicating all the metrics, otherwise prints in console all variable results.
 }
 \description{
-Retrieves a complete summary of the grouped input variable against the target variable. Type of target variable must be binary for now. A positive case will be the less representative one. It returns the total positive cases (sum_target)); pecentage of total positive cases (perc_target) that fell in that category (this column sums 1); likelihood or mean of positive cases (mean_target) measured by the total positive cases over total cases in that category; quantity of rows of that category (q_rows) and in percentage (perc_rows) -this column sums 1. Full documentation can be found at: <http://http://livebook.datascienceheroes.com/data_preparation/high_cardinality_predictive_modeling.html/>.
+Retrieves a complete summary of the grouped input variable against the target variable. Type of target variable must be binary for now. A positive case will be the less representative one. It returns the total positive cases (sum_target)); pecentage of total positive cases (perc_target) that fell in that category (this column sums 1); likelihood or mean of positive cases (mean_target) measured by the total positive cases over total cases in that category; quantity of rows of that category (q_rows) and in percentage (perc_rows) -this column sums 1.
 }
 \examples{
 categ_analysis(data_country, "country", "has_flu")

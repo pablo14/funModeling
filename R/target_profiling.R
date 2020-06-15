@@ -111,12 +111,12 @@ boxplot_target <- function(data, input, target)
 }
 
 #' @title Profiling analysis of categorical vs. target variable
-#' @description Retrieves a complete summary of the grouped input variable against the target variable. Type of target variable must be binary for now. A positive case will be the less representative one. It returns the total positive cases (sum_target)); pecentage of total positive cases (perc_target) that fell in that category (this column sums 1); likelihood or mean of positive cases (mean_target) measured by the total positive cases over total cases in that category; quantity of rows of that category (q_rows) and in percentage (perc_rows) -this column sums 1. Full documentation can be found at: <http://http://livebook.datascienceheroes.com/data_preparation/high_cardinality_predictive_modeling.html/>.
 #' @param data input data containing the variable to describe
 #' @param input string input variable (if empty, it runs for all categorical variable), it can take a single character value or a character vector.
 #' @param target string target variable. Binary or two class is only supported by now.
 #' @examples
 #' categ_analysis(data_country, "country", "has_flu")
+#' @description Retrieves a complete summary of the grouped input variable against the target variable. Type of target variable must be binary for now. A positive case will be the less representative one. It returns the total positive cases (sum_target)); pecentage of total positive cases (perc_target) that fell in that category (this column sums 1); likelihood or mean of positive cases (mean_target) measured by the total positive cases over total cases in that category; quantity of rows of that category (q_rows) and in percentage (perc_rows) -this column sums 1.
 #' @return if input has 1 variable, it retrurns a data frame indicating all the metrics, otherwise prints in console all variable results.
 #' @export
 categ_analysis<-function(data, input, target)

@@ -147,7 +147,7 @@ cross_plot_logic <- function(data, input, target, path_out, auto_binning, plot_t
 	  	scale_fill_manual(values=c("#00BFC4","#F8766D"))
 
 	  ## Quantity plot
-	  lGraf$quantity = ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, ymax=max(value)*1.05, fill=variable)) +
+	  lGraf$quantity = ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, fill=variable)) +
 	  	geom_bar(position=position_dodge(),stat="identity") +
 	    geom_text(aes(label=value), position=position_dodge(width=0.9), vjust=-0.25, size=4) +
 	  	labs(x = input, y = paste(target, " (count)", sep=" ")) +
