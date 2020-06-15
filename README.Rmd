@@ -14,6 +14,8 @@ knitr::opts_chunk$set(
 This package contains a set of functions related to exploratory data analysis, data preparation, and model performance. It is used by people coming from business, research, and teaching (professors and students).
 
 
+<img src="https://datascienceheroes.com/img/blog/funModeling_cover.png" alt="funModeling" width="400px"/>
+
 <img src="https://s3.amazonaws.com/datascienceheroes.com/img/blog/funModeling_logo_hq.png" alt="funModeling" width="300px"/>
 
 
