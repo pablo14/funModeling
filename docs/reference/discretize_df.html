@@ -75,7 +75,7 @@ can be found at: https://livebook.datascienceheroes.com/data-preparation.html#da
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">funModeling</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.4</span>
       </span>
     </div>
 
@@ -159,7 +159,15 @@ When TRUE, the segments are ordered. TRUE by default.</p></td>
     <p>Data frame with the transformed variables</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='co'># Getting the bins thresholds for each. If input is missing, will run for all numerical variables.</span>
+<span class='no'>d_bins</span><span class='kw'>=</span><span class='fu'><a href='discretize_get_bins.html'>discretize_get_bins</a></span>(<span class='kw'>data</span><span class='kw'>=</span><span class='no'>heart_disease</span>,
+<span class='kw'>input</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"resting_blood_pressure"</span>, <span class='st'>"oldpeak"</span>), <span class='kw'>n_bins</span><span class='kw'>=</span><span class='fl'>5</span>)
+
+<span class='co'># Now it can be applied on the same data frame, or in a new one (for example in a predictive model that change data over time)</span>
+<span class='no'>heart_disease_discretized</span><span class='kw'>=</span><span class='fu'>discretize_df</span>(<span class='kw'>data</span><span class='kw'>=</span><span class='no'>heart_disease</span>, <span class='kw'>data_bins</span><span class='kw'>=</span><span class='no'>d_bins</span>, <span class='kw'>stringsAsFactors</span><span class='kw'>=</span><span class='no'>T</span>)
+
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

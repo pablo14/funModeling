@@ -75,7 +75,7 @@ The function can take a data frame, and returns the same data plus the transform
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">funModeling</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.4</span>
       </span>
     </div>
 
@@ -133,8 +133,15 @@ Stopping is recommended when creating a predictive model without biasing the res
 <p>The function can take a data frame, and returns the same data plus the transformations specified in the input parameter. Or it can take a single vector (in the same 'data' parameter), and it returns a vector.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>prep_outliers</span>(<span class='no'>data</span>, <span class='kw'>input</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>bottom_percent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>top_percent</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>prep_outliers</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>input</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>bottom_percent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>top_percent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>k_mad_value</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,6 +169,10 @@ Stopping is recommended when creating a predictive model without biasing the res
     <tr>
       <th>top_percent</th>
       <td><p>value from 0 to 1, represents the highest X percentage of values to treat. Valid only when method="bottom_top".</p></td>
+    </tr>
+    <tr>
+      <th>k_mad_value</th>
+      <td><p>only used when method='hampel', 3 by default, might seem quite restrictive. Set a higher number to spot less outliers.</p></td>
     </tr>
     </table>
 
