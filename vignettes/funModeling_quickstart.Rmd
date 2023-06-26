@@ -17,13 +17,13 @@ knitr::opts_chunk$set(
 
 # funModeling quick-start {#quick_start}
 
-![funModeling](https://s3.amazonaws.com/datascienceheroes.com/img/funmodeling_logo_wh.png)
+![funModeling](img/funmodeling_logo_wh.png)
 
 This package contains a set of functions related to exploratory data analysis, data preparation, and model performance. It is used by people coming from business, research, and teaching (professors and students).
 
 `funModeling` is intimately related to the _Data Science Live Book_ -Open Source- (2017) in the sense that most of its functionality is used to explain different topics addressed by the book.
 
-![Data Science Live Book](https://livebook.datascienceheroes.com/introduction/data-science-live-book.png)
+![Data Science Live Book](img/data-science-live-book.png)
 
 ## Blog posts based on `funModeling`:
 
