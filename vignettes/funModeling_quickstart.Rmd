@@ -1,7 +1,11 @@
 ---
 title: "funModeling quick-start"
 author: "Pablo Casas"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    md_extensions: [ 
+      "-autolink_bare_uris" 
+    ]
 date: "`r Sys.Date()`"
 vignette: >
   %\VignetteIndexEntry{funModeling quick-start}
@@ -444,7 +448,7 @@ coord_plot(data=mtcars, group_var="cyl", group_func=median, print_table=TRUE)
 
 ---
 
-* Github repository (report bugs or improvements): https://github.com/pablo14/funModeling
-* Creator and maintainer: Pablo Casas https://twitter.com/pabloc_ds
+* Github repository (report bugs or improvements): [https://github.com/pablo14/funModeling](https://github.com/pablo14/funModeling)
+* Creator and maintainer: Pablo Casas [https://twitter.com/pabloc_ds](https://twitter.com/pabloc_ds)
 
 
