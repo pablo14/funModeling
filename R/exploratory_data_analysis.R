@@ -19,7 +19,7 @@ plot_num <- function(data, bins=10, path_out=NA)
 	# The official documentation is quite clear about it: http://seananderson.ca/2013/10/19/reshape.html
 	wide_data=suppressMessages(melt(data))
 	p=ggplot(data = wide_data, mapping = aes(x = value)) +
-		geom_histogram(bins = bins, na.rm=T) + facet_wrap(~variable, scales = 'free_x') +  aes(fill = variable) + guides(fill=FALSE)
+		geom_histogram(bins = bins, na.rm=T) + facet_wrap(~variable, scales = 'free_x') +  aes(fill = variable) + guides(fill="none")
 
 
 	## Save plot
