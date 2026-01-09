@@ -40,10 +40,10 @@ discretize_df <- function(data, data_bins, stringsAsFactors=T)
 
 	if(stringsAsFactors)
 	{
-		data_2b=data %>% mutate_at(vars(vars_num), conv_factor)
-		data_3=data_2b %>% mutate_at(vars(vars_num), funs(factor(replace(., is.na(.), "NA."))))
+		data_2b=data %>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), conv_factor))
+		data_3=data_2b %>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), ~factor(replace(., is.na(.), "NA."))))
 	} else {
-		data_3=data %>% mutate_at(vars(vars_num), funs(ifelse(is.na(.), "NA.", .)))
+		data_3=data %>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), ~ifelse(is.na(.), "NA.", .)))
 	}
 
 	message(sprintf("Variables processed: %s", paste(vars_num, collapse = ", ")))
@@ -213,7 +213,7 @@ convert_df_to_categoric <- function(data, n_bins)
 	data_cat=discretize_df(data = data, data_bins = d_cuts, stringsAsFactors = F)
 
 	# Converting remaining variables
-	data_cat_2=data_cat %>% mutate_all(as.character)
+	data_cat_2=data_cat %>% dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
 
 	return(data_cat_2)
 }

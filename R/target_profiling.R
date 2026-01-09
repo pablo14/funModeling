@@ -71,7 +71,7 @@ get_target_plot <- function(data, input, target, plot_type)
 
 histdens_target <- function(data, input, target)
 {
-	cdf=group_by_(data, target) %>% summarise_(var.mean=interp(~mean(v, na.rm=T), v=as.name(input)))
+	cdf=data %>% dplyr::group_by(dplyr::across(dplyr::all_of(target))) %>% dplyr::summarise(var.mean = mean(.data[[input]], na.rm=TRUE), .groups = "drop")
 
 	cdf$var.mean=round(cdf$var.mean, 2)
 
@@ -167,13 +167,14 @@ categ_analysis_logic <- function(data, input, target)
 	tot_pos=sum(data[,target]==pred_class)
 
 	## profiling
-	grp=group_by_(data, input) %>% summarise_(
-					mean_target=interp(~round(mean(var==pred_class, na.rm = TRUE), 3), var = as.name(target)),
-					sum_target=interp(~sum(var==pred_class, na.rm = TRUE), var = as.name(target)),
-					perc_target=interp(~round(sum(var==pred_class, na.rm = TRUE)/tot_pos,3), var = as.name(target)),
-					q_rows=~n(),
-					perc_rows=~round(n()/nrow(data), 3)
-	) %>% arrange(-mean_target)
+	grp=data %>% dplyr::group_by(dplyr::across(dplyr::all_of(input))) %>% dplyr::summarise(
+					mean_target=round(mean(.data[[target]]==pred_class, na.rm = TRUE), 3),
+					sum_target=sum(.data[[target]]==pred_class, na.rm = TRUE),
+					perc_target=round(sum(.data[[target]]==pred_class, na.rm = TRUE)/tot_pos,3),
+					q_rows=dplyr::n(),
+					perc_rows=round(dplyr::n()/nrow(data), 3),
+					.groups = "drop"
+	) %>% dplyr::arrange(-mean_target)
 
 	#colnames(grp)[colnames(grp)=='sum_target']=paste("sum", target, sep="_")
 	#colnames(grp)[colnames(grp)=='perc_target']=paste("perc", target, sep="_")
