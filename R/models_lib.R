@@ -139,7 +139,7 @@ desc_groups <- function(data, group_var, group_func=mean, add_all_data_row=T)
 	stat=status(data)
 	vars_to_keep=stat[stat$type %in% c("integer", "numeric") & stat$variable != group_var, "variable"]
 
-	grp_mean=data %>% group_by_(group_var) %>% summarise_each_(funs(group_func), vars_to_keep) %>% mutate_each_(funs(round(.,2)), vars_to_keep)
+	grp_mean=data %>% dplyr::group_by(dplyr::across(dplyr::all_of(group_var))) %>% dplyr::summarise(dplyr::across(dplyr::all_of(vars_to_keep), group_func), .groups = "drop") %>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_to_keep), ~round(., 2)))
 	grp_mean=data.frame(grp_mean)
 
 	grp_mean[,group_var]=as.character(grp_mean[,group_var])
@@ -149,7 +149,7 @@ desc_groups <- function(data, group_var, group_func=mean, add_all_data_row=T)
 
 	# vars_to_keep have all num variables (excluding group_var and factor/char). Calculate 'All_Data' means per column
 	data_num=select(data, one_of(vars_to_keep))
-	b=as.data.frame(data_num) %>% summarise_each(funs(group_func))
+	b=as.data.frame(data_num) %>% dplyr::summarise(dplyr::across(dplyr::everything(), group_func))
 
 	## putting all together: the sumarization per group plus the total per column
 	all_results=rbind(a, b)
@@ -194,7 +194,7 @@ desc_groups_rank <- function(data, group_var, group_func=mean)
 	vars_to_group=all_col[all_col!=group_var]
 
 	# mutate each does the group by only for variables defined in vars_to_group
-	d_group_rank=d_group %>% mutate_each_(funs(dense_rank(desc(.))), vars_to_group)
+	d_group_rank=d_group %>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_to_group), ~dplyr::dense_rank(dplyr::desc(.))))
 
 	return(d_group_rank)
 }
