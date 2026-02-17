@@ -132,7 +132,7 @@ cross_plot_logic <- function(data, input, target, path_out, auto_binning, plot_t
 	  lGraf$percentual = ggplot(dataGrafPrep, aes(x=factor(varInput), y=value, fill=variable))+
 	  	geom_bar(position="fill",stat="identity") +
 	    geom_text(aes(label = sprintf("%0.1f", 100*ratio), y = position)) +
-	    guides(fill=FALSE) +
+	    guides(fill="none") +
 	  	labs(x = input, y = paste(target, " (%)", sep=" ")) +
 	    theme_bw() +
 	  	theme(axis.text.x=element_text(angle = 45, hjust = 1),

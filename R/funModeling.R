@@ -21,7 +21,7 @@
 #' @importFrom reshape2 dcast melt
 #' @importFrom utils packageVersion
 #' @importFrom scales percent
-#' @importFrom lazyeval interp
+#' @importFrom rlang .data sym
 #' @importFrom gridExtra grid.arrange
 #' @importFrom ROCR prediction performance plot
 #' @importFrom stats cor quantile
@@ -37,7 +37,7 @@
 
 utils::globalVariables(names=c("fum","element_blank","value","ratio","aes","variable","geom_bar","geom_text","position",
 															 "guides","labs","theme","element_text","scale_y_continuous","position_dodge","ylim","guide_legend","scale_fill_discrete",
-															 "aes_string", "geom_boxplot","stat_summary", "theme_bw", "freq", "geom_vline", "geom_density", "margin",
+															 "geom_boxplot","stat_summary", "theme_bw", "freq", "geom_vline", "geom_density", "margin",
 															 "scale_colour_continuous",'Var1','label','coord_flip','ylab','xlab','geom_label','unit','Population','Gain',
 															 'Score.Point','geom_line','geom_point','xlim','geom_segment','Lift', 'Freq', 'sum_pos', 'likelih','.','one_of',
 															 'grp_mean', 'mean_target',"'colorRampPalette","head","tail","rbeta","p_10","p_90","sd" ,"std_dev","variation_coef",

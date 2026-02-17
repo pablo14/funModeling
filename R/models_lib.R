@@ -89,7 +89,7 @@ gain_lift <- function(data, score, target, q_segments=10)
 			axis.title.x=element_text(margin=margin(15,0,0,0)),
 			axis.title.y=element_text(margin=margin(0,15,0,0))
 		)+geom_label(aes(fill = factor(Gain)), colour = "white", fontface = "bold",vjust = -.5, label.padding = unit(.2, "lines")) + ylim(0, 110)  +
-			guides(fill=F) +  scale_colour_continuous(guide = FALSE)  +
+			guides(fill="none") +  scale_colour_continuous(guide = "none")  +
 		geom_segment(x = 0, y = 0, xend = 100, yend = 100,linetype="dotted") + scale_x_continuous(breaks = c(0, seq(10, 100, by=10)))
 
 
@@ -105,7 +105,7 @@ gain_lift <- function(data, score, target, q_segments=10)
 			axis.title.x=element_text(margin=margin(15,0,0,0)),
 			axis.title.y=element_text(margin=margin(0,15,0,0))
 		)+geom_label(aes(fill=-Lift), size=3.5, colour="white", vjust = -.5, label.padding = unit(.2, "lines")) + ylim(min(lift_res_t$Lift), max(lift_res_t$Lift*1.1)) +
-			guides(fill=F) + scale_colour_continuous(guide = FALSE) + scale_x_continuous(breaks = c(0, seq(10, 100, by=10)))
+			guides(fill="none") + scale_colour_continuous(guide = "none") + scale_x_continuous(breaks = c(0, seq(10, 100, by=10)))
 
 
 
@@ -139,7 +139,7 @@ desc_groups <- function(data, group_var, group_func=mean, add_all_data_row=T)
 	stat=status(data)
 	vars_to_keep=stat[stat$type %in% c("integer", "numeric") & stat$variable != group_var, "variable"]
 
-	grp_mean=data %>% group_by_(group_var) %>% summarise_each_(funs(group_func), vars_to_keep) %>% mutate_each_(funs(round(.,2)), vars_to_keep)
+	grp_mean=data %>% group_by(!!sym(group_var)) %>% summarise(across(all_of(vars_to_keep), group_func), .groups="drop") %>% mutate(across(all_of(vars_to_keep), ~round(., 2)))
 	grp_mean=data.frame(grp_mean)
 
 	grp_mean[,group_var]=as.character(grp_mean[,group_var])
@@ -149,7 +149,7 @@ desc_groups <- function(data, group_var, group_func=mean, add_all_data_row=T)
 
 	# vars_to_keep have all num variables (excluding group_var and factor/char). Calculate 'All_Data' means per column
 	data_num=select(data, one_of(vars_to_keep))
-	b=as.data.frame(data_num) %>% summarise_each(funs(group_func))
+	b=as.data.frame(data_num) %>% summarise(across(everything(), group_func))
 
 	## putting all together: the sumarization per group plus the total per column
 	all_results=rbind(a, b)
@@ -194,7 +194,7 @@ desc_groups_rank <- function(data, group_var, group_func=mean)
 	vars_to_group=all_col[all_col!=group_var]
 
 	# mutate each does the group by only for variables defined in vars_to_group
-	d_group_rank=d_group %>% mutate_each_(funs(dense_rank(desc(.))), vars_to_group)
+	d_group_rank=d_group %>% mutate(across(all_of(vars_to_group), ~dense_rank(desc(.))))
 
 	return(d_group_rank)
 }
@@ -241,7 +241,7 @@ coord_plot <- function(data, group_var, group_func=mean, print_table=FALSE)
 	getPalette = suppressWarnings(colorRampPalette(brewer.pal(9, "Set2")))
 
 	## Coordinate plot
-	co_plot=ggplot(melted_data, aes_string(x="variable", y="value",  group=group_var, color=group_var),  environment = environment()) +
+	co_plot=ggplot(melted_data, aes(x=.data[["variable"]], y=.data[["value"]],  group=.data[[group_var]], color=.data[[group_var]])) +
 		geom_path(alpha = 0.9) +
 		geom_point() +
 		xlab("Variables") +

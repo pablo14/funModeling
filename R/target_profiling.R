@@ -71,11 +71,11 @@ get_target_plot <- function(data, input, target, plot_type)
 
 histdens_target <- function(data, input, target)
 {
-	cdf=group_by_(data, target) %>% summarise_(var.mean=interp(~mean(v, na.rm=T), v=as.name(input)))
+	cdf=data %>% group_by(!!sym(target)) %>% summarise(var.mean=mean(.data[[input]], na.rm=T), .groups="drop")
 
 	cdf$var.mean=round(cdf$var.mean, 2)
 
-  plot_histdens=ggplot(data, aes_string(x=input, colour=target)) + geom_density() + geom_vline(data=cdf, aes_string(xintercept="var.mean",  colour=target), linetype="dashed", size=0.5) +
+  plot_histdens=ggplot(data, aes(x=.data[[input]], colour=.data[[target]])) + geom_density() + geom_vline(data=cdf, aes(xintercept=.data[["var.mean"]],  colour=.data[[target]]), linetype="dashed", linewidth=0.5) +
 
 	theme_bw() +
 
@@ -93,8 +93,8 @@ histdens_target <- function(data, input, target)
 
 boxplot_target <- function(data, input, target)
 {
-	plot_box=ggplot(data, aes_string(x=target, y=input, fill=target)) + geom_boxplot() +
-         guides(fill=FALSE)+stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
+	plot_box=ggplot(data, aes(x=.data[[target]], y=.data[[input]], fill=.data[[target]])) + geom_boxplot() +
+         guides(fill="none")+stat_summary(fun=mean, geom="point", shape=5, size=4) +
 
 	theme_bw() +
 
@@ -167,12 +167,13 @@ categ_analysis_logic <- function(data, input, target)
 	tot_pos=sum(data[,target]==pred_class)
 
 	## profiling
-	grp=group_by_(data, input) %>% summarise_(
-					mean_target=interp(~round(mean(var==pred_class, na.rm = TRUE), 3), var = as.name(target)),
-					sum_target=interp(~sum(var==pred_class, na.rm = TRUE), var = as.name(target)),
-					perc_target=interp(~round(sum(var==pred_class, na.rm = TRUE)/tot_pos,3), var = as.name(target)),
-					q_rows=~n(),
-					perc_rows=~round(n()/nrow(data), 3)
+	grp=data %>% group_by(!!sym(input)) %>% summarise(
+					mean_target=round(mean(.data[[target]]==pred_class, na.rm = TRUE), 3),
+					sum_target=sum(.data[[target]]==pred_class, na.rm = TRUE),
+					perc_target=round(sum(.data[[target]]==pred_class, na.rm = TRUE)/tot_pos, 3),
+					q_rows=n(),
+					perc_rows=round(n()/nrow(data), 3),
+					.groups="drop"
 	) %>% arrange(-mean_target)
 
 	#colnames(grp)[colnames(grp)=='sum_target']=paste("sum", target, sep="_")

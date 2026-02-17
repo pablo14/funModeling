@@ -367,7 +367,7 @@ freq_logic <- function(data, input, plot, na.rm, path_out)
 					axis.title.y=element_text(size=14, margin=margin(0,10,0,0))
 				) + ylab("Frequency / (Percentage %)") + xlab(input) +
 				geom_text( color="#151515", size=letter_size, hjust=-.06) +
-				guides(fill=F) +
+				guides(fill="none") +
 			scale_y_continuous(expand = c(0,0), limits = c(0, max(tbl_plot$frequency)*1.5))
 
 			## Save plot

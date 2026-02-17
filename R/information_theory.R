@@ -23,7 +23,7 @@ entropy_2 <- function(input, target)
 
 	# get partial entropy
 	df_tbl=as.data.frame.matrix(tbl)
-	res_entropy=data.frame(t(df_tbl)) %>% mutate_all(funs(entropy(., unit = "log2"))) %>% head(.,1)
+	res_entropy=data.frame(t(df_tbl)) %>% mutate(across(everything(), ~entropy(., unit = "log2"))) %>% head(.,1)
 
 	# computing total entropy
 	total_en=sum(probs_input*res_entropy)

@@ -23,7 +23,7 @@ auto_grouping <- function(data, input, target, n_groups, model="kmeans", seed=99
 
 	df_categ=categ_analysis(data, input , target)
 
-	d=select_(df_categ, "perc_target",  "perc_rows")
+	d=select(df_categ, "perc_target",  "perc_rows")
 
 	set.seed(seed)
 	if(model=="kmeans") {
@@ -44,12 +44,12 @@ auto_grouping <- function(data, input, target, n_groups, model="kmeans", seed=99
 	df_categ[, var_rec]=paste("group_", cluster_vec, sep = "")
 
 	## See new profiling based on new groups
-	data_rec=merge(select_(data, input, target), select_(df_categ, input, var_rec), by=input)
+	data_rec=merge(select(data, all_of(c(input, target))), select(df_categ, all_of(c(input, var_rec))), by=input)
 	recateg_results=categ_analysis(data_rec, var_rec, target)
 
 	l_res=list()
 	l_res$recateg_results=recateg_results
-	l_res$df_equivalence=arrange_(unique(select_(data_rec, input, var_rec)), var_rec)
+	l_res$df_equivalence=unique(select(data_rec, all_of(c(input, var_rec)))) %>% arrange(!!sym(var_rec))
 	l_res$fit_cluster=fit_cluster
 
 	return(l_res)
