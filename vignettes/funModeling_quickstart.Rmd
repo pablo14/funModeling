@@ -449,6 +449,6 @@ coord_plot(data=mtcars, group_var="cyl", group_func=median, print_table=TRUE)
 ---
 
 * Github repository (report bugs or improvements): [https://github.com/pablo14/funModeling](https://github.com/pablo14/funModeling)
-* Creator and maintainer: Pablo Casas [https://twitter.com/pabloc_ds](https://twitter.com/pabloc_ds)
+* Creator and maintainer: Pablo Casas [https://x.com/pabloc_ds](https://x.com/pabloc_ds)
 
 
